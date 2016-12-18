@@ -8,6 +8,16 @@ html {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+     -khtml-user-select: none; /* Konqueror */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  not supported by any browser */
+}
+
 .st-app {
   position: fixed;
   top: 0; right: 0; bottom: 0; left: 0;
@@ -33,7 +43,13 @@ html {
 .st-list {
   overflow: auto;
   cursor: pointer;
-  min-width: 150px;
+  width: 200px;
+}
+
+.st-list li {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .st-list-item-selected {

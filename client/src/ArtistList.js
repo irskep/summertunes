@@ -25,9 +25,18 @@ class ArtistList extends Component {
   render() {
     return <List className="st-list st-artist-list"
       onClick={this.props.onSelectArtist}
-      items={this.state.artistNames.map((artistName) => {
-        return {label: artistName, isSelected: artistName === this.props.selectedArtist};
-      })} />;
+      items={[
+        {
+          label: "All",
+          value: null,
+          isSelected: this.props.selectedArtist === null,
+        }].concat(this.state.artistNames.map((artistName) => {
+          return {
+            label: artistName,
+            value: artistName,
+            isSelected: this.props.selectedArtist === artistName ,
+          };
+        }))} />;
   }
 }
 

@@ -45,11 +45,11 @@ class App extends Component {
           <div className="st-library st-library-browser-left">
             <ArtistList
               selectedArtist={this.state.selectedArtist}
-              onSelectArtist={(item) => this.setState({selectedArtist: item.label})}/>
+              onSelectArtist={(item) => this.setState({selectedArtist: item.value})}/>
             <AlbumList
               artist={this.state.selectedArtist}
               selectedAlbum={this.state.selectedAlbum}
-              onSelectAlbum={(item) => this.setState({selectedAlbum: item.label})}/>
+              onSelectAlbum={(item) => this.setState({selectedAlbum: item.value})}/>
             <List className="st-list st-track-list" alternateColors={true} items={items} />
           </div>
 

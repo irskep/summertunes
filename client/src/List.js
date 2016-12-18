@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 
 class List extends Component {
   render() {
-    const className = ` st-list ${this.props.alternateColors ? "st-list-alternate-colors" : ""}`;
+    const className = ` noselect st-list ${this.props.alternateColors ? "st-list-alternate-colors" : ""}`;
     return <ul className={this.props.className + className} style={this.props.style}>
       {(this.props.items || []).map((item, i) => {
         return <li key={i}

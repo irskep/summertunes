@@ -14,15 +14,17 @@ class AlbumList extends Component {
     return shallowCompare(this, nextProps, nextState);
   }
 
-
   update(nextProps) {
     this.setState({albumNames: []});
-    if (!nextProps.artist) return;
 
-    window.fetch(`${SERVER_URL}/artists/${nextProps.artist}`)
+    const query = nextProps.artist
+      ? `${SERVER_URL}/albums?albumartist=${nextProps.artist}`
+      : `${SERVER_URL}/albums`;
+
+    window.fetch(query)
       .then((response) => response.json())
       .then(({albums}) => {
-        this.setState({albumNames: albums});
+        this.setState({albumNames: albums.map(({album}) => album)});
       });
   }
 
@@ -38,9 +40,18 @@ class AlbumList extends Component {
   render() {
     return <List className="st-list st-album-list"
       onClick={this.props.onSelectAlbum}
-      items={this.state.albumNames.map((albumName) => {
-        return {label: albumName, isSelected: albumName === this.props.selectedAlbum};
-      })} />;
+      items={[
+        {
+          label: "All",
+          value: null,
+          isSelected: this.props.selectedAlbum === null,
+        }].concat(this.state.albumNames.map((albumName) => {
+          return {
+            label: albumName,
+            value: albumName,
+            isSelected: albumName === this.props.selectedAlbum
+          };
+        }))} />;
   }
 }
 
