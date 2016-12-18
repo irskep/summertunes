@@ -1,19 +1,26 @@
 .st-table {
   overflow: auto;
   cursor: pointer;
+  height: 100%;
 }
 
-.st-table td {
+.st-table table {
+  border-collapse: collapse;
+}
+
+.st-table td, .st-table th {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+
+  border-right: 1px solid #ddd;
 }
 
-.st-table tr:nth-child(2) {
+.st-table tr:nth-child(odd) {
   background-color: #eee;
 }
 
-.st-table-item-selected {
+.st-table tr.st-table-item-selected {
   background-color: rgb(60, 104, 214);
   color: white;
 }

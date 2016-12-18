@@ -21,6 +21,13 @@ class TrackList extends Component {
     this.state = {tracks: []};
   }
 
+  query(props) {
+    return `${SERVER_URL}/tracks?${queryString({
+        albumartist: props.artist,
+        album: props.album,
+      })}`;
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     return shallowCompare(this, nextProps, nextState);
   }
@@ -28,15 +35,14 @@ class TrackList extends Component {
   update(nextProps) {
     this.setState({tracks: []});
 
-    const query = `${SERVER_URL}/tracks?${queryString({
-        albumartist: this.props.artist,
-        album: this.props.album,
-      })}`;
+    if (!queryString({
+        albumartist: nextProps.artist,
+        album: nextProps.album,
+      })) return;
 
-    window.fetch(query)
+    window.fetch(this.query(nextProps))
       .then((response) => response.json())
       .then(({tracks}) => {
-        console.log(tracks[0]);
         this.setState({tracks: tracks.slice(0, 200)});
       });
   }
@@ -46,20 +52,21 @@ class TrackList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.artist === this.props.artist) return;
+    if (JSON.stringify(this.query(this.props)) === JSON.stringify(this.query(nextProps))) return;
     this.update(nextProps);
   }
 
   render() {
     return <Table className="st-track-list"
       onClick={this.props.onSelectTrack}
+      selectedItem={this.props.selectedTrack}
       columns={[
         {name: 'Track Number', itemKey: 'track'},
         {name: 'Title', itemKey: 'title'},
-        {name: 'Time', itemKey: 'func', func: (item) => secondsToString(item.length)},
         {name: 'Album Artist', itemKey: 'albumartist'},
         {name: 'Album', itemKey: 'album'},
         {name: 'Year', itemKey: 'year'},
+        {name: 'Time', itemKey: 'func', func: (item) => secondsToString(item.length)},
         {name: 'Disc Number', itemKey: 'disc'},
       ]}
       items={this.state.tracks} />;
@@ -69,6 +76,7 @@ class TrackList extends Component {
 TrackList.propTypes = {
   artist: PropTypes.string,
   album: PropTypes.string,
+  selectedTrack: PropTypes.any,
   onSelectTrack: PropTypes.func.isRequired,
 };
 

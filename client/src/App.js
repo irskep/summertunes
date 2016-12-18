@@ -4,6 +4,7 @@ import Toolbar from "./Toolbar";
 import ArtistList from "./ArtistList";
 import AlbumList from "./AlbumList";
 import TrackList from "./TrackList";
+import Table from "./Table";
 
 
 class App extends Component {
@@ -12,6 +13,7 @@ class App extends Component {
     this.state = {
       selectedArtist: null,
       selectedAlbum: null,
+      selectedTrack: null,
     };
   }
 
@@ -20,6 +22,7 @@ class App extends Component {
       <div className="st-app">
         <Toolbar />
         <div className="st-flex-ui">
+          {/*
           <div className="st-browser-sidebar">
             <ul>
               <li>Playback Queue</li>
@@ -37,11 +40,15 @@ class App extends Component {
             </ul>
 
           </div>
+          */}
 
           <div className="st-library st-library-browser-left">
             <ArtistList
               selectedArtist={this.state.selectedArtist}
-              onSelectArtist={(item) => this.setState({selectedArtist: item.value})}/>
+              onSelectArtist={(item) => this.setState({
+                selectedArtist: item.value,
+                selectedAlbum: null,
+              })}/>
             <AlbumList
               artist={this.state.selectedArtist}
               selectedAlbum={this.state.selectedAlbum}
@@ -49,12 +56,18 @@ class App extends Component {
             <TrackList
               artist={this.state.selectedArtist}
               album={this.state.selectedAlbum}
-              onSelectTrack={(item) => console.log(item) }/>
+              selectedTrack={this.state.selectedTrack}
+              onSelectTrack={(item) => this.setState({selectedTrack: item}) }/>
           </div>
 
           <div className="st-info-sidebar">
-            Title<br />
-            Artist<br />
+            <Table
+              columns={[{name: "Key", itemKey: "key"}, {name: "Value", itemKey: "value"}]}
+              items={!this.state.selectedTrack ? [] : Object.keys(this.state.selectedTrack)
+                 .map((key) => {
+                   return {key, value: this.state.selectedTrack[key]};
+                 })}
+              />
           </div>
         </div>
       </div>

@@ -106,5 +106,6 @@ html {
 
 .st-info-sidebar {
   border-left: 1px solid black;
-  width: 200px;
+  width: 250px;
+  font-size: 12px;
 }
