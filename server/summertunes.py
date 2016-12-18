@@ -1,13 +1,16 @@
 from beets.library import Library
+from beets.ui import _configure, _open_library
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Resource, Api, reqparse
+#from play_music import play_music
 
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
-library = Library(path="/Users/steve/.config/beets/library.db", directory="/Volumes/SteveJStorage/Music")
+beets_config = _configure({})
+library = _open_library(beets_config)
 
 class Artists(Resource):
     def get(self):
