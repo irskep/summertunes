@@ -1,0 +1,58 @@
+.st-toolbar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  padding: 0 10px;
+  height: 81px;
+  border-bottom: 1px solid black;
+}
+
+.st-toolbar-button-group {
+  border: 1px solid black;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  height: 24px;
+}
+
+.st-toolbar-button-group > div {
+    flex-grow: 1;
+    text-align: center;
+    border-right: 1px solid black;
+    line-height: 22px;
+}
+
+.st-toolbar-button-group > div:last-child {
+    border-right: none;
+}
+
+.st-playback-controls {
+  width: 140px;
+  height: 24px;
+}
+
+.st-search-box {
+  width: 200px;
+  height: 24px;
+}
+
+.st-mac-style-input {
+    padding-left: 24px;
+}
+
+.st-mac-style-input::placeholder { text-align: center; transform: translateX(-12px); }
+.st-mac-style-input:focus::placeholder { text-align: left; transform: none; }
+.st-mac-style-input::-webkit-input-placeholder { text-align: center; transform: translateX(-12px); }
+.st-mac-style-input:focus::-webkit-input-placeholder { text-align: left; transform: none; }
+.st-mac-style-input::-moz-placeholder { text-align: center; transform: translateX(-12px); }
+.st-mac-style-input:focus::-moz-placeholder { text-align: left; transform: none; }
+.st-mac-style-input:-ms-input-placeholder { text-align: center; transform: translateX(-12px); }
+.st-mac-style-input:focus:-ms-input-placeholder { text-align: left; transform: none; }
+.st-mac-style-input:-moz-placeholder { text-align: center; transform: translateX(-12px); }
+.st-mac-style-input:focus:-moz-placeholder { text-align: left; transform: none; }

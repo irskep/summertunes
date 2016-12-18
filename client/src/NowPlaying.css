@@ -1,0 +1,50 @@
+.st-now-playing {
+  position: relative;
+  width: 550px;
+  height: 48px;
+
+  border: 1px solid black;
+  border-radius: 3px;
+
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.st-now-playing .st-album-art {
+  border: 1px solid black;
+  border-style: dashed;
+  border-radius: 5px;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+}
+
+.st-playback-time-bar {
+  font-size: 12px;
+  width: 442px;
+  margin-top: 4px;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.st-playback-time-bar-graphic {
+  overflow: hidden;
+  width: 364px;
+  height: 5px;
+  border-radius: 2px;
+  background-color: #eee;
+}
+
+.st-playback-time-bar-graphic > div {
+  background-color: blue;
+  height: 100%;
+}

@@ -1,0 +1,77 @@
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 14px;
+  font-family: "Helvetica Neue", "Lucida Grande", "Helvetica", sans-serif;
+}
+
+.st-app {
+}
+
+.st-app ul {
+  margin: 0;
+  padding: 0;
+}
+
+.st-app li {
+  list-style-type: none;
+  line-height: 1.2em;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.st-flex-ui {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.st-browser-sidebar {
+  width: 200px;
+  border-right: 1px solid black;
+}
+
+.st-browser-sidebar > h1 {
+  padding: 0 4px;
+  font-size: 1rem;
+}
+
+.st-library {
+  flex-grow: 1;
+}
+
+.st-library-browser-left {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+}
+
+.st-library-browser-left .st-artist-list {
+  border-right: 1px solid black;
+  min-width: 200px;
+}
+
+.st-library-browser-left .st-album-list {
+  border-right: 1px solid black;
+  min-width: 200px;
+}
+
+.st-track-list {
+  flex-grow: 1;
+}
+
+.st-info-sidebar {
+  border-left: 1px solid black;
+  width: 200px;
+}
+
+.st-list-alternate-colors li:nth-child(2) {
+  background-color: #eee;
+}
