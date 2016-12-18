@@ -30,3 +30,5 @@ npm start
 ```
 
 In your web browser, visit `http://localhost:3000/`.
+
+![](https://www.dropbox.com/s/49kec9os2v4h4wh/Screenshot%202016-12-18%2010.53.50.png?dl=1)
