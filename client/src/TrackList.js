@@ -4,16 +4,7 @@ import Table from "./Table";
 import { SERVER_URL } from "./config";
 import shallowCompare from 'react-addons-shallow-compare';
 import secondsToString from "./secondsToString";
-
-function queryString(obj) {
-  const components = [];
-  for (const k of Object.keys(obj)) {
-    if (obj[k] !== null) {
-      components.push(`${k}=${encodeURIComponent(obj[k])}`);
-    }
-  }
-  return components.join('&');
-}
+import trackQueryString from "./trackQueryString";
 
 class TrackList extends Component {
   constructor() {
@@ -22,10 +13,7 @@ class TrackList extends Component {
   }
 
   query(props) {
-    return `${SERVER_URL}/tracks?${queryString({
-        albumartist: props.artist,
-        album: props.album,
-      })}`;
+    return `${SERVER_URL}/tracks?${trackQueryString(props)}`;
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -35,10 +23,7 @@ class TrackList extends Component {
   update(nextProps) {
     this.setState({tracks: []});
 
-    if (!queryString({
-        albumartist: nextProps.artist,
-        album: nextProps.album,
-      })) return;
+    if (!trackQueryString(nextProps)) return;
 
     window.fetch(this.query(nextProps))
       .then((response) => response.json())

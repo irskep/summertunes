@@ -1,13 +1,19 @@
+/* global window */
 import React, { Component } from 'react';
 import NowPlaying from "./NowPlaying";
 import "./Toolbar.css";
+import { SERVER_URL } from "./config";
 
 class Toolbar extends Component {
+  pause() {
+      window.fetch(`${SERVER_URL}/stop`);
+  }
+
   render() {
       return <div className="st-toolbar">
         <div className="st-toolbar-button-group st-playback-controls">
           <div>{"<"}</div>
-          <div>{"P"}</div>
+          <div onClick={this.pause}>{"P"}</div>
           <div>{">"}</div>
         </div>
         <NowPlaying

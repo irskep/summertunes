@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
+import { SERVER_URL } from "./config";
 import Toolbar from "./Toolbar";
 import ArtistList from "./ArtistList";
 import AlbumList from "./AlbumList";
 import TrackList from "./TrackList";
 import Table from "./Table";
+import trackQueryString from "./trackQueryString";
 
 
 class App extends Component {
@@ -15,6 +17,24 @@ class App extends Component {
       selectedAlbum: null,
       selectedTrack: null,
     };
+  }
+
+  selectTrack(track) {
+    if (this.state.selectedTrack === track) {
+      const args = {
+        artist: this.state.selectedArtist,
+        album: this.state.selectedAlbum,
+        id: this.state.selectedTrack.id,
+      };
+      window.fetch(`${SERVER_URL}/play?${trackQueryString(args)}`)
+        .then((response) => response.json())
+        .then((response) => {
+          console.log(response);
+        });
+
+    } else {
+      this.setState({selectedTrack: track});
+    }
   }
 
   render() {
@@ -57,7 +77,7 @@ class App extends Component {
               artist={this.state.selectedArtist}
               album={this.state.selectedAlbum}
               selectedTrack={this.state.selectedTrack}
-              onSelectTrack={(item) => this.setState({selectedTrack: item}) }/>
+              onSelectTrack={(item) => this.selectTrack(item) }/>
           </div>
 
           <div className="st-info-sidebar">

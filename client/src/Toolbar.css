@@ -21,6 +21,7 @@
   flex-wrap: nowrap;
   align-items: stretch;
   height: 24px;
+  cursor: pointer;
 }
 
 .st-toolbar-button-group > div {
