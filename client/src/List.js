@@ -6,8 +6,8 @@ class List extends Component {
     return <ul className={this.props.className + className} style={this.props.style}>
       {(this.props.items || []).map((item, i) => {
         return <li key={i}
-                   onClick={() => this.props.onClick(item)}
-                   className={item.selected ? "st-list-item-selected" : ""}>
+                   onClick={() => this.props.onClick(item, i)}
+                   className={item.isSelected ? "st-list-item-selected" : ""}>
           {item.label}
          </li>;
       })}
@@ -18,7 +18,7 @@ class List extends Component {
 List.propTypes = {
   items: PropTypes.array,
   style: PropTypes.object,
-  onClick: PropTypes.function,
+  onClick: PropTypes.func,
 };
 
 List.defaultProps = {

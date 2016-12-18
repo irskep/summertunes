@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import List from "./List";
 import Toolbar from "./Toolbar";
+import ArtistList from "./ArtistList";
+import AlbumList from "./AlbumList";
 
 const items = [
   {selected: true, label: "Item 1"},
@@ -9,6 +11,14 @@ const items = [
 ];
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      selectedArtist: null,
+      selectedAlbum: null,
+    };
+  }
+
   render() {
     return (
       <div className="st-app">
@@ -33,9 +43,14 @@ class App extends Component {
           </div>
 
           <div className="st-library st-library-browser-left">
-            <List className="st-artist-list" alternateColors={false} items={items} />
-            <List className="st-album-list" alternateColors={false} items={items} />
-            <List className="st-track-list" alternateColors={true} items={items} />
+            <ArtistList
+              selectedArtist={this.state.selectedArtist}
+              onSelectArtist={(item) => this.setState({selectedArtist: item.label})}/>
+            <AlbumList
+              artist={this.state.selectedArtist}
+              selectedAlbum={this.state.selectedAlbum}
+              onSelectAlbum={(item) => this.setState({selectedAlbum: item.label})}/>
+            <List className="st-list st-track-list" alternateColors={true} items={items} />
           </div>
 
           <div className="st-info-sidebar">

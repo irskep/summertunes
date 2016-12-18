@@ -1,14 +1,16 @@
 .st-toolbar {
+  padding: 0 10px;
+  height: 81px;
+  border-bottom: 1px solid black;
+  flex-grow: 0;
+  flex-shrink: 0;
+
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-
-  padding: 0 10px;
-  height: 81px;
-  border-bottom: 1px solid black;
 }
 
 .st-toolbar-button-group {
