@@ -2,8 +2,8 @@ import React, { Component, PropTypes } from 'react';
 
 class List extends Component {
   render() {
-    const className = ` noselect st-list ${this.props.alternateColors ? "st-list-alternate-colors" : ""}`;
-    return <ul className={this.props.className + className} style={this.props.style}>
+    const className = `${this.props.className} noselect st-list`;
+    return <ul className={className} style={this.props.style}>
       {(this.props.items || []).map((item, i) => {
         return <li key={i}
                    onClick={() => this.props.onClick(item, i)}
@@ -18,6 +18,7 @@ class List extends Component {
 List.propTypes = {
   items: PropTypes.array,
   style: PropTypes.object,
+  className: PropTypes.string,
   onClick: PropTypes.func,
 };
 

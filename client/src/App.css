@@ -44,6 +44,7 @@ html {
   overflow: auto;
   cursor: pointer;
   width: 200px;
+  flex-shrink: 0;
 }
 
 .st-list li {
@@ -106,8 +107,4 @@ html {
 .st-info-sidebar {
   border-left: 1px solid black;
   width: 200px;
-}
-
-.st-list-alternate-colors li:nth-child(2) {
-  background-color: #eee;
 }

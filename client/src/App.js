@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
-import List from "./List";
 import Toolbar from "./Toolbar";
 import ArtistList from "./ArtistList";
 import AlbumList from "./AlbumList";
+import TrackList from "./TrackList";
 
-const items = [
-  {selected: true, label: "Item 1"},
-  {selected: false, label: "Item 2"},
-];
 
 class App extends Component {
   constructor() {
@@ -50,7 +46,10 @@ class App extends Component {
               artist={this.state.selectedArtist}
               selectedAlbum={this.state.selectedAlbum}
               onSelectAlbum={(item) => this.setState({selectedAlbum: item.value})}/>
-            <List className="st-list st-track-list" alternateColors={true} items={items} />
+            <TrackList
+              artist={this.state.selectedArtist}
+              album={this.state.selectedAlbum}
+              onSelectTrack={(item) => console.log(item) }/>
           </div>
 
           <div className="st-info-sidebar">

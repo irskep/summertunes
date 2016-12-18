@@ -1,0 +1,19 @@
+.st-table {
+  overflow: auto;
+  cursor: pointer;
+}
+
+.st-table td {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.st-table tr:nth-child(2) {
+  background-color: #eee;
+}
+
+.st-table-item-selected {
+  background-color: rgb(60, 104, 214);
+  color: white;
+}
