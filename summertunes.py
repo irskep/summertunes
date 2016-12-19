@@ -15,8 +15,10 @@ if __name__ == '__main__':
         for p in procs:
             p.start()
         p.join()
-    except KeyboardInterrupt:
-        raise SystemExit
+    except Exception as e:
+        print("????")
+        print(e)
+        raise e
     finally:
         for p in procs:
             if not p.is_alive():

@@ -1,6 +1,11 @@
 ## Requirements
 
-Works on Python 2.7 and 3.5, probably more.
+Works on 3.5 and might work on 2.7.
+
+## Known issues
+
+* Exiting `summertunes.py` will leave an orphaned Python 3.5 process lying
+  around eating a whole CPU. Working on it.
 
 ## Setup
 
