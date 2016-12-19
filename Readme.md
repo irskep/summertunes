@@ -6,7 +6,7 @@ Tested on Python 3.5 only. It *might* run on 2.7 though!
 
 Before everything:
 
-```
+```sh
 brew install mpv
 pip install beets
 # ok now import your entire mp3 collection into beets, no big deal
@@ -23,7 +23,7 @@ python httbeets.py
 
 In a second terminal:
 
-```
+```sh
 cd mpv2websocket
 mkvirtualenv mpv2websocket
 pip install -r requirements.txt
@@ -32,7 +32,7 @@ python mpv2websocket.py
 
 In a third terminal:
 
-```
+```sh
 cd client
 npm install
 npm start
