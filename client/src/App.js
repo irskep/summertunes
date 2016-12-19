@@ -7,7 +7,6 @@ import TrackList from "./TrackList";
 import Table from "./Table";
 import { playTrack } from "./mpv";
 
-
 class App extends Component {
   constructor() {
     super();

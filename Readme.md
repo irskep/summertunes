@@ -9,6 +9,7 @@ Before everything:
 ```sh
 brew install mpv
 pip install beets
+echo "export default {};" > client/apiKeys.js  # no album art for you (yet)!
 # ok now import your entire mp3 collection into beets, no big deal
 ```
 

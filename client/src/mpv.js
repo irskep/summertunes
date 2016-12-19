@@ -1,7 +1,9 @@
 /* global console */
+/* global window */
 import io from 'socket.io-client';
 import K from "kefir";
 import { SERVER_URL } from "./config";
+import _ from "./apiKeys";
 
 const socket = io('http://localhost:3001');
 
@@ -75,6 +77,32 @@ const kTrack = kPath
   })
   .toProperty(() => null);
 
+const kLastFM = kTrack
+  .flatMapLatest((track) => {
+    if (!track) return K.constant(null);
+    return K.fromPromise(window.fetch(
+          `http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=${
+            window.API_KEYS ? window.API_KEYS.lastFM : ""
+          }&artist=${
+            track.artist
+          }&album=${
+            track.album
+          }&format=json`
+      ).then((result) => result.json())
+    );
+  })
+  .toProperty(() => null);
+
+const kAlbumArtURL = kLastFM
+  .map((lastFMData) => {
+    if (!lastFMData) return {};
+    const urlBySize = {};
+    for (const imgData of (lastFMData.album.image || [])) {
+      urlBySize[imgData.size] = imgData["#text"];
+    }
+    return urlBySize;
+  });
+
 export {
   setIsPlaying,
   goToBeginningOfTrack,
@@ -85,4 +113,6 @@ export {
   kPath,
   kPlaybackSeconds,
   kTrack,
+  kLastFM,
+  kAlbumArtURL,
 };
