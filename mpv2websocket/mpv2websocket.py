@@ -26,7 +26,13 @@ def _kill_socket():
             raise
 _kill_socket()
 
-mpv_process = Popen(['mpv', '--quiet', '--audio-display=no', '--idle', '--input-ipc-server', SOCKET_PATH])
+mpv_process = Popen([
+    'mpv',
+    '--quiet',
+    '--audio-display=no',
+    '--idle',
+    '--gapless-audio',
+    '--input-ipc-server', SOCKET_PATH])
 mpv_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) #pylint: disable=E1101
 
 @socketio.on('message')
@@ -60,16 +66,29 @@ def _listen_to_mpv():
                     spillover += line
 
 
+def test():
+    pass
+    """
+    body_bytes = (json.dumps({
+        "command": [
+            "loadfile",
+            "/Users/stevejohnson/Music/iTunes/iTunes Media/Music/Kid Condor/Kid Condor EP/01 Imagining.mp3"
+        ]}) + '\n').encode('UTF-8')
+    log.info("> %r", body_bytes)
+    mpv_socket.sendall(body_bytes)
+    """
+
+
 if __name__ == '__main__':
     import time
     try:
         time.sleep(0.3)  # wait for mpv to start
         mpv_socket.connect(SOCKET_PATH)
-        g = eventlet.spawn(_listen_to_mpv)
+        eventlet.spawn(_listen_to_mpv)
+        eventlet.spawn(test)
         socketio.run(app, port=3001)
         raise KeyboardInterrupt
     finally:
         mpv_process.kill()
         mpv_socket.close()
-        g.kill()  # this doesn't work?
         _kill_socket()
