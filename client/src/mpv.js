@@ -12,7 +12,6 @@ socket.on('connect', () => {
   socket.send({"command": ["observe_property", 1, "path"]});
   socket.send({"command": ["observe_property", 2, "pause"]});
   socket.send({"command": ["observe_property", 3, "time-pos"]});
-  setIsPlaying(false);  // eslint-disable-line no-use-before-define
 });
 socket.on('disconnect', () => {
   console.warn("socket.io disconnected");  // eslint-disable-line no-console
@@ -51,11 +50,13 @@ const kPropertyChanges = events
 const kPath = kPropertyChanges
   .filter(({name}) => name === "path")
   .map(({data}) => data)
+  .skipDuplicates()
   .toProperty(() => null);
 
 const kIsPlaying = kPropertyChanges
   .filter(({name}) => name === "pause")
   .map(({data}) => !data)
+  .skipDuplicates()
   .toProperty(() => false);
 
 const kPlaybackSeconds = kPropertyChanges

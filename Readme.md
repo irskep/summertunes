@@ -15,13 +15,22 @@ pip install beets
 In one terminal:
 
 ```sh
-cd server
-mkvirtualenv summertunes
+cd httbeets
+mkvirtualenv httbeets
 pip install -r requirements.txt
-python summertunes.py
+python httbeets.py
 ```
 
 In a second terminal:
+
+```
+cd mpv2websocket
+mkvirtualenv mpv2websocket
+pip install -r requirements.txt
+python mpv2websocket.py
+```
+
+In a third terminal:
 
 ```
 cd client
