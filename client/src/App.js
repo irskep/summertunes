@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import './css/App.css';
-import { SERVER_URL } from "./config";
 import Toolbar from "./Toolbar";
 import ArtistList from "./ArtistList";
 import AlbumList from "./AlbumList";
 import TrackList from "./TrackList";
 import Table from "./Table";
-import trackQueryString from "./trackQueryString";
-import mpv from "./mpv";
+import { playTrack } from "./mpv";
 
 
 class App extends Component {
@@ -22,17 +20,7 @@ class App extends Component {
 
   selectTrack(track) {
     if (this.state.selectedTrack === track) {
-      const args = {
-        artist: this.state.selectedArtist,
-        album: this.state.selectedAlbum,
-        id: this.state.selectedTrack.id,
-      };
-      window.fetch(`${SERVER_URL}/play?${trackQueryString(args)}`)
-        .then((response) => response.json())
-        .then((response) => {
-          console.log(response);
-        });
-
+      playTrack(track);
     } else {
       this.setState({selectedTrack: track});
     }
