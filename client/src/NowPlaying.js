@@ -2,33 +2,50 @@ import React, { Component, PropTypes } from 'react';
 import './css/NowPlaying.css';
 import secondsToString from "./secondsToString";
 
+import {
+    kTrack,
+    kPlaybackSeconds,
+} from "./mpv";
+import K from "kefir";
+
 function percentage(fraction) {
     return `${fraction * 100}%`;
 }
 
 class NowPlaying extends Component {
+  componentWillMount() {
+    this.observable = K.combine([kTrack, kPlaybackSeconds]);
+    this.subscriber = this.observable.onValue(([track, playbackSeconds]) => {
+      this.setState({track, playbackSeconds});
+    });
+  }
+
+  componentWillUnmount() {
+      this.observable.offValue(this.subscriber);
+  }
+
   render() {
-      const playbackFraction = this.props.track
-        ? this.props.playbackState.seconds / this.props.track.duration
+      const playbackFraction = this.state.track
+        ? this.state.playbackSeconds / this.state.track.length
         : 0;
-      return <div className={`st-now-playing ${this.props.className}`}>
+      return <div className={`st-now-playing ${this.state.className}`}>
         <div className="st-album-art" />
-        {this.props.track && <div className="st-now-playing-title">
-            <strong>{this.props.track.title}</strong>
+        {this.state.track && <div className="st-now-playing-title">
+            <strong>{this.state.track.title}</strong>
             {" by "}
-            <strong>{this.props.track.artist}</strong>
+            <strong>{this.state.track.artist}</strong>
             {" from "}
-            <strong>{this.props.track.album}</strong>
+            <strong>{this.state.track.album}</strong>
         </div>}
-        {this.props.track && <div className="st-playback-time-bar">
+        {this.state.track && <div className="st-playback-time-bar">
             <div className="st-playback-time-bar-now">
-                {secondsToString(this.props.playbackState.seconds)}
+                {secondsToString(this.state.playbackSeconds)}
             </div>    
             <div className="st-playback-time-bar-graphic">
                 <div style={{width: percentage(playbackFraction)}} />
             </div>    
             <div className="st-playback-time-bar-duration">
-                {secondsToString(this.props.track.duration)}
+                {secondsToString(this.state.track.length)}
             </div>    
         </div>}
       </div>;
@@ -37,14 +54,10 @@ class NowPlaying extends Component {
 
 NowPlaying.propTypes = {
     className: PropTypes.string,
-    track: PropTypes.object,
-    playbackState: PropTypes.object,
 };
 
 NowPlaying.defaultProps = {
     className: "",
-    track: null,
-    playbackState: null,
 };
 
 export default NowPlaying;

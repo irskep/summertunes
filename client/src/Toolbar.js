@@ -3,6 +3,44 @@ import React, { Component } from 'react';
 import NowPlaying from "./NowPlaying";
 import "./css/Toolbar.css";
 import { SERVER_URL } from "./config";
+import {
+  kIsPlaying,
+  setIsPlaying,
+  goToBeginningOfTrack,
+} from "./mpv";
+import K from "kefir";
+
+class PlaybackControls extends Component {
+  componentWillMount() {
+    this.observable = K.combine([kIsPlaying]);
+    this.subscriber = this.observable.onValue(([isPlaying]) => {
+      this.setState({isPlaying});
+    });
+  }
+
+  componentWillUnmount() {
+      this.observable.offValue(this.subscriber);
+  }
+
+  play() {
+    setIsPlaying(true);
+  }
+
+  pause() {
+    setIsPlaying(false);
+  }
+
+  render() {
+    return (
+        <div className="st-toolbar-button-group st-playback-controls">
+          <div onClick={goToBeginningOfTrack}>{"<"}</div>
+          {this.state.isPlaying && <div onClick={this.pause}>❚❚</div>}
+          {!this.state.isPlaying && <div onClick={this.play}>▶</div>}
+          <div>{">"}</div>
+        </div>
+    );
+  }
+}
 
 class Toolbar extends Component {
   pause() {
@@ -11,22 +49,8 @@ class Toolbar extends Component {
 
   render() {
       return <div className="st-toolbar">
-        <div className="st-toolbar-button-group st-playback-controls">
-          <div>{"<"}</div>
-          <div onClick={this.pause}>{"P"}</div>
-          <div>{">"}</div>
-        </div>
-        <NowPlaying
-            playbackState={{
-              seconds: 146,
-              isPlaying: true,
-            }}
-            track={{
-              title: "To Let Myself Go",
-              artist: "Ane Brun",
-              album: "A Temporary Dive",
-              duration: 195,
-            }}/>
+        <PlaybackControls />
+        <NowPlaying />
         <input className="st-mac-style-input st-search-box" placeholder="Search" />
       </div>;
   }

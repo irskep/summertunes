@@ -10,6 +10,8 @@ from flask_socketio import SocketIO
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
+logging.getLogger("socketio").setLevel(logging.ERROR)
+logging.getLogger("engineio").setLevel(logging.ERROR)
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -35,6 +37,8 @@ def handle_json(body):
 
 
 def _listen_to_mpv():
+    # this is bad for a few reasons.
+    # mainly it doesn't recover from partially delivered data.
     while True:
         data = mpv_socket.recv(4096)
         if len(data) == 4096:
@@ -47,7 +51,8 @@ def _listen_to_mpv():
                 if 'time-pos' not in line:
                     log.info("< %s", line)
                 # just forward everything raw to the websocket
-                socketio.send(json.loads(line))
+                json_data = json.loads(line)
+                socketio.send(json_data)
 
 
 if __name__ == '__main__':
@@ -55,9 +60,11 @@ if __name__ == '__main__':
     try:
         time.sleep(0.3)  # wait for mpv to start
         mpv_socket.connect(SOCKET_PATH)
-        eventlet.spawn(_listen_to_mpv)
+        g = eventlet.spawn(_listen_to_mpv)
         socketio.run(app, port=3001)
+        raise KeyboardInterrupt
     finally:
         mpv_process.kill()
         mpv_socket.close()
+        g.kill()  # this doesn't work?
         _kill_socket()

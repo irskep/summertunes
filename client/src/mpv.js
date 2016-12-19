@@ -13,10 +13,21 @@ socket.on('connect', () => {
   socket.send({"command": ["observe_property", 2, "pause"]});
   socket.send({"command": ["observe_property", 3, "time-pos"]});
   socket.send({"command": ["loadfile", "/Volumes/SteveJStorage/Music/Rush/Moving Pictures/01 Tom Sawyer.mp3"]});
+  setIsPlaying(false);
 });
 socket.on('disconnect', () => {
   console.warn("socket.io disconnected");  // eslint-disable-line no-console
 });
+
+/* mutations */
+
+const setIsPlaying = (isPlaying) => {
+  socket.send({"command": ["set_property", "pause", !isPlaying]});
+};
+
+const goToBeginningOfTrack = () => {
+  socket.send({"command": ["set_property", "time-pos", 0]});
+};
 
 /* streams */
 
@@ -59,21 +70,13 @@ const kTrack = kPath
   })
   .toProperty(() => null);
 
-/* mutations */
-
-const setIsPlaying = (isPlaying) => {
-  socket.send({"command": ["set_property", "pause", !isPlaying]});
-};
-
-//propertyChanges.onValue(console.log);
-kTrack.onValue(console.log);
-kIsPlaying.onValue(console.log);
-
 export {
   setIsPlaying,
+  goToBeginningOfTrack,
 
   kIsPlaying,
   kPropertyChanges,
   kPath,
   kPlaybackSeconds,
+  kTrack,
 };
