@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import './css/App.css';
 import { SERVER_URL } from "./config";
 import Toolbar from "./Toolbar";
 import ArtistList from "./ArtistList";
@@ -7,6 +7,7 @@ import AlbumList from "./AlbumList";
 import TrackList from "./TrackList";
 import Table from "./Table";
 import trackQueryString from "./trackQueryString";
+import mpv from "./mpv";
 
 
 class App extends Component {

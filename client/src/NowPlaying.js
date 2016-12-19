@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import './NowPlaying.css';
+import './css/NowPlaying.css';
 import secondsToString from "./secondsToString";
 
 function percentage(fraction) {

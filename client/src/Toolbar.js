@@ -1,7 +1,7 @@
 /* global window */
 import React, { Component } from 'react';
 import NowPlaying from "./NowPlaying";
-import "./Toolbar.css";
+import "./css/Toolbar.css";
 import { SERVER_URL } from "./config";
 
 class Toolbar extends Component {

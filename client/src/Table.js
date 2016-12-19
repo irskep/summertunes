@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import "./Table.css";
+import "./css/Table.css";
 
 class Table extends Component {
   render() {

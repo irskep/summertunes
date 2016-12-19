@@ -1,8 +1,12 @@
+import logging
+from subprocess import Popen, PIPE
+
 from beets.ui import _configure, _open_library
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Resource, Api, reqparse
-from play_music import play_music
+
+log = logging.getLogger(__name__)
 
 app = Flask(__name__)
 CORS(app)
@@ -15,13 +19,6 @@ tracks_parser = reqparse.RequestParser()
 tracks_parser.add_argument('albumartist', type=str, default=None)
 tracks_parser.add_argument('album', type=str, default=None)
 tracks_parser.add_argument('id', type=str, default=None)
-
-play_process = None
-def _stop():
-    global play_process
-    if play_process:
-        play_process.kill()
-        play_process = None
 
 def _beets_query_for_tracks_query():
     args = tracks_parser.parse_args()
@@ -83,39 +80,37 @@ class Tracks(Resource):
                 "tracks": [_dictify(item) for item in library.items(query)]
             }
 
-class Play(Resource):
+class Track(Resource):
     def get(self):
-        _stop()
-        args = tracks_parser.parse_args()
-        found = False
-        paths = []
-        for item in library.items(_beets_query_for_tracks_query()):
-            if found or args.id == str(item.id) or args.id is None:
-                found = True
-            if found:
-                paths.append(item.path)
+        parser = reqparse.RequestParser()
+        parser.add_argument('path', type=str, default=None)
+        args = parser.parse_args()
 
-        global play_process
-        play_process = play_music(library, beets_config, paths)
+
+        # this is kind of dumb: in-process beets can't find any tracks
+        # by path, so we'll get the ID via the command line:
+        query = "path:" + args.path
+        command = [
+            'beet',
+            '--library', library.path.decode('UTF-8', 'strict'),
+                   '--library', library.path.decode('UTF-8', 'strict'),
+            'list',
+            '--format', '$id',
+            query
+        ]
+        with Popen(command, stdout=PIPE) as proc:
+            query2 = "id:" + proc.stdout.read().decode('UTF-8', 'strict').strip()
+        items = list(library.items(query2))
 
         with library.transaction():
             return {
-                "success": len(paths) > 0,
+                "track": [_dictify(item) for item in items][0]
             }
 
-class Stop(Resource):
-    def get(self):
-        _stop()
-
 api.add_resource(Tracks, '/tracks')
+api.add_resource(Track, '/track')
 api.add_resource(Albums, '/albums')
 api.add_resource(Artists, '/artists')
-api.add_resource(Play, '/play')
-api.add_resource(Stop, '/stop')
 
 if __name__ == '__main__':
-    try:
-        app.run(debug=True)
-    except SystemExit as e:
-        _stop()
-        raise e
+    app.run(debug=True)
