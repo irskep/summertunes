@@ -11,6 +11,7 @@
 .st-table table {
   border-collapse: collapse;
   min-width: 100%;
+  border-bottom: 1px solid #ddd;
 }
 
 .st-table td, .st-table th {
@@ -22,13 +23,18 @@
   padding-left: 2px;
   padding-right: 2px;
   min-width: 40px;
+  height: 20px;
 }
 
-.st-table tr:nth-child(odd) {
+.st-table td:last-child, .st-table th:last-child {
+  border-right: none;
+}
+
+.st-table tbody tr:nth-child(even), .st-table thead tr {
   background-color: #eee;
 }
 
-.st-table tr.st-table-item-selected {
+.st-table tbody tr.st-table-item-selected {
   background-color: rgb(60, 104, 214);
   color: white;
 }

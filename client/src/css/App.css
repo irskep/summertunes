@@ -70,7 +70,7 @@ html {
 
 .st-browser-sidebar {
   width: 200px;
-  border-right: 1px solid black;
+  border-right: 1px solid #ddd;
 }
 
 .st-browser-sidebar > h1 {
@@ -90,12 +90,12 @@ html {
 }
 
 .st-library-browser-left .st-artist-list {
-  border-right: 1px solid black;
+  border-right: 1px solid #ddd;
   min-width: 200px;
 }
 
 .st-library-browser-left .st-album-list {
-  border-right: 1px solid black;
+  border-right: 1px solid #ddd;
   min-width: 200px;
 }
 
@@ -105,7 +105,7 @@ html {
 }
 
 .st-info-sidebar {
-  border-left: 1px solid black;
+  border-left: 1px solid #ddd;
   width: 250px;
   font-size: 12px;
 }
