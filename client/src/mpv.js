@@ -3,7 +3,7 @@
 import io from 'socket.io-client';
 import K from "kefir";
 import { SERVER_URL } from "./config";
-import _ from "./apiKeys";
+import apiKeys from "./apiKeys";
 
 const socket = io('http://localhost:3001');
 
@@ -82,7 +82,7 @@ const kLastFM = kTrack
     if (!track) return K.constant(null);
     return K.fromPromise(window.fetch(
           `http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=${
-            window.API_KEYS ? window.API_KEYS.lastFM : ""
+            apiKeys.lastFM
           }&artist=${
             track.artist
           }&album=${
