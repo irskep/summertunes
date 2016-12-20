@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Component } from 'react';
+
 import './css/App.css';
 import Toolbar from "./Toolbar";
 import ArtistList from "./ArtistList";
@@ -8,14 +9,29 @@ import Table from "./Table";
 import { kArtist, kAlbum, kTrack } from "./model/browsingModel";
 import KComponent from "./KComponent";
 
-class App extends KComponent {
-  constructor() {
-    super();
-    this.state = {
-      selectedTrack: null,
-    };
-  }
+class DummyList extends Component {
+  render() {
+    return <div className="st-browser-sidebar">
+      <ul>
+        <li>Playback Queue</li>
+      </ul>
 
+      <h1>Library</h1>
+      <ul>
+        <li>Library</li>
+      </ul>
+
+      <h1>Playlists</h1>
+      <ul>
+        <li>Unplayed</li>
+        <li>Imported from Casey</li>
+      </ul>
+
+    </div>;
+  }
+};
+
+class App extends KComponent {
   observables() { return {
     selectedArtist: kArtist,
     selectedAlbum: kAlbum,
@@ -28,26 +44,6 @@ class App extends KComponent {
       <div className="st-app">
         <Toolbar />
         <div className="st-flex-ui">
-          {/*
-          <div className="st-browser-sidebar">
-            <ul>
-              <li>Playback Queue</li>
-            </ul>
-
-            <h1>Library</h1>
-            <ul>
-              <li>Library</li>
-            </ul>
-
-            <h1>Playlists</h1>
-            <ul>
-              <li>Unplayed</li>
-              <li>Imported from Casey</li>
-            </ul>
-
-          </div>
-          */}
-
           <div className="st-library st-library-browser-left">
             <ArtistList />
             <AlbumList />
