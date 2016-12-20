@@ -2,6 +2,10 @@
   position: relative;
   width: 550px;
   height: 48px;
+  flex-shrink: 1;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding-left: 46px;
 
   border: 1px solid black;
   border-radius: 3px;
@@ -33,8 +37,10 @@
 
 .st-playback-time-bar {
   font-size: 12px;
-  width: 442px;
   margin-top: 4px;
+  flex-grow: 1;
+  flex-shrink: 1;
+  width: calc(100% - 20px);
 
   display: flex;
   flex-direction: row;
@@ -45,13 +51,23 @@
 
 .st-playback-time-bar-graphic {
   overflow: hidden;
-  width: 364px;
   height: 5px;
   border-radius: 2px;
   background-color: #eee;
+
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 .st-playback-time-bar-graphic > div {
   background-color: blue;
   height: 100%;
+}
+
+.st-playback-time-bar-now {
+  margin-right: 4px;
+}
+
+.st-playback-time-bar-duration {
+  margin-left: 4px;
 }

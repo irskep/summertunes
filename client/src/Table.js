@@ -6,7 +6,7 @@ class Table extends Component {
     const className = `${this.props.className} noselect st-table`;
     return (
       <div className={className} style={{overflow: 'auto', position: 'relative'}}>
-        <div style={{position: 'absolute'}}>
+        <div className="st-table-abs-container">
           <table>
             <thead>
               <tr>

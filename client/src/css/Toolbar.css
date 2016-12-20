@@ -16,12 +16,14 @@
 .st-toolbar-button-group {
   border: 1px solid black;
   border-radius: 3px;
+  height: 24px;
+  cursor: pointer;
+  flex-shrink: 0;
+
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: stretch;
-  height: 24px;
-  cursor: pointer;
 }
 
 .st-toolbar-button-group > div {
@@ -43,6 +45,7 @@
 .st-search-box {
   width: 200px;
   height: 24px;
+  flex-shrink: 1;
 }
 
 .st-mac-style-input {

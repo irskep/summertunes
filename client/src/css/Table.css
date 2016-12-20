@@ -1,11 +1,16 @@
 .st-table {
   overflow: auto;
   cursor: pointer;
-  height: 100%;
+}
+
+.st-table-abs-container {
+  position: 'absolute';
+  top: 0; right: 0; bottom: 0; left: 0;
 }
 
 .st-table table {
   border-collapse: collapse;
+  min-width: 100%;
 }
 
 .st-table td, .st-table th {

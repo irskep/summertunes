@@ -30,7 +30,10 @@ const kAlbums = kArtist
   .toProperty(() => [])
 
 const [setAlbum, bAlbum] = createBus()
-const kAlbum = bAlbum.skipDuplicates().toProperty(() => localStorageJSON("browsingAlbum", null));
+const kAlbum = bAlbum
+  .merge(kArtist.map(() => null))
+  .skipDuplicates()
+  .toProperty(() => localStorageJSON("browsingAlbum", null));
 
 const kTrackList = K.combine([kArtist, kAlbum])
   .flatMapLatest(([artist, album]) => {
