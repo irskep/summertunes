@@ -1,4 +1,5 @@
 import logging
+import re
 from subprocess import Popen, PIPE
 
 from beets.ui import _configure, _open_library
@@ -25,10 +26,10 @@ def _beets_query_for_tracks_query():
 
     clauses = []
     if args.albumartist:
-        clauses.append('albumartist:{}'.format(args.albumartist))
+        clauses.append('albumartist::^{}$'.format(re.escape(args.albumartist)))
     if args.album:
-        clauses.append('album:{}'.format(args.album))
-    return 'artist+ year+ album+ disc+ track+ ' + ' , '.join(clauses)
+        clauses.append('album::^{}$'.format(re.escape(args.album)))
+    return 'artist+ year+ album+ disc+ track+ ' + ' '.join(clauses)
 
 def _dictify(item):
     result = {}
