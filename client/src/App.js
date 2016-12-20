@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
+import './css/base.css';
 import './css/App.css';
+import './css/uiLarge.css';
 import BottomBar from "./BottomBar";
 import Toolbar from "./Toolbar";
 import ArtistList from "./ArtistList";
@@ -8,7 +10,7 @@ import AlbumList from "./AlbumList";
 import TrackList from "./TrackList";
 import TrackInfo from "./TrackInfo";
 import { kArtist, kAlbum, kTrack } from "./model/browsingModel";
-import { kIsInfoVisible } from "./model/uiModel";
+import { kIsInfoVisible, kIsMediumUI, kIsLargeUI } from "./model/uiModel";
 import KComponent from "./KComponent";
 
 class DummyList extends Component {
@@ -39,20 +41,66 @@ class App extends KComponent {
     selectedAlbum: kAlbum,
     selectedTrack: kTrack,
     isInfoVisible: kIsInfoVisible,
+
+    isMediumUI: kIsMediumUI,
+    isLargeUI: kIsLargeUI,
   }; }
 
   render() {
-    console.log("App", this.state);
+    if (this.state.isLargeUI) {
+      return this.renderLargeUI();
+    } else if (this.state.isMediumUI) {
+      return this.renderMediumUI();
+    } else {
+      return this.renderSmallUI();
+    }
+  }
+
+  renderLargeUI() {
     return (
       <div className="st-app">
         <Toolbar />
-        <div className="st-flex-ui">
+        <div className="st-large-ui">
           <div className="st-library st-library-browser-left">
             <ArtistList />
             <AlbumList />
-            <TrackList
-              artist={this.state.selectedArtist}
-              album={this.state.selectedAlbum} />
+            <TrackList />
+          </div>
+
+          {this.state.isInfoVisible && <TrackInfo />}
+        </div>
+        <BottomBar />
+      </div>
+    );
+  }
+
+  renderMediumUI() {
+    return (
+      <div className="st-app">
+        <Toolbar />
+        <div className="st-medium-ui">
+          <div className="st-library st-library-browser-top">
+            <ArtistList />
+            <AlbumList />
+          </div>
+          <TrackList />
+
+          {this.state.isInfoVisible && <TrackInfo />}
+        </div>
+        <BottomBar />
+      </div>
+    );
+  }
+
+  renderSmallUI() {
+    return (
+      <div className="st-app">
+        <Toolbar />
+        <div className="st-large-ui">
+          <div className="st-library st-library-browser-left">
+            <ArtistList />
+            <AlbumList />
+            <TrackList />
           </div>
 
           {this.state.isInfoVisible && <TrackInfo />}

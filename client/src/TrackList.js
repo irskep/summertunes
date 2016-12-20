@@ -32,7 +32,7 @@ class TrackList extends KComponent {
       }}
       selectedItem={this.state.trackIndex === null ? null : this.state.tracks[this.state.trackIndex]}
       columns={[
-        {name: 'Track #', itemKey: 'func', func: (item) => `${item.disc}-${item.track}`},
+        {name: '#', itemKey: 'func', func: (item) => `${item.disc}-${item.track}`},
         {name: 'Title', itemKey: 'title'},
         {name: 'Album Artist', itemKey: 'albumartist'},
         {name: 'Album', itemKey: 'album'},

@@ -28,6 +28,10 @@
   background-color: #eee;
 }
 
+.st-table tbody tr:nth-child(even) {
+  background-color: #f8f4f4;
+}
+
 .st-table tbody tr.st-table-item-selected {
   background-color: rgb(60, 104, 214);
   color: white;
