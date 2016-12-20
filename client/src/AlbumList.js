@@ -1,68 +1,30 @@
 /* global window */
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
 import List from "./List";
-import { SERVER_URL } from "./config";
-import shallowCompare from 'react-addons-shallow-compare';
+import KComponent from "./KComponent";
+import { kAlbums, kAlbum, setAlbum } from "./model/browsingModel";
 
-class AlbumList extends Component {
-  constructor() {
-    super();
-    this.state = {albumNames: []};
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
-  }
-
-  update(nextProps) {
-    this.setState({albumNames: []});
-
-    const query = nextProps.artist
-      ? `${SERVER_URL}/albums?albumartist=${nextProps.artist}`
-      : `${SERVER_URL}/albums`;
-
-    window.fetch(query)
-      .then((response) => response.json())
-      .then(({albums}) => {
-        this.setState({albumNames: albums.map(({album}) => album)});
-      });
-  }
-
-  componentWillMount() {
-    this.update(this.props);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.artist === this.props.artist) return;
-    this.update(nextProps);
-  }
+class AlbumList extends KComponent {
+  observables() { return {
+    albums: kAlbums, selectedAlbum: kAlbum
+  }; }
 
   render() {
     return <List className="st-list st-album-list"
-      onClick={this.props.onSelectAlbum}
+      onClick={({value}) => setAlbum(value)}
       items={[
         {
           label: "All",
           value: null,
           isSelected: this.props.selectedAlbum === null,
-        }].concat(this.state.albumNames.map((albumName) => {
+        }].concat(this.state.albums.map((album) => {
           return {
-            label: albumName,
-            value: albumName,
-            isSelected: albumName === this.props.selectedAlbum
+            label: album.album,
+            value: album.album,
+            isSelected: album.album === this.props.selectedAlbum
           };
         }))} />;
   }
 }
-
-AlbumList.propTypes = {
-  artist: PropTypes.string,
-  selectedAlbum: PropTypes.string,
-  onSelectAlbum: PropTypes.func.isRequired,
-};
-
-AlbumList.defaultProps = {
-  selectedAlbum: null,
-};
 
 export default AlbumList;

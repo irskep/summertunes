@@ -1,29 +1,24 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import './css/NowPlaying.css';
 import secondsToString from "./secondsToString";
+import KComponent from "./KComponent";
 
 import {
     kTrack,
     kPlaybackSeconds,
     kAlbumArtURL,
 } from "./mpv";
-import K from "kefir";
 
 function percentage(fraction) {
     return `${fraction * 100}%`;
 }
 
-class NowPlaying extends Component {
-  componentWillMount() {
-    this.observable = K.combine([kTrack, kPlaybackSeconds, kAlbumArtURL]);
-    this.subscriber = this.observable.onValue(([track, playbackSeconds, albumArtURL]) => {
-      this.setState({track, playbackSeconds, albumArtURL});
-    });
-  }
-
-  componentWillUnmount() {
-      this.observable.offValue(this.subscriber);
-  }
+class NowPlaying extends KComponent {
+  observables() { return {
+      track: kTrack,
+      playbackSeconds: kPlaybackSeconds,
+      albumArtURL: kAlbumArtURL,
+  }; }
 
   render() {
     const playbackFraction = this.state.track

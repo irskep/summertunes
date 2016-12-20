@@ -21,14 +21,19 @@ tracks_parser.add_argument('albumartist', type=str, default=None)
 tracks_parser.add_argument('album', type=str, default=None)
 tracks_parser.add_argument('id', type=str, default=None)
 
+def _clause(key, value):
+    # regex is nice in theory but it's slow as hell.
+    #return '{}::^{}$'.format(key, re.escape(value))
+    return '{}:{}'.format(key, re.escape(value))
+
 def _beets_query_for_tracks_query():
     args = tracks_parser.parse_args()
 
     clauses = []
     if args.albumartist:
-        clauses.append('albumartist::^{}$'.format(re.escape(args.albumartist)))
+        clauses.append(_clause("albumartist", args.albumartist))
     if args.album:
-        clauses.append('album::^{}$'.format(re.escape(args.album)))
+        clauses.append(_clause("album", args.album))
     return 'artist+ year+ album+ disc+ track+ ' + ' '.join(clauses)
 
 def _dictify(item):
@@ -59,16 +64,13 @@ class Albums(Resource):
         parser.add_argument('albumartist', type=str, default=None)
         args = parser.parse_args()
 
-        clauses = []
-        if args.albumartist:
-            clauses.append('albumartist:{}'.format(args.albumartist))
-
+        query = _clause('albumartist', args.albumartist) if args.albumartist else ""
         with library.transaction():
             return {
                 "albums": [
                     {k: getattr(a, k) for k in a.item_keys}
                     for a in
-                    library.albums("year+ album+ " + ' , '.join(clauses))
+                    library.albums("year+ album+ " + query)
                 ],
             }
 

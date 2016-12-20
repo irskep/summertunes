@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './css/App.css';
 import Toolbar from "./Toolbar";
 import ArtistList from "./ArtistList";
@@ -6,16 +6,21 @@ import AlbumList from "./AlbumList";
 import TrackList from "./TrackList";
 import Table from "./Table";
 import { playTrack } from "./mpv";
+import { kArtist, kAlbum } from "./model/browsingModel";
+import KComponent from "./KComponent";
 
-class App extends Component {
+class App extends KComponent {
   constructor() {
     super();
     this.state = {
-      selectedArtist: null,
-      selectedAlbum: null,
       selectedTrack: null,
     };
   }
+
+  observables() { return {
+    selectedArtist: kArtist,
+    selectedAlbum: kAlbum,
+  }; }
 
   selectTrack(track) {
     if (this.state.selectedTrack === track) {
@@ -26,6 +31,7 @@ class App extends Component {
   }
 
   render() {
+    console.log("App", this.state);
     return (
       <div className="st-app">
         <Toolbar />
@@ -51,16 +57,8 @@ class App extends Component {
           */}
 
           <div className="st-library st-library-browser-left">
-            <ArtistList
-              selectedArtist={this.state.selectedArtist}
-              onSelectArtist={(item) => this.setState({
-                selectedArtist: item.value,
-                selectedAlbum: null,
-              })}/>
-            <AlbumList
-              artist={this.state.selectedArtist}
-              selectedAlbum={this.state.selectedAlbum}
-              onSelectAlbum={(item) => this.setState({selectedAlbum: item.value})}/>
+            <ArtistList />
+            <AlbumList />
             <TrackList
               artist={this.state.selectedArtist}
               album={this.state.selectedAlbum}
