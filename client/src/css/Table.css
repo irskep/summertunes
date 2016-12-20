@@ -1,11 +1,5 @@
 .st-table {
-  overflow: auto;
   cursor: pointer;
-}
-
-.st-table-abs-container {
-  position: 'absolute';
-  top: 0; right: 0; bottom: 0; left: 0;
 }
 
 .st-table table {
