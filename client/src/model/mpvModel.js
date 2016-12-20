@@ -94,7 +94,7 @@ const kPlaybackSeconds = kPropertyChanges
   .map(({data}) => data)
   .toProperty(() => 0);
 
-const kTrack = kPath
+const kPlayingTrack = kPath
   .flatMapLatest((path) => {
     if (!path) return K.constant(null);
     return K.fromPromise(
@@ -105,7 +105,7 @@ const kTrack = kPath
   })
   .toProperty(() => null);
 
-const kLastFM = kTrack
+const kLastFM = kPlayingTrack
   .flatMapLatest((track) => {
     if (!track) return K.constant(null);
     return K.fromPromise(window.fetch(
@@ -140,7 +140,7 @@ export {
   kPropertyChanges,
   kPath,
   kPlaybackSeconds,
-  kTrack,
+  kPlayingTrack,
   kLastFM,
   kAlbumArtURL,
 };

@@ -41,11 +41,19 @@ const kTrackList = K.combine([kArtist, kAlbum])
         .then(({tracks}) => tracks)
     );
   })
+  .toProperty(() => []);
 
 const [setTrackIndex, bTrackIndex] = createBus()
 const kTrackIndex = bTrackIndex
   .merge(kTrackList.changes().map(() => null))
   .toProperty(() => null);
+
+const kTrack = K.combine([kTrackList, kTrackIndex], (trackList, trackIndex) => {
+  if (trackIndex === null) return null;
+  if (trackList.length < 1) return null;
+  if (trackIndex >= trackList.length) return null;
+  return trackList[trackIndex];
+})
 
 
 export {
@@ -55,6 +63,7 @@ export {
   kAlbum,
   kTrackList,
   kTrackIndex,
+  kTrack,
 
   setArtist,
   setAlbum,

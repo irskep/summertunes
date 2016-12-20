@@ -16,12 +16,12 @@ class ArtistList extends KComponent {
         {
           label: "All",
           value: null,
-          isSelected: this.props.selectedArtist === null,
+          isSelected: this.state.artist === null,
         }].concat(this.state.artists.map((artistName) => {
           return {
             label: artistName,
             value: artistName,
-            isSelected: this.props.selectedArtist === artistName ,
+            isSelected: this.state.artist === artistName,
           };
         }))} />;
   }

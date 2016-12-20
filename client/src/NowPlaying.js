@@ -3,11 +3,8 @@ import './css/NowPlaying.css';
 import secondsToString from "./util/secondsToString";
 import KComponent from "./KComponent";
 
-import {
-    kTrack,
-    kPlaybackSeconds,
-    kAlbumArtURL,
-} from "./model/mpvModel";
+import { kPlayingTrack, kPlaybackSeconds, kAlbumArtURL } from "./model/mpvModel";
+import { setArtist, setAlbum } from "./model/browsingModel";
 
 function percentage(fraction) {
     return `${fraction * 100}%`;
@@ -15,7 +12,7 @@ function percentage(fraction) {
 
 class NowPlaying extends KComponent {
   observables() { return {
-      track: kTrack,
+      track: kPlayingTrack,
       playbackSeconds: kPlaybackSeconds,
       albumArtURL: kAlbumArtURL,
   }; }
@@ -25,7 +22,13 @@ class NowPlaying extends KComponent {
         ? this.state.playbackSeconds / this.state.track.length
         : 0;
     const albumArtURL = this.state.albumArtURL.small;
-    return <div className={`st-now-playing ${this.state.className}`}>
+    return <div
+        onClick={() => {
+            if (!this.state.track) return;
+            setArtist(this.state.track.albumartist);
+            setAlbum(this.state.track.album);
+        }}
+        className={`st-now-playing ${this.state.className}`}>
       <div className={`st-album-art ${albumArtURL ? "" : "st-album-art-empty"}`}
           style={{backgroundImage: `url(${this.state.albumArtURL.small})`}} />
       {this.state.track && <div className="st-now-playing-title">

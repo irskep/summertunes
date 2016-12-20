@@ -16,12 +16,12 @@ class AlbumList extends KComponent {
         {
           label: "All",
           value: null,
-          isSelected: this.props.selectedAlbum === null,
+          isSelected: this.state.selectedAlbum === null,
         }].concat(this.state.albums.map((album) => {
           return {
             label: album.album,
             value: album.album,
-            isSelected: album.album === this.props.selectedAlbum
+            isSelected: album.album === this.state.selectedAlbum
           };
         }))} />;
   }

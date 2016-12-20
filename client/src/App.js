@@ -5,8 +5,7 @@ import ArtistList from "./ArtistList";
 import AlbumList from "./AlbumList";
 import TrackList from "./TrackList";
 import Table from "./Table";
-import { playTrack } from "./model/mpvModel";
-import { kArtist, kAlbum } from "./model/browsingModel";
+import { kArtist, kAlbum, kTrack } from "./model/browsingModel";
 import KComponent from "./KComponent";
 
 class App extends KComponent {
@@ -20,15 +19,8 @@ class App extends KComponent {
   observables() { return {
     selectedArtist: kArtist,
     selectedAlbum: kAlbum,
+    selectedTrack: kTrack,
   }; }
-
-  selectTrack(track) {
-    if (this.state.selectedTrack === track) {
-      playTrack(track);
-    } else {
-      this.setState({selectedTrack: track});
-    }
-  }
 
   render() {
     console.log("App", this.state);
@@ -61,9 +53,7 @@ class App extends KComponent {
             <AlbumList />
             <TrackList
               artist={this.state.selectedArtist}
-              album={this.state.selectedAlbum}
-              selectedTrack={this.state.selectedTrack}
-              onSelectTrack={(item) => this.selectTrack(item) }/>
+              album={this.state.selectedAlbum} />
           </div>
 
           <div className="st-info-sidebar">
