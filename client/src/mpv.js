@@ -7,13 +7,30 @@ import apiKeys from "./apiKeys";
 
 const socket = io('http://localhost:3001');
 
+
+// get_property doesn't include the property name in the return value, so
+// we need to do this silly request_id thing
+let i = 0;
+const requestIdToPropertyName = {};
+
+const getProperty = (propertyName) => {
+  i += 1;
+  requestIdToPropertyName[i] = propertyName;
+  socket.send({"command": ["get_property", propertyName], "request_id": i});
+}
+
+const sendAndObserve = (propertyName) => {
+  socket.send({"command": ["observe_property", 0, propertyName]})
+  getProperty(propertyName);
+}
+
 /* setup */
 
 socket.on('connect', () => {
   console.log("socket.io connected");  // eslint-disable-line no-console
-  socket.send({"command": ["observe_property", 1, "path"]});
-  socket.send({"command": ["observe_property", 2, "pause"]});
-  socket.send({"command": ["observe_property", 3, "time-pos"]});
+  sendAndObserve("path");
+  sendAndObserve("pause");
+  sendAndObserve("time-pos");
 });
 socket.on('disconnect', () => {
   console.warn("socket.io disconnected");  // eslint-disable-line no-console
@@ -42,6 +59,17 @@ const events = K.stream((emitter) => {
 });
 
 const kPropertyChanges = events
+  .map((event) => {
+    if (!event.request_id) return event;
+    if (!requestIdToPropertyName[event.request_id]) return event;
+    const name = requestIdToPropertyName[event.request_id];
+    delete requestIdToPropertyName[event.request_id];
+    return {
+      "event": "property-change",
+      "name": name,
+      "data": event.data,
+    };
+  })
   .filter((event) => {
     return event.event === "property-change";
   })
@@ -95,7 +123,7 @@ const kLastFM = kTrack
 
 const kAlbumArtURL = kLastFM
   .map((lastFMData) => {
-    if (!lastFMData) return {};
+    if (!lastFMData || !lastFMData.album) return {};
     const urlBySize = {};
     for (const imgData of (lastFMData.album.image || [])) {
       urlBySize[imgData.size] = imgData["#text"];

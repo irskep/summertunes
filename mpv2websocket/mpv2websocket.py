@@ -8,10 +8,18 @@ from eventlet.green import socket
 from flask import Flask
 from flask_socketio import SocketIO
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("mpv")
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("socketio").setLevel(logging.ERROR)
 logging.getLogger("engineio").setLevel(logging.ERROR)
+
+try:
+    import coloredlogs
+    coloredlogs.install(
+        fmt="%(asctime)s %(name)s %(levelname)s: %(message)s"
+    )
+except ImportError:
+    pass
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -35,10 +43,21 @@ mpv_process = Popen([
     '--input-ipc-server', SOCKET_PATH])
 mpv_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) #pylint: disable=E1101
 
+OBSERVED_PROPERTIES = set()
+
 @socketio.on('message')
 def handle_json(body):
-    body_bytes = (json.dumps(body) + '\n').encode('UTF-8')
-    log.info("> %r", body_bytes)
+    json_string = json.dumps(body)
+    body_bytes = (json_string + '\n').encode('UTF-8')
+    log.info("> %s", json_string)
+
+    if 'command' in body and body["command"][0] == "observe_property":
+        if body["command"][2] in OBSERVED_PROPERTIES:
+            log.info("Skipping already observed property %s", body["command"][2])
+            return
+        else:
+            OBSERVED_PROPERTIES.add(body["command"][2])
+
     mpv_socket.sendall(body_bytes)
 
 
@@ -67,7 +86,6 @@ def _listen_to_mpv():
 
 
 def test():
-    pass
     """
     body_bytes = (json.dumps({
         "command": [
