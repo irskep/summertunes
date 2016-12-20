@@ -3,7 +3,7 @@ import './css/NowPlaying.css';
 import secondsToString from "./util/secondsToString";
 import KComponent from "./KComponent";
 
-import { kPlayingTrack, kPlaybackSeconds, kAlbumArtURL } from "./model/mpvModel";
+import { seek, kPlayingTrack, kPlaybackSeconds, kAlbumArtURL } from "./model/mpvModel";
 import { setArtist, setAlbum } from "./model/browsingModel";
 
 function percentage(fraction) {
@@ -18,7 +18,8 @@ class NowPlaying extends KComponent {
   }; }
 
   seek(e) {
-      console.log(e);
+      const fraction = e.nativeEvent.offsetX / this.playbackSecondsBar.clientWidth;
+      seek(this.state.track.length * fraction);
       e.stopPropagation();
   }
 
@@ -48,7 +49,7 @@ class NowPlaying extends KComponent {
               {secondsToString(this.state.playbackSeconds)}
           </div>    
           <div className="st-playback-time-bar-graphic"
-              ref={(el) => this.props.playbackSecondsBar}
+              ref={(el) => this.playbackSecondsBar = el}
               onClick={(e) => {this.seek(e)}} >
               <div style={{width: percentage(playbackFraction)}} />
           </div>    

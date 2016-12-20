@@ -46,6 +46,10 @@ const goToBeginningOfTrack = () => {
   socket.send({"command": ["set_property", "time-pos", 0]});
 };
 
+const seek = (seconds) => {
+  socket.send({"command": ["seek", seconds, "absolute"]});
+};
+
 const playTrack = (track) => {
   socket.send({"command": ["playlist-clear"]});
   socket.send({"command": ["playlist-remove", "current"]});
@@ -147,6 +151,7 @@ export {
   goToBeginningOfTrack,
   playTrack,
   playTracks,
+  seek,
 
   kIsPlaying,
   kPropertyChanges,
