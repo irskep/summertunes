@@ -35,6 +35,7 @@
     text-align: center;
     border-right: 1px solid #ddd;
     line-height: 22px;
+    min-width: 22px;
 }
 
 .st-toolbar-button-group > div:last-child {

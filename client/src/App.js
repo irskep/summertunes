@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 
 import './css/App.css';
+import BottomBar from "./BottomBar";
 import Toolbar from "./Toolbar";
 import ArtistList from "./ArtistList";
 import AlbumList from "./AlbumList";
 import TrackList from "./TrackList";
-import Table from "./Table";
+import TrackInfo from "./TrackInfo";
 import { kArtist, kAlbum, kTrack } from "./model/browsingModel";
+import { kIsInfoVisible } from "./model/uiModel";
 import KComponent from "./KComponent";
 
 class DummyList extends Component {
@@ -36,6 +38,7 @@ class App extends KComponent {
     selectedArtist: kArtist,
     selectedAlbum: kAlbum,
     selectedTrack: kTrack,
+    isInfoVisible: kIsInfoVisible,
   }; }
 
   render() {
@@ -52,16 +55,9 @@ class App extends KComponent {
               album={this.state.selectedAlbum} />
           </div>
 
-          <div className="st-info-sidebar">
-            <Table
-              columns={[{name: "Key", itemKey: "key"}, {name: "Value", itemKey: "value"}]}
-              items={!this.state.selectedTrack ? [] : Object.keys(this.state.selectedTrack)
-                 .map((key) => {
-                   return {key, value: this.state.selectedTrack[key]};
-                 })}
-              />
-          </div>
+          {this.state.isInfoVisible && <TrackInfo />}
         </div>
+        <BottomBar />
       </div>
     );
   }

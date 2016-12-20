@@ -57,7 +57,7 @@ const kTrack = K.combine([kTrackList, kTrackIndex], (trackList, trackIndex) => {
   if (trackList.length < 1) return null;
   if (trackIndex >= trackList.length) return null;
   return trackList[trackIndex];
-});
+}).toProperty(() => null);
 
 const kPlayerQueueGetter = K.combine([kTrackList, kTrackIndex], (trackList, trackIndex) => {
   if (trackIndex === null) return null;

@@ -1,0 +1,14 @@
+.st-bottom-bar {
+  padding: 4px;
+  height: 30;
+  border-top: 1px solid #ddd;
+  flex-grow: 0;
+  flex-shrink: 0;
+  background-color: #eee;
+
+  width: 100%;
+}
+
+.st-bottom-bar-right-buttons {
+  float: right;
+}
