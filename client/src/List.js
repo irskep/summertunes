@@ -3,7 +3,10 @@ import React, { Component, PropTypes } from 'react';
 class List extends Component {
   render() {
     const className = `${this.props.className} noselect st-list`;
-    return <ul className={className} style={this.props.style}>
+    return <ul
+        ref={(el) => { if (this.props.ref2) this.props.ref2(el); }}
+        className={className}
+        style={this.props.style}>
       {(this.props.items || []).map((item, i) => {
         return <li key={i}
                    onClick={() => this.props.onClick(item, i)}

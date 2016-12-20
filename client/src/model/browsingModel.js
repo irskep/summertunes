@@ -2,6 +2,7 @@ import K from "kefir";
 import { SERVER_URL } from "../config";
 import createBus from "./createBus";
 import trackQueryString from "./trackQueryString";
+import localStorageJSON from "../util/localStorageJSON";
 
 
 const kArtists = K.fromPromise(
@@ -12,7 +13,7 @@ const kArtists = K.fromPromise(
 
 
 const [setArtist, bArtist] = createBus()
-const kArtist = bArtist.skipDuplicates().toProperty(() => null);
+const kArtist = bArtist.skipDuplicates().toProperty(() => localStorageJSON("browsingArtist", null));
 
 const kAlbums = kArtist
   .flatMapLatest((artistName) => {
@@ -29,7 +30,7 @@ const kAlbums = kArtist
   .toProperty(() => [])
 
 const [setAlbum, bAlbum] = createBus()
-const kAlbum = bAlbum.skipDuplicates().toProperty(() => null);
+const kAlbum = bAlbum.skipDuplicates().toProperty(() => localStorageJSON("browsingAlbum", null));
 
 const kTrackList = K.combine([kArtist, kAlbum])
   .flatMapLatest(([artist, album]) => {
@@ -61,6 +62,11 @@ const kPlayerQueueGetter = K.combine([kTrackList, kTrackIndex], (trackList, trac
   if (trackIndex >= trackList.length) return null;
   return () => trackList.slice(trackIndex);
 }).toProperty(() => () => []);
+
+/* localStorage sync */
+
+kArtist.onValue((artist) => localStorage.browsingArtist = JSON.stringify(artist))
+kAlbum.onValue((album) => localStorage.browsingAlbum = JSON.stringify(album))
 
 
 export {
