@@ -95,7 +95,7 @@ class App extends KComponent {
   renderSmallUI() {
     return (
       <div className="st-app">
-        <Toolbar />
+        <Toolbar stacked={true} />
         <div className="st-large-ui">
           <div className="st-library st-library-browser-left">
             <ArtistList />

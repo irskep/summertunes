@@ -1,6 +1,7 @@
 .st-now-playing {
   position: relative;
   width: 550px;
+  max-width: 100%;
   height: 48px;
   flex-shrink: 1;
   margin-left: 10px;
@@ -17,6 +18,13 @@
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
+}
+
+.st-now-playing-title {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: calc(100% - 20px);
 }
 
 .st-now-playing .st-album-art {

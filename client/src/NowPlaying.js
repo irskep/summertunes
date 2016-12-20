@@ -32,7 +32,7 @@ class NowPlaying extends KComponent {
     const track = this.state.track || {
         album: "ALBUM",
         artist: "ARTIST",
-        title: "TITLE",
+        title: "MOST AWESOME SONG EVER",
         length: 100,
     };
 
@@ -42,7 +42,7 @@ class NowPlaying extends KComponent {
             setArtist(track.albumartist);
             setAlbum(track.album);
         }}
-        className={`st-now-playing ${this.state.className}`}>
+        className={`st-now-playing ${this.props.className}`}>
       <div className={`st-album-art ${albumArtURL ? "" : "st-album-art-empty"}`}
           style={{backgroundImage: `url(${this.state.albumArtURL.small})`}} />
       {track && <div className="st-now-playing-title">
