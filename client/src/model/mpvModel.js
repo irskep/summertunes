@@ -42,12 +42,12 @@ const setIsPlaying = (isPlaying) => {
   socket.send({"command": ["set_property", "pause", !isPlaying]});
 };
 
-const goToBeginningOfTrack = () => {
-  socket.send({"command": ["set_property", "time-pos", 0]});
-};
-
 const seek = (seconds) => {
   socket.send({"command": ["seek", seconds, "absolute"]});
+};
+
+const goToBeginningOfTrack = () => {
+  seek(0);
 };
 
 const playTrack = (track) => {
@@ -61,9 +61,14 @@ const playTracks = (tracks) => {
   socket.send({"command": ["playlist-clear"]});
   socket.send({"command": ["playlist-remove", "current"]});
   socket.send({"command": ["loadfile", tracks[0].path, "append-play"]});
+  setIsPlaying(true);
   tracks.slice(1).forEach((track) => {
     socket.send({"command": ["loadfile", track.path, "append"]});
   });
+};
+
+const goToNextTrack = (seconds) => {
+  socket.send({"command": ["playlist-next", "force"]});
 };
 
 /* streams */
@@ -149,6 +154,7 @@ const kAlbumArtURL = kLastFM
 export {
   setIsPlaying,
   goToBeginningOfTrack,
+  goToNextTrack,
   playTrack,
   playTracks,
   seek,

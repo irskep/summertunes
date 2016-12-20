@@ -11,7 +11,7 @@ class Table extends Component {
             <thead>
               <tr>
                 {this.props.columns.map(({name, itemKey}) => (
-                  <th key={itemKey}>{name}</th>
+                  <th key={`${itemKey}-${name}`}>{name}</th>
                 ))}
               </tr>
             </thead>
@@ -22,7 +22,7 @@ class Table extends Component {
                       className={this.props.selectedItem === item ? "st-table-item-selected" : ""}
                       onClick={() => this.props.onClick(item, i)}>
                     {this.props.columns.map((column) => (
-                      <td key={column.itemKey}>
+                      <td key={`${column.itemKey}-${column.name}`}>
                         {column.itemKey === 'func'
                           ? column.func(item)
                           : item[column.itemKey]}
