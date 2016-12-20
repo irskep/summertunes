@@ -17,6 +17,11 @@ class NowPlaying extends KComponent {
       albumArtURL: kAlbumArtURL,
   }; }
 
+  seek(e) {
+      console.log(e);
+      e.stopPropagation();
+  }
+
   render() {
     const playbackFraction = this.state.track
         ? this.state.playbackSeconds / this.state.track.length
@@ -42,7 +47,9 @@ class NowPlaying extends KComponent {
           <div className="st-playback-time-bar-now">
               {secondsToString(this.state.playbackSeconds)}
           </div>    
-          <div className="st-playback-time-bar-graphic">
+          <div className="st-playback-time-bar-graphic"
+              ref={(el) => this.props.playbackSecondsBar}
+              onClick={(e) => {this.seek(e)}} >
               <div style={{width: percentage(playbackFraction)}} />
           </div>    
           <div className="st-playback-time-bar-duration">

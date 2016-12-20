@@ -19,7 +19,7 @@ class AlbumList extends KComponent {
           isSelected: this.state.selectedAlbum === null,
         }].concat(this.state.albums.map((album) => {
           return {
-            label: album.album,
+            label: `${album.album || "Unknown Album"} (${album.year})`,
             value: album.album,
             isSelected: album.album === this.state.selectedAlbum
           };

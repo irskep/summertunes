@@ -12,7 +12,7 @@ const kArtists = K.fromPromise(
 
 
 const [setArtist, bArtist] = createBus()
-const kArtist = bArtist.toProperty(() => null);
+const kArtist = bArtist.skipDuplicates().toProperty(() => null);
 
 const kAlbums = kArtist
   .flatMapLatest((artistName) => {
@@ -29,7 +29,7 @@ const kAlbums = kArtist
   .toProperty(() => [])
 
 const [setAlbum, bAlbum] = createBus()
-const kAlbum = bAlbum.toProperty(() => null);
+const kAlbum = bAlbum.skipDuplicates().toProperty(() => null);
 
 const kTrackList = K.combine([kArtist, kAlbum])
   .flatMapLatest(([artist, album]) => {
@@ -53,7 +53,14 @@ const kTrack = K.combine([kTrackList, kTrackIndex], (trackList, trackIndex) => {
   if (trackList.length < 1) return null;
   if (trackIndex >= trackList.length) return null;
   return trackList[trackIndex];
-})
+});
+
+const kPlayerQueueGetter = K.combine([kTrackList, kTrackIndex], (trackList, trackIndex) => {
+  if (trackIndex === null) return null;
+  if (trackList.length < 1) return null;
+  if (trackIndex >= trackList.length) return null;
+  return () => trackList.slice(trackIndex);
+}).toProperty(() => () => []);
 
 
 export {
@@ -64,6 +71,7 @@ export {
   kTrackList,
   kTrackIndex,
   kTrack,
+  kPlayerQueueGetter,
 
   setArtist,
   setAlbum,

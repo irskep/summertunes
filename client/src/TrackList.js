@@ -4,8 +4,8 @@ import Table from "./Table";
 import KComponent from "./KComponent"
 import secondsToString from "./util/secondsToString";
 
-import { playTrack, kPlayingTrack } from "./model/mpvModel";
-import { kTrackList, kTrackIndex, setTrackIndex } from "./model/browsingModel";
+import { playTracks, kPlayingTrack } from "./model/mpvModel";
+import { kTrackList, kTrackIndex, kPlayerQueueGetter, setTrackIndex } from "./model/browsingModel";
 
 function areTracksEqual(a, b) {
   if (Boolean(a) !== Boolean(b)) return false;
@@ -17,6 +17,7 @@ class TrackList extends KComponent {
     tracks: kTrackList,
     trackIndex: kTrackIndex,
     playingTrack: kPlayingTrack,
+    playerQueueGetter: kPlayerQueueGetter,
   }; }
 
   render() {
@@ -24,7 +25,7 @@ class TrackList extends KComponent {
       onClick={(item, i) => {
         const track = this.state.tracks[this.state.trackIndex]
         if (i === this.state.trackIndex && !areTracksEqual(track, this.state.playingTrack)) {
-          playTrack(track);
+          playTracks(this.state.playerQueueGetter());
         } else {
           setTrackIndex(i);
         }

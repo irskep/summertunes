@@ -47,8 +47,19 @@ const goToBeginningOfTrack = () => {
 };
 
 const playTrack = (track) => {
-  socket.send({"command": ["loadfile", track.path]});
+  socket.send({"command": ["playlist-clear"]});
+  socket.send({"command": ["playlist-remove", "current"]});
+  socket.send({"command": ["loadfile", track.path, "append-play"]});
   setIsPlaying(true);
+};
+
+const playTracks = (tracks) => {
+  socket.send({"command": ["playlist-clear"]});
+  socket.send({"command": ["playlist-remove", "current"]});
+  socket.send({"command": ["loadfile", tracks[0].path, "append-play"]});
+  tracks.slice(1).forEach((track) => {
+    socket.send({"command": ["loadfile", track.path, "append"]});
+  });
 };
 
 /* streams */
@@ -135,6 +146,7 @@ export {
   setIsPlaying,
   goToBeginningOfTrack,
   playTrack,
+  playTracks,
 
   kIsPlaying,
   kPropertyChanges,
