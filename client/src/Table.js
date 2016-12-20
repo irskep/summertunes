@@ -20,7 +20,7 @@ class Table extends Component {
                 return (
                   <tr key={i}
                       className={this.props.selectedItem === item ? "st-table-item-selected" : ""}
-                      onClick={() => this.props.onClick(item)}>
+                      onClick={() => this.props.onClick(item, i)}>
                     {this.props.columns.map((column) => (
                       <td key={column.itemKey}>
                         {column.itemKey === 'func'

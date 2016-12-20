@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
 import './css/NowPlaying.css';
-import secondsToString from "./secondsToString";
+import secondsToString from "./util/secondsToString";
 import KComponent from "./KComponent";
 
 import {
     kTrack,
     kPlaybackSeconds,
     kAlbumArtURL,
-} from "./mpv";
+} from "./model/mpvModel";
 
 function percentage(fraction) {
     return `${fraction * 100}%`;

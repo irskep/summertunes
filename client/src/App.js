@@ -5,7 +5,7 @@ import ArtistList from "./ArtistList";
 import AlbumList from "./AlbumList";
 import TrackList from "./TrackList";
 import Table from "./Table";
-import { playTrack } from "./mpv";
+import { playTrack } from "./model/mpvModel";
 import { kArtist, kAlbum } from "./model/browsingModel";
 import KComponent from "./KComponent";
 

@@ -1,6 +1,7 @@
 import K from "kefir";
 import { SERVER_URL } from "../config";
 import createBus from "./createBus";
+import trackQueryString from "./trackQueryString";
 
 
 const kArtists = K.fromPromise(
@@ -30,8 +31,21 @@ const kAlbums = kArtist
 const [setAlbum, bAlbum] = createBus()
 const kAlbum = bAlbum.toProperty(() => null);
 
-const [setTrack, bTrack] = createBus()
-const kTrack = bTrack.toProperty(() => null);
+const kTrackList = K.combine([kArtist, kAlbum])
+  .flatMapLatest(([artist, album]) => {
+    if (!artist && !album) return K.constant([])
+    const url = `${SERVER_URL}/tracks?${trackQueryString({artist, album})}`;
+    return K.fromPromise(
+      window.fetch(url)
+        .then((response) => response.json())
+        .then(({tracks}) => tracks)
+    );
+  })
+
+const [setTrackIndex, bTrackIndex] = createBus()
+const kTrackIndex = bTrackIndex
+  .merge(kTrackList.changes().map(() => null))
+  .toProperty(() => null);
 
 
 export {
@@ -39,9 +53,10 @@ export {
   kArtist,
   kAlbums,
   kAlbum,
-  kTrack,
+  kTrackList,
+  kTrackIndex,
 
   setArtist,
   setAlbum,
-  setTrack,
+  setTrackIndex,
 }

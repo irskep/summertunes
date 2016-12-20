@@ -7,7 +7,7 @@ import {
   kIsPlaying,
   setIsPlaying,
   goToBeginningOfTrack,
-} from "./mpv";
+} from "./model/mpvModel";
 import K from "kefir";
 
 class PlaybackControls extends Component {

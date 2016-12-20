@@ -1,50 +1,21 @@
 /* global window */
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
 import Table from "./Table";
-import { SERVER_URL } from "./config";
-import shallowCompare from 'react-addons-shallow-compare';
-import secondsToString from "./secondsToString";
-import trackQueryString from "./trackQueryString";
+import KComponent from "./KComponent"
+import secondsToString from "./util/secondsToString";
 
-class TrackList extends Component {
-  constructor() {
-    super();
-    this.state = {tracks: []};
-  }
+import { kTrackList, kTrackIndex, setTrackIndex } from "./model/browsingModel";
 
-  query(props) {
-    return `${SERVER_URL}/tracks?${trackQueryString(props)}`;
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
-  }
-
-  update(nextProps) {
-    this.setState({tracks: []});
-
-    if (!trackQueryString(nextProps)) return;
-
-    window.fetch(this.query(nextProps))
-      .then((response) => response.json())
-      .then(({tracks}) => {
-        this.setState({tracks: tracks.slice(0, 200)});
-      });
-  }
-
-  componentWillMount() {
-    this.update(this.props);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (JSON.stringify(this.query(this.props)) === JSON.stringify(this.query(nextProps))) return;
-    this.update(nextProps);
-  }
+class TrackList extends KComponent {
+  observables() { return {
+    tracks: kTrackList,
+    trackIndex: kTrackIndex,
+  }; }
 
   render() {
     return <Table className="st-track-list"
-      onClick={this.props.onSelectTrack}
-      selectedItem={this.props.selectedTrack}
+      onClick={(item, i) => setTrackIndex(i)}
+      selectedItem={this.state.trackIndex === null ? null : this.state.tracks[this.state.trackIndex]}
       columns={[
         {name: 'Track Number', itemKey: 'track'},
         {name: 'Title', itemKey: 'title'},
@@ -57,17 +28,5 @@ class TrackList extends Component {
       items={this.state.tracks} />;
   }
 }
-
-TrackList.propTypes = {
-  artist: PropTypes.string,
-  album: PropTypes.string,
-  selectedTrack: PropTypes.any,
-  onSelectTrack: PropTypes.func.isRequired,
-};
-
-TrackList.defaultProps = {
-  artist: null,
-  album: null,
-};
 
 export default TrackList;
