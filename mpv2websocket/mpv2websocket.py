@@ -108,7 +108,7 @@ if __name__ == '__main__':
         mpv_socket.connect(SOCKET_PATH)
         eventlet.spawn(_listen_to_mpv)
         eventlet.spawn(test)
-        socketio.run(app, port=3001)
+        socketio.run(app, host="0.0.0.0", port=3001)
         raise KeyboardInterrupt
     finally:
         mpv_process.kill()
