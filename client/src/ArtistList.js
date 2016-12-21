@@ -29,7 +29,7 @@ class ArtistList extends KComponent {
 
   render() {
     this.selectedItemIndex = this.state.artist === null ? 0 : null;
-    return <List className="st-list st-artist-list"
+    return <List className="st-list st-artist-list st-list"
       ref2={(el) => this.listEl = el}
       onClick={({value}) => setArtist(value)}
       items={[

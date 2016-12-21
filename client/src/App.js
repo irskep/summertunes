@@ -10,7 +10,12 @@ import AlbumList from "./AlbumList";
 import TrackList from "./TrackList";
 import TrackInfo from "./TrackInfo";
 import { kArtist, kAlbum, kTrack } from "./model/browsingModel";
-import { kIsInfoVisible, kIsMediumUI, kIsLargeUI } from "./model/uiModel";
+import {
+  kIsInfoVisible,
+  kIsMediumUI,
+  kIsLargeUI,
+  kOpenModal,
+} from "./model/uiModel";
 import KComponent from "./KComponent";
 
 class DummyList extends Component {
@@ -44,9 +49,11 @@ class App extends KComponent {
 
     isMediumUI: kIsMediumUI,
     isLargeUI: kIsLargeUI,
+    openModal: kOpenModal,
   }; }
 
   render() {
+    console.log(this.state);
     if (this.state.isLargeUI) {
       return this.renderLargeUI();
     } else if (this.state.isMediumUI) {
@@ -68,8 +75,8 @@ class App extends KComponent {
           </div>
 
           {this.state.isInfoVisible && <TrackInfo />}
+          <BottomBar />
         </div>
-        <BottomBar />
       </div>
     );
   }
@@ -86,8 +93,8 @@ class App extends KComponent {
           <TrackList />
 
           {this.state.isInfoVisible && <TrackInfo />}
+          <BottomBar />
         </div>
-        <BottomBar />
       </div>
     );
   }
@@ -96,16 +103,14 @@ class App extends KComponent {
     return (
       <div className="st-app">
         <Toolbar stacked={true} />
-        <div className="st-large-ui">
-          <div className="st-library st-library-browser-left">
-            <ArtistList />
-            <AlbumList />
-            <TrackList />
-          </div>
+        <div className="st-small-ui">
+          {this.state.openModal === "artist" && <ArtistList />}
+          {this.state.openModal === "album" && <AlbumList />}
 
-          {this.state.isInfoVisible && <TrackInfo />}
+          {!this.state.openModal && <TrackList />}
+          {!this.state.openModal && this.state.isInfoVisible && <TrackInfo />}
+          <BottomBar artistAndAlbumButtons={true} />
         </div>
-        <BottomBar />
       </div>
     );
   }

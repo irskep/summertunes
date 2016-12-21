@@ -1,4 +1,3 @@
-/* global window */
 import React from 'react';
 import List from "./List";
 import KComponent from "./KComponent";
@@ -29,7 +28,7 @@ class AlbumList extends KComponent {
 
   render() {
     this.selectedItemIndex = this.state.selectedAlbum === null ? 0 : null;
-    return <List className="st-list st-album-list"
+    return <List className="st-list st-album-list st-list"
       ref2={(el) => this.listEl = el}
       onClick={({value}) => setAlbum(value)}
       items={[

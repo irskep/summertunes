@@ -1,12 +1,11 @@
 import K from "kefir";
 
 
-export default function createBus() {
+export default function createBus(label) {
   let outerEmitter;
   const stream = K.stream((emitter) => {
     outerEmitter = emitter.emit;
     return () => {
-      outerEmitter = null;
     }
   });
   const push = (...args) => {

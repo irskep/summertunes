@@ -26,8 +26,11 @@
   background-color: #eee;
   border-radius: 3px;
   height: 24px;
+  line-height: 24px;
   cursor: pointer;
   flex-shrink: 0;
+  margin-left: 4px;
+  margin-right: 4px;
 
   display: flex;
   flex-direction: row;
@@ -42,6 +45,8 @@
     border-right: 1px solid #ddd;
     line-height: 22px;
     min-width: 22px;
+    padding-left: 4px;
+    padding-right: 4px;
 }
 
 .st-toolbar-button-group > div:last-child {

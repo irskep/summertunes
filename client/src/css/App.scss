@@ -67,3 +67,35 @@
   overflow: auto;
   height: 30%;
 }
+
+.st-small-ui {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+  
+  .st-bottom-bar {
+    z-index: 1;
+  }
+
+  .st-list {
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow: auto;
+  }
+
+  .st-track-list {
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow: auto;
+  }
+
+ .st-info-sidebar {
+    border-top: 1px solid #ddd;
+    overflow: auto;
+    height: 30%;
+    flex-grow: 0;
+  }
+}
