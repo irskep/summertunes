@@ -13,7 +13,9 @@ const kArtists = K.fromPromise(
 
 
 const [setArtist, bArtist] = createBus()
-const kArtist = bArtist.skipDuplicates().toProperty(() => localStorageJSON("browsingArtist", null));
+const kArtist = bArtist
+  .skipDuplicates()
+  .toProperty(() => localStorageJSON("browsingArtist", null));
 
 const kAlbums = kArtist
   .flatMapLatest((artistName) => {
@@ -31,7 +33,7 @@ const kAlbums = kArtist
 
 const [setAlbum, bAlbum] = createBus()
 const kAlbum = bAlbum
-  .merge(kArtist.map(() => null))
+  .merge(kArtist.map(() => null).skip(1))  // don't zap initial load
   .skipDuplicates()
   .toProperty(() => localStorageJSON("browsingAlbum", null));
 
@@ -42,7 +44,8 @@ const kTrackList = K.combine([kArtist, kAlbum])
     return K.fromPromise(
       window.fetch(url)
         .then((response) => response.json())
-        .then(({tracks}) => tracks)
+        // API does a substring match but we want exact.
+        .then(({tracks}) => tracks.filter((track) => track.album === album))
     );
   })
   .toProperty(() => []);
@@ -68,8 +71,8 @@ const kPlayerQueueGetter = K.combine([kTrackList, kTrackIndex], (trackList, trac
 
 /* localStorage sync */
 
-kArtist.onValue((artist) => localStorage.browsingArtist = JSON.stringify(artist))
-kAlbum.onValue((album) => localStorage.browsingAlbum = JSON.stringify(album))
+kArtist.onValue((artist) => localStorage.browsingArtist = JSON.stringify(artist));
+kAlbum.onValue((album) => localStorage.browsingAlbum = JSON.stringify(album));
 
 
 export {
