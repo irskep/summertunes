@@ -1,7 +1,7 @@
 import json
 import os
 import logging
-from subprocess import Popen
+from subprocess import Popen, PIPE
 
 import eventlet
 from eventlet.green import socket
@@ -34,13 +34,17 @@ def _kill_socket():
             raise
 _kill_socket()
 
-mpv_process = Popen([
-    'mpv',
-    '--quiet',
-    '--audio-display=no',
-    '--idle',
-    '--gapless-audio',
-    '--input-ipc-server', SOCKET_PATH])
+mpv_process = Popen(
+    [
+        'mpv',
+        '--quiet',
+        '--audio-display=no',
+        '--idle',
+        '--gapless-audio',
+        '--input-ipc-server', SOCKET_PATH
+    ],
+    # block keyboard input
+    stdin=PIPE)
 mpv_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) #pylint: disable=E1101
 
 OBSERVED_PROPERTIES = set()
