@@ -56,11 +56,25 @@ export default class PlaybackControls extends KComponent {
     );
   }
 
+  renderPause() {
+    const size = 22;
+    const w = size * 0.2;
+    const h = size * 0.5;
+
+    return (
+      <svg width={size} height={size} version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <g transform={`translate(${size/2}, ${size/2})`}>
+          <rect x={-w / 2} y={-h / 2} width={w} height={h} fill="#666" stroke-width="0"/>
+        </g>
+      </svg>
+    );
+  }
+
   render() {
     return (
         <div className="st-toolbar-button-group st-playback-controls">
           <div onClick={this.goBack}>{this.renderTriangle(true, true)}</div>
-          {this.state.isPlaying && <div onClick={this.pause}>❚❚</div>}
+          {this.state.isPlaying && <div onClick={this.pause}>{this.renderPause()}</div>}
           {!this.state.isPlaying && <div onClick={this.play}>{this.renderTriangle(false, false)}</div>}
           <div onClick={goToNextTrack}>{this.renderTriangle(true, false)}</div>
         </div>
