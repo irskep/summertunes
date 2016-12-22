@@ -3,6 +3,7 @@
 .st-app {
   position: fixed;
   top: 0; right: 0; bottom: 0; left: 0;
+  padding-bottom: 30px;  // toolbar
 
   display: flex;
   flex-direction: column;
@@ -38,7 +39,7 @@
   flex-wrap: nowrap;
   align-items: stretch;
   width: 100%;
-  height: calc(100% - 81px - 30px);
+  height: calc(100% - 81px);
 
   .st-library {
     flex-grow: 1;
@@ -71,9 +72,11 @@
   }
 
   .st-info-sidebar {
-    border-top: 1px solid $colorBorder;
+    border-left: 1px solid $colorBorder;
     overflow: auto;
-    height: 30%;
+    width: 200px;
+    flex-grow: 0;
+    flex-shrink: 0;
   }
 }
 

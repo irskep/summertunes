@@ -70,9 +70,9 @@ class App extends KComponent {
             <ArtistList />
             <AlbumList />
             <TrackList />
+            {this.state.isInfoVisible && <TrackInfo />}
           </div>
 
-          {this.state.isInfoVisible && <TrackInfo />}
           <BottomBar />
         </div>
       </div>
