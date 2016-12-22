@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import './css/base.css';
 import './css/App.css';
-import './css/uiLarge.css';
 import BottomBar from "./BottomBar";
 import Toolbar from "./Toolbar";
 import ArtistList from "./ArtistList";
@@ -67,7 +66,7 @@ class App extends KComponent {
       <div className="st-app">
         <Toolbar />
         <div className="st-large-ui">
-          <div className="st-library st-library-browser-left">
+          <div className="st-library">
             <ArtistList />
             <AlbumList />
             <TrackList />
@@ -85,7 +84,7 @@ class App extends KComponent {
       <div className="st-app">
         <Toolbar />
         <div className="st-medium-ui">
-          <div className="st-library st-library-browser-top">
+          <div className="st-library">
             <ArtistList />
             <AlbumList />
           </div>

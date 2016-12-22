@@ -25,6 +25,55 @@
   color: white;
 }
 
+.st-track-list {
+  overflow: auto;
+}
+
+.st-large-ui {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+
+  .st-library {
+    flex-grow: 1;
+    flex-shrink: 1;
+    border-bottom: 1px solid #ddd;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    width: 100%;
+    height: 50%;
+
+    .st-album-list, .st-artist-list {
+      width: 200px;
+    }
+
+    .st-track-list {
+      flex-grow: 1;
+      flex-shrink: 1;
+    }
+
+    & > * {
+      border-right: 1px solid #ddd;
+    }
+
+    & > *:last-child {
+      border-right: none;
+    }
+  }
+
+  .st-info-sidebar {
+    border-top: 1px solid #ddd;
+    overflow: auto;
+    height: 30%;
+  }
+}
+
 .st-medium-ui {
   display: flex;
   flex-direction: column;
@@ -32,40 +81,40 @@
   align-items: stretch;
   width: 100%;
   height: 100%;
-}
 
-.st-medium-ui .st-library-browser-top {
-  flex-grow: 1;
-  flex-shrink: 1;
-  border-bottom: 1px solid #ddd;
+  .st-library {
+    flex-grow: 1;
+    flex-shrink: 1;
+    border-bottom: 1px solid #ddd;
 
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: stretch;
-  width: 100%;
-  height: 50%;
-}
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    width: 100%;
+    height: 50%;
 
-.st-medium-ui .st-library-browser-top > * {
-  width: 50%;
-  border-right: 1px solid #ddd;
-}
-.st-medium-ui .st-library-browser-top > *:last-child {
-  border-right: none;
-}
+    & > * {
+      width: 50%;
+      border-right: 1px solid #ddd;
+    }
 
-.st-medium-ui .st-track-list {
-  flex-grow: 1;
-  flex-shrink: 1;
-  overflow: auto;
-  height: 50%;
-}
+    & > *:last-child {
+      border-right: none;
+    }
+  }
 
-.st-medium-ui .st-info-sidebar {
-  border-top: 1px solid #ddd;
-  overflow: auto;
-  height: 30%;
+  .st-track-list {
+    flex-grow: 1;
+    flex-shrink: 1;
+    height: 50%;
+  }
+
+  .st-info-sidebar {
+    border-top: 1px solid #ddd;
+    overflow: auto;
+    height: 30%;
+  }
 }
 
 .st-small-ui {
@@ -75,7 +124,7 @@
   align-items: stretch;
   width: 100%;
   height: 100%;
-  
+
   .st-bottom-bar {
     z-index: 1;
   }
