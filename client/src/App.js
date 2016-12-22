@@ -73,8 +73,8 @@ class App extends KComponent {
           </div>
 
           {this.state.isInfoVisible && <TrackInfo />}
+          <BottomBar />
         </div>
-        <BottomBar />
       </div>
     );
   }

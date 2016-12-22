@@ -8,6 +8,7 @@
   flex-direction: column;
   flex-wrap: nowrap;
   align-items: stretch;
+  justify-content: stretch;
 }
 
 .st-list {
@@ -37,7 +38,7 @@
   flex-wrap: nowrap;
   align-items: stretch;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 81px - 30px);
 
   .st-library {
     flex-grow: 1;
@@ -49,7 +50,7 @@
     flex-wrap: nowrap;
     align-items: stretch;
     width: 100%;
-    height: 50%;
+    height: 100%;
 
     .st-album-list, .st-artist-list {
       width: 200px;
@@ -82,7 +83,7 @@
   flex-wrap: nowrap;
   align-items: stretch;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 81px);
 
   .st-library {
     flex-grow: 1;
@@ -125,7 +126,7 @@
   flex-wrap: nowrap;
   align-items: stretch;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 100px);
 
   .st-bottom-bar {
     z-index: 1;
