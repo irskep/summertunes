@@ -53,7 +53,6 @@ class App extends KComponent {
   }; }
 
   render() {
-    console.log(this.state);
     if (this.state.isLargeUI) {
       return this.renderLargeUI();
     } else if (this.state.isMediumUI) {
