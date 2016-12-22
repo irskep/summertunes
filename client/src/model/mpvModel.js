@@ -2,10 +2,10 @@
 /* global window */
 import io from 'socket.io-client';
 import K from "kefir";
-import { SERVER_URL } from "../config";
+import { SERVER_URL, MPV_URL } from "../config";
 import apiKeys from "../apiKeys";
 
-const socket = io('http://localhost:3001');
+const socket = io(MPV_URL);
 
 
 // get_property doesn't include the property name in the return value, so

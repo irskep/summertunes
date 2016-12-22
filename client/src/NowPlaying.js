@@ -29,12 +29,15 @@ class NowPlaying extends KComponent {
         : 0;
     const albumArtURL = this.state.albumArtURL.small;
 
+    /*
     const track = this.state.track || {
         album: "ALBUM",
         artist: "ARTIST",
         title: "MOST AWESOME SONG EVER",
         length: 100,
     };
+    */
+    const track = this.state.track;
 
     return <div
         onClick={() => {

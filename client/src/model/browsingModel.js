@@ -45,7 +45,7 @@ const kTrackList = K.combine([kArtist, kAlbum])
       window.fetch(url)
         .then((response) => response.json())
         // API does a substring match but we want exact.
-        .then(({tracks}) => tracks.filter((track) => track.album === album))
+        .then(({tracks}) => tracks.filter((track) => album === null || track.album === album))
     );
   })
   .toProperty(() => []);
