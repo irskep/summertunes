@@ -3,6 +3,7 @@ import React from 'react';
 import List from "./List";
 import { kArtists, kArtist, setArtist } from "./model/browsingModel";
 import KComponent from "./KComponent";
+import { setOpenModal } from "./model/uiModel";
 
 class ArtistList extends KComponent {
   observables() { return {
@@ -31,7 +32,10 @@ class ArtistList extends KComponent {
     this.selectedItemIndex = this.state.artist === null ? 0 : null;
     return <List className="st-list st-artist-list st-list"
       ref2={(el) => this.listEl = el}
-      onClick={({value}) => setArtist(value)}
+      onClick={({value}) => {
+        setArtist(value);
+        setOpenModal(null);
+      }}
       items={[
         {
           label: "All",

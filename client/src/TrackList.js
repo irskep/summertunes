@@ -6,7 +6,6 @@ import secondsToString from "./util/secondsToString";
 
 import { playTracks, kPlayingTrack } from "./model/mpvModel";
 import { kTrackList, kTrackIndex, kPlayerQueueGetter, setTrackIndex } from "./model/browsingModel";
-import { setOpenModal } from "./model/browsingModel";
 
 function areTracksEqual(a, b) {
   if (Boolean(a) !== Boolean(b)) return false;
@@ -30,7 +29,6 @@ class TrackList extends KComponent {
         } else {
           setTrackIndex(i);
         }
-        setOpenModal(null);
       }}
       selectedItem={this.state.trackIndex === null ? null : this.state.tracks[this.state.trackIndex]}
       columns={[
