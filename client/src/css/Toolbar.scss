@@ -1,10 +1,12 @@
+@import "common";
+
 .st-toolbar {
   padding: 0 10px;
   height: 81px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid $colorBorder;
   flex-grow: 0;
   flex-shrink: 0;
-  background-color: #eee;
+  background-color: $colorBackground2;
 
   display: flex;
   flex-direction: row;
@@ -21,9 +23,9 @@
 }
 
 .st-toolbar-button-group {
-  color: #666;
-  border: 1px solid #ddd;
-  background-color: #eee;
+  color: $colorToolbarButtonText;
+  border: 1px solid $colorBorder;
+  background-color: $colorBackground2;
   border-radius: 3px;
   height: 24px;
   line-height: 24px;
@@ -42,7 +44,7 @@
 .st-toolbar-button-group > div {
     flex-grow: 1;
     text-align: center;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid $colorBorder;
     line-height: 22px;
     min-width: 22px;
     padding-left: 4px;
@@ -54,10 +56,10 @@
 }
 
 .st-toolbar-button-group > div:hover {
-    background-color: #ddd;
+    background-color: $colorBorder;
 }
 .st-toolbar-button-group > div:active {
-    background-color: #ccc;
+    background-color: $colorToolbarButtonBackgroundActive;
 }
 
 .st-playback-controls {

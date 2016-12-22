@@ -1,4 +1,7 @@
+@import "common";
+
 .st-now-playing {
+  background-color: $colorBackground1;
   position: relative;
   width: 550px;
   max-width: 100%;
@@ -7,12 +10,11 @@
   margin-left: 10px;
   margin-right: 10px;
   padding-left: 46px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  border: 1px solid $colorBorder;
 
   border-radius: 3px;
 
-  color: #444;
+  color: $colorNowPlayingText;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -41,7 +43,7 @@
 }
 
 .st-album-art-empty {
-  border: 1px solid #ddd;
+  border: 1px solid $colorBorder;
   border-style: dashed;
 }
 
@@ -63,14 +65,14 @@
   overflow: hidden;
   height: 5px;
   border-radius: 2px;
-  background-color: #eee;
+  background-color: $colorBackground2;
 
   flex-grow: 1;
   flex-shrink: 1;
 }
 
 .st-playback-time-bar-graphic > div {
-  background-color: blue;
+  background-color: $colorNowPlayingBar;
   height: 100%;
 }
 

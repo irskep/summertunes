@@ -1,10 +1,12 @@
+@import "common";
+
 .st-bottom-bar {
   padding: 4px;
   height: 30;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid $colorBorder;
   flex-grow: 0;
   flex-shrink: 0;
-  background-color: #eee;
+  background-color: $colorBackground2;
 
   width: 100%;
 

@@ -1,3 +1,5 @@
+@import "common";
+
 .st-table {
   cursor: pointer;
 }
@@ -5,7 +7,7 @@
 .st-table table {
   border-collapse: collapse;
   min-width: 100%;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid $colorBorder;
 }
 
 .st-table td, .st-table th {
@@ -13,7 +15,7 @@
   overflow: hidden;
   white-space: nowrap;
 
-  border-right: 1px solid #ddd;
+  border-right: 1px solid $colorBorder;
   padding-left: 2px;
   padding-right: 2px;
   min-width: 40px;
@@ -25,14 +27,18 @@
 }
 
 .st-table tbody tr:nth-child(even), .st-table thead tr {
-  background-color: #eee;
+  background-color: $colorBackground2;
+}
+
+.st-table tbody tr {
+  background-color: $colorTableRow;
 }
 
 .st-table tbody tr:nth-child(even) {
-  background-color: #f8f4f4;
+  background-color: $colorTableRowAlternate;
 }
 
 .st-table tbody tr.st-table-item-selected {
-  background-color: rgb(60, 104, 214);
-  color: white;
+  background-color: $colorListSelectionBackground;
+  color: $colorListSelectionText;
 }
