@@ -30,13 +30,39 @@ export default class PlaybackControls extends KComponent {
     goToBeginningOfTrack();
   }
 
+  renderTriangle(post, flip) {
+    const twoPi = Math.PI  * 2;
+    const angles = [0, twoPi / 3, twoPi / 3 * 2];
+    const numbers = [];
+    const size = 22;
+    const radius = size * 0.3;
+    const xOffset = -2;
+
+    const transform = flip ? "scale(-1, 1)" : "";
+
+    for (const angle of angles) {
+      numbers.push(
+        Math.cos(angle) * radius + xOffset,
+        Math.sin(angle) * radius);
+    }
+    const [x1, y1, x2, y2, x3, y3] = numbers;  // eslint-disable-line no-unused-vars
+    return (
+      <svg width={size} height={size} version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <g transform={`translate(${size/2}, ${size/2}) ${transform}`}>
+          <polygon points={numbers.join(' ')} fill="#666" strokeWidth="0"/>
+          {post && <line x1={x1 + 1} y1={y2} x2={x1 + 1} y2={y3} strokeWidth="1" stroke="#666" />}
+        </g>
+      </svg>
+    );
+  }
+
   render() {
     return (
         <div className="st-toolbar-button-group st-playback-controls">
-          <div onClick={this.goBack}>{"<"}</div>
+          <div onClick={this.goBack}>{this.renderTriangle(true, true)}</div>
           {this.state.isPlaying && <div onClick={this.pause}>❚❚</div>}
-          {!this.state.isPlaying && <div onClick={this.play}>▶</div>}
-          <div onClick={goToNextTrack}>{">"}</div>
+          {!this.state.isPlaying && <div onClick={this.play}>{this.renderTriangle(false, false)}</div>}
+          <div onClick={goToNextTrack}>{this.renderTriangle(true, false)}</div>
         </div>
     );
   }
