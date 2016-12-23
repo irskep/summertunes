@@ -11,21 +11,28 @@ class Toolbar extends KComponent {
     volume: kVolume,
   }; }
 
+  renderVolumeControl() {
+    return <input
+      type="range" min="0" max="1" step="0.01"
+      onChange={(e) => setVolume(parseFloat(e.target.value))}
+      value={this.state.volume} />;
+  }
+
   renderNormal() {
     return <div className="st-toolbar">
       <PlaybackControls />
       <NowPlaying />
-      <input
-        type="range" min="0" max="1" step="0.01"
-        onChange={(e) => setVolume(parseFloat(e.target.value))}
-        value={this.state.volume} />
+      {this.renderVolumeControl()}
     </div>;
   }
 
   renderStacked() {
       return <div className="st-toolbar st-toolbar-stacked">
         <NowPlaying />
-        <PlaybackControls />
+        <div className="st-toolbar-stacked-horz-group">
+          <PlaybackControls />
+          {this.renderVolumeControl()}
+        </div>
       </div>;
   }
 

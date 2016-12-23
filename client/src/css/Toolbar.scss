@@ -14,12 +14,29 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-}
-.st-toolbar.st-toolbar-stacked {
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-  height: 100px;
+
+  &.st-toolbar-stacked {
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    height: 100px;
+
+    .st-toolbar-stacked-horz-group {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: nowrap;
+
+      & > * {
+        margin-left: 10px;
+
+        &:first-child {
+          margin-left: 0;
+        }
+      }
+    }
+  }
 }
 
 .st-toolbar-button-group {
