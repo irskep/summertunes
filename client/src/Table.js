@@ -2,35 +2,80 @@ import React, { Component, PropTypes } from 'react';
 import "./css/Table.css";
 
 class Table extends Component {
+  inlineColumns() {
+    return this.props.columns.filter(({groupSplitter}) => !groupSplitter);
+  }
+
+  groupSplitterColumns() {
+    return this.props.columns.filter(({groupSplitter}) => groupSplitter);
+  }
+
+  getColumnValues(columns, item) {
+    return columns
+      .map((column) =>
+        [column, column.itemKey === 'func'
+          ? column.func(item)
+          : item[column.itemKey]]);
+  }
+
+  renderBody() {
+    const rows = [];
+    let lastGroupKey = "";
+    let itemsInGroup = [];
+
+    const inlineColumns = this.inlineColumns();
+    const groupSplitterColumns = this.groupSplitterColumns();
+
+    let i = 0;
+
+    const commitGroup = () => {
+      if (!itemsInGroup.length) return;
+      if (itemsInGroup.length) {
+        rows.push(this.props.renderGroupHeader(itemsInGroup, lastGroupKey));
+
+        for (const item of itemsInGroup) {
+          const j = i;
+          rows.push(
+            <tr key={i}
+                className={this.props.selectedItem === item ? "st-table-item-selected" : ""}
+                onClick={() => this.props.onClick(item, j)}>
+              {this.getColumnValues(inlineColumns, item).map(([column, value]) => (
+                <td key={`${column.itemKey}-${column.name}`}>{value}</td>
+              ))}
+            </tr>
+          );
+          i++;
+        }
+      }
+      itemsInGroup = [];
+    }
+
+    for (const item of this.props.items) {
+      const itemGroupKey = JSON.stringify(this.getColumnValues(groupSplitterColumns, item));
+      if (itemGroupKey !== lastGroupKey) {
+        commitGroup();
+        lastGroupKey = itemGroupKey;
+      }
+
+      itemsInGroup.push(item);
+    }
+    commitGroup();
+
+    return <tbody>{rows}</tbody>;
+  }
+
   render() {
-    const className = `${this.props.className} noselect st-table`;
     return (
-      <div className={className}>
+      <div className={`${this.props.className} noselect st-table`}>
         <table>
           <thead>
             <tr>
-              {this.props.columns.map(({name, itemKey}) => (
+              {this.inlineColumns().map(({name, itemKey}) => (
                 <th key={`${itemKey}-${name}`}>{name}</th>
               ))}
             </tr>
           </thead>
-          <tbody>
-            {this.props.items.map((item, i) => {
-              return (
-                <tr key={i}
-                    className={this.props.selectedItem === item ? "st-table-item-selected" : ""}
-                    onClick={() => this.props.onClick(item, i)}>
-                  {this.props.columns.map((column) => (
-                    <td key={`${column.itemKey}-${column.name}`}>
-                      {column.itemKey === 'func'
-                        ? column.func(item)
-                        : item[column.itemKey]}
-                    </td>
-                  ))}
-                </tr>
-              );
-            })}
-          </tbody>
+          {this.renderBody()}
         </table>
       </div>
     );
@@ -40,6 +85,7 @@ class Table extends Component {
 Table.propTypes = {
   columns: PropTypes.array,  // [{name, itemKey}]
   items: PropTypes.array.isRequired,
+  renderGroupHeader: PropTypes.func,
   className: PropTypes.string,
   selectedItem: PropTypes.any,
   onClick: PropTypes.func,
@@ -47,7 +93,8 @@ Table.propTypes = {
 
 Table.defaultProps = {
   className: "",
-  onClick: function() { },
+  onClick: () => { },
+  renderGroupHeader: () => null,
 };
 
 export default Table;

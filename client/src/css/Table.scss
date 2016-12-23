@@ -2,43 +2,61 @@
 
 .st-table {
   cursor: pointer;
-}
 
-.st-table table {
-  border-collapse: collapse;
-  min-width: 100%;
-  border-bottom: 1px solid $colorBorder;
-}
+  table {
+    border-collapse: collapse;
+    min-width: 100%;
+    border-bottom: 1px solid $colorBorder;
+  }
 
-.st-table td, .st-table th {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+  td, th {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
 
-  border-right: 1px solid $colorBorder;
-  padding-left: 2px;
-  padding-right: 2px;
-  min-width: 40px;
-  height: 20px;
-}
+    border-right: 1px solid $colorBorder;
+    padding-left: 2px;
+    padding-right: 2px;
+    min-width: 40px;
+    height: 20px;
+  }
 
-.st-table td:last-child, .st-table th:last-child {
-  border-right: none;
-}
+  td:last-child, th:last-child {
+    border-right: none;
+  }
 
-.st-table tbody tr:nth-child(even), .st-table thead tr {
-  background-color: $colorBackground2;
-}
+  tbody tr:nth-child(even), thead tr {
+    background-color: $colorBackground2;
+  }
 
-.st-table tbody tr {
-  background-color: $colorTableRow;
-}
+  tbody tr {
+    background-color: $colorTableRow;
+  }
 
-.st-table tbody tr:nth-child(even) {
-  background-color: $colorTableRowAlternate;
-}
+  tbody tr:nth-child(even) {
+    background-color: $colorTableRowAlternate;
+  }
 
-.st-table tbody tr.st-table-item-selected {
-  background-color: $colorListSelectionBackground;
-  color: $colorListSelectionText;
+  tbody tr.st-table-item-selected {
+    background-color: $colorListSelectionBackground;
+    color: $colorListSelectionText;
+  }
+
+  .st-playing-track-indicator {
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+  }
+
+  td.st-track-list-header {
+    padding: 10px 10px;
+
+    .st-track-list-header-album {
+      font-size: 2rem;
+    }
+    .st-track-list-header-artist {
+    }
+    .st-track-list-header-year {
+    }
+  }
 }
