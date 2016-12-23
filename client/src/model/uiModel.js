@@ -3,8 +3,8 @@ import createBus from "./createBus";
 import localStorageJSON from "../util/localStorageJSON";
 
 
-const MEDIUM_UI_BREAKPOINT = 500;
-const LARGE_UI_BREAKPOINT = 1024;
+const MEDIUM_UI_BREAKPOINT = 401;
+const LARGE_UI_BREAKPOINT = 840;
 
 
 const getWindowWidth = () => window.document.body.clientWidth
