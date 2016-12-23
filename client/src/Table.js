@@ -18,6 +18,14 @@ class Table extends Component {
           : item[column.itemKey]]);
   }
 
+  renderHeaderRow(key) {
+    return <tr key={key} className="st-table-group-header-labels">
+      {this.inlineColumns().map(({name, itemKey}) => (
+        <td key={`${itemKey}-${name}`}>{name}</td>
+      ))}
+    </tr>
+  }
+
   renderBody() {
     const rows = [];
     let lastGroupKey = "";
@@ -27,11 +35,14 @@ class Table extends Component {
     const groupSplitterColumns = this.groupSplitterColumns();
 
     let i = 0;
+    let headerKey = 0;
 
     const commitGroup = () => {
       if (!itemsInGroup.length) return;
       if (itemsInGroup.length) {
         rows.push(this.props.renderGroupHeader(itemsInGroup, lastGroupKey));
+        rows.push(this.renderHeaderRow("header-" + headerKey));
+        headerKey += 1;
 
         for (const item of itemsInGroup) {
           const j = i;
@@ -68,13 +79,6 @@ class Table extends Component {
     return (
       <div className={`${this.props.className} noselect st-table`}>
         <table>
-          <thead>
-            <tr>
-              {this.inlineColumns().map(({name, itemKey}) => (
-                <th key={`${itemKey}-${name}`}>{name}</th>
-              ))}
-            </tr>
-          </thead>
           {this.renderBody()}
         </table>
       </div>

@@ -46,6 +46,7 @@ socket.on('disconnect', () => {
 
 const setIsPlaying = (isPlaying) => {
   socket.send({"command": ["set_property", "pause", !isPlaying]});
+  getProperty("pause");  // sometimes this can get unsynced; make sure we don't get stuck!
 };
 
 const setVolume = (volume) => {

@@ -26,37 +26,57 @@
     border-right: none;
   }
 
-  tbody tr:nth-child(even), thead tr {
-    background-color: $colorBackground2;
-  }
+  tbody {
+    tr {
+      background-color: $colorTableRow;
 
-  tbody tr {
-    background-color: $colorTableRow;
-  }
+      &:nth-child(even) {
+        background-color: $colorBackground2;
+      }
 
-  tbody tr:nth-child(even) {
-    background-color: $colorTableRowAlternate;
-  }
+      &:nth-child(even) {
+        background-color: $colorTableRowAlternate;
+      }
 
-  tbody tr.st-table-item-selected {
-    background-color: $colorListSelectionBackground;
-    color: $colorListSelectionText;
-  }
+      &.st-table-item-selected {
+        background-color: $colorListSelectionBackground;
+        color: $colorListSelectionText;
+      }
 
-  .st-playing-track-indicator {
-    position: absolute;
-    top: 0; right: 0; bottom: 0;
-  }
+      &.st-track-list-header {
+        background-color: $colorTableRow;
+        border-top: 1px solid $colorBorder;
 
-  td.st-track-list-header {
-    padding: 10px 10px;
+        &:first-child {
+          border-top: none;
+        }
 
-    .st-track-list-header-album {
-      font-size: 2rem;
+        td {
+          padding: 10px 10px;
+        }
+
+        .st-track-list-header-album {
+          font-size: 2rem;
+        }
+        .st-track-list-header-artist {
+        }
+        .st-track-list-header-year {
+        }
+      }
+
+      &.st-table-group-header-labels {
+        background-color: $colorTableRow;
+        border-bottom: 1px solid $colorBorder;
+
+        td {
+          border-right: none;
+        }
+      }
     }
-    .st-track-list-header-artist {
-    }
-    .st-track-list-header-year {
+
+    .st-playing-track-indicator {
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
     }
   }
 }

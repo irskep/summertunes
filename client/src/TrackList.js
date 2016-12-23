@@ -62,8 +62,8 @@ class TrackList extends KComponent {
 
       renderGroupHeader={(itemsInGroup, key) => {
         const firstItem = itemsInGroup[0];
-        return <tr key={key}>
-          <td className="st-track-list-header" colSpan="4">
+        return <tr className="st-track-list-header" key={key}>
+          <td colSpan="4">
             <div className="st-track-list-header-album">{firstItem.album}</div>
             <div className="st-track-list-header-artist">{firstItem.albumartist}</div>
             <div className="st-track-list-header-year">{firstItem.year}</div>
