@@ -86,7 +86,7 @@ const goToNextTrack = (seconds) => {
 const kPropertyChanges = events
   .map((event) => {
     if (!event.request_id) {
-      console.debug(event);
+      // console.debug(event);
       return event;
     }
     if (!requestIdToPropertyName[event.request_id]) return event;

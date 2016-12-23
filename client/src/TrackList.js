@@ -21,6 +21,12 @@ class TrackList extends KComponent {
     playerQueueGetter: kPlayerQueueGetter,
   }; }
 
+  selectedTrack() {
+    if (this.state.trackIndex === null) return null;
+    if (!this.state.tracks || !this.state.tracks.length) return null;
+    return this.state.tracks[this.state.trackIndex];
+  }
+
   render() {
     return <Table className="st-track-list"
 
@@ -39,7 +45,7 @@ class TrackList extends KComponent {
             {item.disc}-{item.track}
             {this.state.playingTrack && item.id === this.state.playingTrack.id && (
               <span className="st-playing-track-indicator">
-                {play(false, false, 20)}
+                {play(false, false, 20, this.selectedTrack() === item ? "#fff" : "#666")}
               </span>
             )}
           </span>;
@@ -65,7 +71,7 @@ class TrackList extends KComponent {
         </tr>;
       }}
 
-      selectedItem={this.state.trackIndex === null ? null : this.state.tracks[this.state.trackIndex]}
+      selectedItem={this.state.trackIndex === null ? null : this.selectedTrack()}
       items={this.state.tracks} />;
   }
 }
