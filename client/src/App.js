@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import './css/base.css';
 import './css/App.css';
@@ -16,28 +16,6 @@ import {
   kOpenModal,
 } from "./model/uiModel";
 import KComponent from "./KComponent";
-
-class DummyList extends Component {
-  render() {
-    return <div className="st-browser-sidebar">
-      <ul>
-        <li>Playback Queue</li>
-      </ul>
-
-      <h1>Library</h1>
-      <ul>
-        <li>Library</li>
-      </ul>
-
-      <h1>Playlists</h1>
-      <ul>
-        <li>Unplayed</li>
-        <li>Imported from Casey</li>
-      </ul>
-
-    </div>;
-  }
-};
 
 class App extends KComponent {
   observables() { return {

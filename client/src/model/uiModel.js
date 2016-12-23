@@ -1,7 +1,6 @@
 import K from "kefir";
 import createBus from "./createBus";
 import localStorageJSON from "../util/localStorageJSON";
-import {kArtist, kAlbum} from "./browsingModel";
 
 
 const MEDIUM_UI_BREAKPOINT = 500;
@@ -24,10 +23,6 @@ const kIsInfoVisible = bIsInfoVisible
   .toProperty(() => localStorageJSON("uiIsInfoVisible", false));
 
 
-const logMapper = (label) => (arg) => {
-  console.log(label, arg);
-  return arg;
-};
 const [setOpenModal, bOpenModal] = createBus("openModal")
 const kOpenModal = bOpenModal
   .skipDuplicates()

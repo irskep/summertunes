@@ -64,8 +64,8 @@ export default class PlaybackControls extends KComponent {
     return (
       <svg width={size} height={size} version="1.1" xmlns="http://www.w3.org/2000/svg">
         <g transform={`translate(${size/2}, ${size/2})`}>
-          <rect x={-w - 2} y={-h / 2} width={w} height={h} fill="#666" stroke-width="0"/>
-          <rect x={2} y={-h / 2} width={w} height={h} fill="#666" stroke-width="0"/>
+          <rect x={-w - 2} y={-h / 2} width={w} height={h} fill="#666" strokeWidth="0"/>
+          <rect x={2} y={-h / 2} width={w} height={h} fill="#666" strokeWidth="0"/>
         </g>
       </svg>
     );

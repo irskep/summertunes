@@ -1,16 +1,25 @@
 /* global window */
-import React, { Component } from 'react';
+import React from 'react';
 import NowPlaying from "./NowPlaying";
 import "./css/Toolbar.css";
 import PlaybackControls from "./PlaybackControls";
+import KComponent from "./KComponent";
+import { kVolume, setVolume } from "./model/mpvModel";
 
-class Toolbar extends Component {
+class Toolbar extends KComponent {
+  observables() { return {
+    volume: kVolume,
+  }; }
+
   renderNormal() {
-      return <div className="st-toolbar">
-        <PlaybackControls />
-        <NowPlaying />
-        <input className="st-mac-style-input st-search-box" placeholder="Search" />
-      </div>;
+    return <div className="st-toolbar">
+      <PlaybackControls />
+      <NowPlaying />
+      <input
+        type="range" min="0" max="1" step="0.01"
+        onChange={(e) => setVolume(parseFloat(e.target.value))}
+        value={this.state.volume} />
+    </div>;
   }
 
   renderStacked() {

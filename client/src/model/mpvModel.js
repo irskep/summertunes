@@ -26,11 +26,17 @@ const sendAndObserve = (propertyName) => {
 
 /* setup */
 
+const events = K.stream((emitter) => {
+  socket.on('message', emitter.emit);
+  return () => socket.off('message', emitter.emit);
+});
+
 socket.on('connect', () => {
   console.log("socket.io connected");  // eslint-disable-line no-console
   sendAndObserve("path");
   sendAndObserve("pause");
   sendAndObserve("time-pos");
+  sendAndObserve("volume");
 });
 socket.on('disconnect', () => {
   console.warn("socket.io disconnected");  // eslint-disable-line no-console
@@ -40,6 +46,10 @@ socket.on('disconnect', () => {
 
 const setIsPlaying = (isPlaying) => {
   socket.send({"command": ["set_property", "pause", !isPlaying]});
+};
+
+const setVolume = (volume) => {
+  socket.send({"command": ["set_property", "volume", volume * 100]});
 };
 
 const seek = (seconds) => {
@@ -73,22 +83,22 @@ const goToNextTrack = (seconds) => {
 
 /* streams */
 
-const events = K.stream((emitter) => {
-  socket.on('message', emitter.emit);
-  return () => socket.off('message', emitter.emit);
-});
-
 const kPropertyChanges = events
   .map((event) => {
-    if (!event.request_id) return event;
+    if (!event.request_id) {
+      console.debug(event);
+      return event;
+    }
     if (!requestIdToPropertyName[event.request_id]) return event;
     const name = requestIdToPropertyName[event.request_id];
     delete requestIdToPropertyName[event.request_id];
-    return {
+    const reconstructedEvent = {
       "event": "property-change",
       "name": name,
       "data": event.data,
-    };
+    }
+     console.debug(reconstructedEvent);
+    return reconstructedEvent;
   })
   .filter((event) => {
     return event.event === "property-change";
@@ -102,6 +112,12 @@ const kPath = kPropertyChanges
   .map(({data}) => data)
   .skipDuplicates()
   .toProperty(() => null);
+
+const kVolume = kPropertyChanges
+  .filter(({name}) => name === "volume")
+  .map(({data}) => data / 100)
+  .skipDuplicates()
+  .toProperty(() => 1);
 
 const kIsPlaying = kPropertyChanges
   .filter(({name}) => name === "pause")
@@ -153,6 +169,7 @@ const kAlbumArtURL = kLastFM
 
 export {
   setIsPlaying,
+  setVolume,
   goToBeginningOfTrack,
   goToNextTrack,
   playTrack,
@@ -166,4 +183,5 @@ export {
   kPlayingTrack,
   kLastFM,
   kAlbumArtURL,
+  kVolume,
 };
