@@ -5,7 +5,7 @@ import KComponent from "./KComponent"
 import secondsToString from "./util/secondsToString";
 import { play } from "./util/svgShapes";
 
-import { playTracks, kPlayingTrack } from "./model/mpvModel";
+import { playTracks, kPlayingTrack } from "./model/playerModel";
 import { kTrackList, kTrackIndex, kPlayerQueueGetter, setTrackIndex } from "./model/browsingModel";
 
 function areTracksEqual(a, b) {

@@ -4,7 +4,7 @@ import NowPlaying from "./NowPlaying";
 import "./css/Toolbar.css";
 import PlaybackControls from "./PlaybackControls";
 import KComponent from "./KComponent";
-import { kVolume, setVolume } from "./model/mpvModel";
+import { kVolume, setVolume } from "./model/playerModel";
 
 class Toolbar extends KComponent {
   observables() { return {

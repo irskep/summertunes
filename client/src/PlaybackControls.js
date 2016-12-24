@@ -7,7 +7,7 @@ import {
   setIsPlaying,
   goToBeginningOfTrack,
   goToNextTrack,
-} from "./model/mpvModel";
+} from "./model/playerModel";
 import KComponent from "./KComponent";
 import { play, pause } from "./util/svgShapes";
 

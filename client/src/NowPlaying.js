@@ -3,7 +3,7 @@ import './css/NowPlaying.css';
 import secondsToString from "./util/secondsToString";
 import KComponent from "./KComponent";
 
-import { seek, kPlayingTrack, kPlaybackSeconds, kAlbumArtURL } from "./model/mpvModel";
+import { seek, kPlayingTrack, kPlaybackSeconds, kAlbumArtURL } from "./model/playerModel";
 import { setArtist, setAlbum } from "./model/browsingModel";
 
 function percentage(fraction) {
