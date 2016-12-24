@@ -28,7 +28,7 @@
       align-items: center;
       flex-wrap: nowrap;
 
-      & > * {
+      & > div {
         margin-left: 10px;
 
         &:first-child {
@@ -66,6 +66,12 @@
     min-width: 22px;
     padding-left: 4px;
     padding-right: 4px;
+
+    &.st-toolbar-button-selected {
+      border-color: $colorToolbarButtonText;
+      background-color: $colorToolbarButtonText;
+      color: $colorListSelectionText;
+    }
 }
 
 .st-toolbar-button-group > div:last-child {

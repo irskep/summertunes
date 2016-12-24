@@ -4,6 +4,7 @@ import mpvPlayer from "./mpvPlayer";
 import webPlayer from "./webPlayer";
 import apiKeys from "../apiKeys";
 import { SERVER_URL } from "../config";
+import localStorageJSON from "../util/localStorageJSON";
 
 
 const keepAlive = (observable) => {
@@ -16,11 +17,16 @@ const playersByName = {
   web: webPlayer,
   mpv: mpvPlayer,
 }
+const playerNames = Object.keys(playersByName);
 
 
 let _PLAYER = null;
-const [setPlayer, bPlayer] = createBus();
-const kPlayer = bPlayer.toProperty(() => playersByName.web);
+const [setPlayerName, bPlayerName] = createBus();
+const kPlayerName = bPlayerName
+  .skipDuplicates()
+  .toProperty(() => localStorageJSON("playerName", "mpv"));
+kPlayerName.onValue((playerName) => localStorage.playerName = JSON.stringify(playerName));
+const kPlayer = kPlayerName.map((name) => playersByName[name])
 kPlayer.onValue((p) => _PLAYER = p);
 
 
@@ -93,7 +99,9 @@ const goToNextTrack = forwardPlayerMethod('goToNextTrack');
 
 export {
   kPlayer,
-  setPlayer,
+  kPlayerName,
+  setPlayerName,
+  playerNames,
 
   kVolume,
   kIsPlaying,

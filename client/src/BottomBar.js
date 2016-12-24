@@ -1,6 +1,7 @@
 import React from 'react';
 import KComponent from "./KComponent";
 import { kIsInfoVisible, setIsInfoVisible, setOpenModal, kOpenModal } from "./model/uiModel";
+import { kPlayerName, setPlayerName, playerNames } from "./model/playerModel";
 import "./css/BottomBar.css";
 
 class BottomBar extends KComponent {
@@ -8,6 +9,7 @@ class BottomBar extends KComponent {
   observables() { return {
     isInfoVisible: kIsInfoVisible,
     openModal: kOpenModal,
+    playerName: kPlayerName,
   }; }
 
   toggleInfo() {
@@ -24,16 +26,31 @@ class BottomBar extends KComponent {
 
   render() {
     return <div className="st-bottom-bar noselect">
+      <div className="st-toolbar-button-group st-bottom-bar-left-buttons">
+        {playerNames.map((name) => (
+          <div onClick={() => setPlayerName(name)}
+               key={name}
+               className={this.state.playerName === name ? "st-toolbar-button-selected" : ""}>
+            {{
+              mpv: "Remote Control",
+              web: "Local"
+            }[name]}
+           </div>
+        ))}
+      </div>
+
       {this.props.artistAndAlbumButtons &&
         <div className="st-toolbar-button-group st-toolbar-modal-button"
               onClick={() => this.setOpenModal("artist")}>
               <div>Artist</div>
       </div>}
+
       {this.props.artistAndAlbumButtons &&
         <div className="st-toolbar-button-group st-toolbar-modal-button"
               onClick={() => this.setOpenModal("album")}>
               <div>Album</div>
         </div>}
+
       <div className="st-toolbar-button-group st-bottom-bar-right-buttons">
         <div onClick={() => this.toggleInfo()}>i</div>
       </div>

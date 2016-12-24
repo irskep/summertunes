@@ -5,6 +5,12 @@ import K from "kefir";
 import { MPV_URL } from "../config";
 
 
+const keepAlive = (observable) => {
+  observable.onValue(() => { });
+  return observable;
+}
+
+
 class MPVPlayer {
   constructor(socketURL) {
     this.socket = io(socketURL);
@@ -37,6 +43,9 @@ class MPVPlayer {
         }
         if (!this.requestIdToPropertyName[event.request_id]) return event;
         const name = this.requestIdToPropertyName[event.request_id];
+        if (!name) {
+          console.error("Couldn't decode response", event);
+        }
         delete this.requestIdToPropertyName[event.request_id];
         const reconstructedEvent = {
           "event": "property-change",
@@ -53,28 +62,28 @@ class MPVPlayer {
         return {name, data};
       });
 
-    this.kPath = this.kPropertyChanges
+    this.kPath = keepAlive(this.kPropertyChanges
       .filter(({name}) => name === "path")
       .map(({data}) => data)
       .skipDuplicates()
-      .toProperty(() => null);
+      .toProperty(() => null));
 
-    this.kVolume = this.kPropertyChanges
+    this.kVolume = keepAlive(this.kPropertyChanges
       .filter(({name}) => name === "volume")
       .map(({data}) => data / 100)
       .skipDuplicates()
-      .toProperty(() => 1);
+      .toProperty(() => 1));
 
-    this.kIsPlaying = this.kPropertyChanges
+    this.kIsPlaying = keepAlive(this.kPropertyChanges
       .filter(({name}) => name === "pause")
       .map(({data}) => !data)
       .skipDuplicates()
-      .toProperty(() => false);
+      .toProperty(() => false));
 
-    this.kPlaybackSeconds = this.kPropertyChanges
+    this.kPlaybackSeconds = keepAlive(this.kPropertyChanges
       .filter(({name}) => name === "time-pos")
       .map(({data}) => data)
-      .toProperty(() => 0);
+      .toProperty(() => 0));
   }
 
   getProperty(propertyName) {
