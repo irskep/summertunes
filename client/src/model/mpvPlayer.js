@@ -27,10 +27,7 @@ class MPVPlayer {
     });
 
     /* events */
-    this.events = K.stream((emitter) => {
-      this.socket.on('message', emitter.emit);
-      return () => this.socket.off('message', emitter.emit);
-    });
+    this.events = K.fromEvents(this.socket, 'message');
 
     this.kPropertyChanges = this.events
       .map((event) => {

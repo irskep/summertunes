@@ -10,7 +10,6 @@ function _path(track) {
     .split('/')
     .map(encodeURIComponent)
     .join('/');
-  console.log(`${SERVER_URL}/files${encodedPath}`);
   return `${SERVER_URL}/files${encodedPath}`;
 }
 
@@ -18,12 +17,16 @@ function _path(track) {
 class WebPlayer {
   constructor() {
     this.player = new Gapless5('gapless-block');
+    window.player = this.player;
+
+    const [setPlay, bPlay] = createBus();
+    this.player.onplay = () => setPlay(true);
+    this.player.onpause = () => setPlay(false);
+    this.kIsPlaying = bPlay.toProperty(() => false);
 
     this.kPath = K.constant(null)
 
     this.kVolume = K.constant(1)
-
-    this.kIsPlaying = K.constant(false)
 
     this.kPlaybackSeconds = K.constant(0)
 
@@ -34,6 +37,7 @@ class WebPlayer {
   }
 
   setIsPlaying(isPlaying) {
+    isPlaying ? this.player.pause() : this.player.play();
   }
 
   setVolume(volume) {
@@ -47,14 +51,19 @@ class WebPlayer {
 
   playTrack(track) {
     const path = _path(track);
-    this.player.removeAllTracks();
+    this.player.pause();
+    while (this.player.totalTracks() > 1) {
+      this.player.removeTrack(0);
+    }
     if (!this.player.trk) {
       const items = [{}];
 			items[0].file = path;
       this.player.trk = new Gapless5FileList(items, 0, false);
 			this.player.addInitialTrack(this.player.trk.files()[0]);
     } else {
+      // Gapless5 can't handle empty playlists, LOLOL
       this.player.addTrack(path);
+      this.player.gotoTrack(1);
     }
     this.player.play();
   }
@@ -67,6 +76,7 @@ class WebPlayer {
   }
 
   goToNextTrack() {
+    this.player.next();
   }
 }
 

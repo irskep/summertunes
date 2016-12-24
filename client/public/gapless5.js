@@ -866,12 +866,13 @@ var index = function () {
 // Index for displaying the currently playing
 // track, suitable for use in update functions
 var dispIndex = function () {
-	if ( readyToRemake() )
+	if ( readyToRemake() ) {
 		return that.trk.previousItem;
-	else if ( that.trk != null )
+	} else if ( that.trk != null ) {
 		return that.trk.get();
-	else
+	} else {
 		return -1;
+	}
 }
 
 var readyToRemake = function () {
@@ -897,6 +898,7 @@ var getFormattedTime = function (inMS) {
 
 var getTotalPositionText = function () {
 	var text = LOAD_TEXT;
+	if (dispIndex() >= that.mgr.sources.length) return ERROR_TEXT;
 	var srcLength = that.mgr.sources[dispIndex()].getLength();
 
 	if (numTracks() == 0)
@@ -1182,6 +1184,11 @@ this.removeAllTracks = function () {
 	// TODO: move this function into the FileList object
 	that.mgr.sources = [];
 	that.mgr.loadQueue = [];
+
+	while (this.trk.current) {
+		this.trk.remove(0);
+	}
+
 	if (initialized)
 	{
 		updateDisplay();

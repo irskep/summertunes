@@ -1,6 +1,6 @@
 import K from "kefir";
 import createBus from "./createBus";
-import mpvPlayer from "./mpvModel";
+import mpvPlayer from "./mpvPlayer";
 import webPlayer from "./webPlayer";
 import apiKeys from "../apiKeys";
 
