@@ -1,4 +1,3 @@
-import K from "kefir";
 import { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 
@@ -6,17 +5,20 @@ export default class KComponent extends Component {
   componentWillMount() {
     const o = this.observables();
     const keys = Object.keys(o);
-    this.observable = K.combine(keys.map((k) => o[k]));
-    this.subscriber = (args) => {
-      const newState = {};
-      args.forEach((arg, i) => { newState[keys[i]] = arg; });
-      this.setState(newState);
-    };
-    this.observable.onValue(this.subscriber);
+    this.subscribers = {};
+    for (const k of keys) {
+      const s = (v) => this.setState({[k]: v});
+      o[k].onValue(s);
+      this.subscribers[k] = s;
+    }
   }
 
   componentWillUnmount() {
-      this.observable.offValue(this.subscriber);
+    const o = this.observables();
+    const keys = Object.keys(o);
+    for (const k of keys) {
+      o[k].offValue(this.subscribers[k]);
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {

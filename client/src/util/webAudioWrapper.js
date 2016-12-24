@@ -21,15 +21,13 @@ class MusicTrack {
     this.path = path1;
     this.onended = onended;
     this.onloaded = onloaded;
-    requestAudio(this.path, (function(_this) {
-      return function(audioData) {
-        return _this.player.ctx.decodeAudioData(audioData, function(decodedData) {
-          _this.buffer = decodedData;
-          _this.onloaded();
-          return _this.initializeSource();
-        });
-      };
-    })(this));
+    requestAudio(this.path, (audioData) => {
+      return this.player.ctx.decodeAudioData(audioData, (decodedData) => {
+        this.buffer = decodedData;
+        this.initializeSource();
+        this.onloaded();
+      });
+    });
   }
 
   initializeSource() {
@@ -55,7 +53,11 @@ class MusicTrack {
   stop() {
     if (!this.stopped) {
       this.source.onended = null;
-      this.source.stop();
+      try {
+        this.source.stop();
+      } catch (e) {
+        // whatever
+      }
       this.stopped = true;
       this.paused = false;
       return this.initializeSource();
@@ -117,6 +119,7 @@ class MusicPlayer {
     this.onPlaylistEnded = function() { };
     this.onPlayerStopped = function() { };
     this.onPlayerPaused = function() { };
+    this.onPlayerUnpaused = function() { };
     this.onTrackLoaded = function(path) { };
     this.onTrackAdded = function(path) { };
     this.onTrackRemoved = function(path) { };
@@ -130,7 +133,7 @@ class MusicPlayer {
 
   setVolume(value) {
     this.gainNode.gain.value = value;
-    return this.onVolumeChanged(value);
+    this.onVolumeChanged(value);
   };
 
   getVolume() {
@@ -141,32 +144,33 @@ class MusicPlayer {
     if (this.muted) {
       this.muted = false;
       this.gainNode.gain.value = this.previousGain;
-      return this.onUnmuted();
+      this.onUnmuted();
     } else {
       this.previousGain = this.gainNode.gain.value;
       this.gainNode.gain.value = 0;
       this.muted = true;
-      return this.onMuted();
+      this.onMuted();
     }
   };
 
-  pause () {
+  pause() {
     if (this.playlist.length !== 0) {
       this.playlist[0].pause();
-      return this.onPlayerPaused();
+      this.onPlayerPaused();
     }
   };
 
   stop() {
     if (this.playlist.length !== 0) {
       this.playlist[0].stop();
-      return this.onPlayerStopped();
+      this.onPlayerStopped();
     }
   };
 
   play() {
     if (this.playlist.length !== 0) {
-      return this.playlist[0].play();
+      this.playlist[0].play();
+      return this.onPlayerUnpaused();
     }
   };
 
@@ -182,35 +186,26 @@ class MusicPlayer {
     }
   };
 
-  addTrack(path) {
-    var finishedCallback, loadedCallback;
-    finishedCallback = (function(_this) {
-      return function() {
-        _this.onSongFinished(path);
-        return _this.playNext();
-      };
-    })(this);
-    loadedCallback = (function(_this) {
-      return function() {
-        return _this.onTrackLoaded(path);
-      };
-    })(this);
+  addTrack(path, onLoad) {
+    const finishedCallback = () => {
+      this.onSongFinished(path);
+      return this.playNext();
+    };
+    const loadedCallback = () => {
+      if (onLoad) onLoad();
+      return this.onTrackLoaded(path);
+    };
     return this.playlist.push(new MusicTrack(this, path, finishedCallback, loadedCallback));
   };
 
   insertTrack(index, path) {
-    var finishedCallback, loadedCallback;
-    finishedCallback = (function(_this) {
-      return function() {
-        _this.onSongFinished(path);
-        return _this.playNext();
-      };
-    })(this);
-    loadedCallback = (function(_this) {
-      return function() {
-        return _this.onTrackLoaded(path);
-      };
-    })(this);
+    const finishedCallback = () => {
+      this.onSongFinished(path);
+      return this.playNext();
+    };
+    const loadedCallback = () => {
+      return this.onTrackLoaded(path);
+    };
     return this.playlist.splice(index, 0, new MusicTrack(this, path, finishedCallback, loadedCallback));
   };
 
@@ -221,20 +216,15 @@ class MusicPlayer {
   };
 
   replaceTrack(index, path) {
-    var finishedCallback, loadedCallback, newTrack, oldTrack;
-    finishedCallback = (function(_this) {
-      return function() {
-        _this.onSongFinished(path);
-        return _this.playNext();
-      };
-    })(this);
-    loadedCallback = (function(_this) {
-      return function() {
-        return _this.onTrackLoaded(path);
-      };
-    })(this);
-    newTrack = new MusicTrack(this, path, finishedCallback, loadedCallback);
-    oldTrack = this.playlist.splice(index, 1, newTrack);
+    const finishedCallback = () => {
+      this.onSongFinished(path);
+      return this.playNext();
+    };
+    const loadedCallback = () => {
+      return this.onTrackLoaded(path);
+    };
+    const newTrack = new MusicTrack(this, path, finishedCallback, loadedCallback);
+    const oldTrack = this.playlist.splice(index, 1, newTrack);
     return this.onTrackRemoved(oldTrack.path);
   };
 

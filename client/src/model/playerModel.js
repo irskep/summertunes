@@ -3,6 +3,7 @@ import createBus from "./createBus";
 import mpvPlayer from "./mpvPlayer";
 import webPlayer from "./webPlayer";
 import apiKeys from "../apiKeys";
+import { SERVER_URL } from "../config";
 
 
 let _PLAYER = null;
@@ -28,7 +29,18 @@ const forwardPlayerMethod = (key) => {
 const kVolume = forwardPlayerProperty('kVolume');
 const kIsPlaying = forwardPlayerProperty('kIsPlaying');
 const kPlaybackSeconds = forwardPlayerProperty('kPlaybackSeconds');
-const kPlayingTrack = forwardPlayerProperty('kPlayingTrack');
+const kPath = forwardPlayerProperty('kPath');
+
+const kPlayingTrack = kPath
+  .flatMapLatest((path) => {
+    if (!path) return K.constant(null);
+    return K.fromPromise(
+      window.fetch(`${SERVER_URL}/track?path=${encodeURIComponent(path)}`)
+        .then((response) => response.json())
+        .then(({track}) => track)
+    );
+  })
+  .toProperty(() => null);
 
 const kLastFM = kPlayingTrack
   .flatMapLatest((track) => {

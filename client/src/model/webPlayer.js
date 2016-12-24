@@ -1,82 +1,123 @@
-/* global Gapless5 */
-/* global Gapless5FileList */
-import K from "kefir";
 import createBus from "./createBus";
 import { SERVER_URL } from "../config";
+import MusicPlayer from "../util/webAudioWrapper";
 
 
-function _path(track) {
+const URL_PREFIX = `${SERVER_URL}/files`
+
+
+const createBusProperty = (initialValue) => {
+  const [setter, bus] = createBus();
+  const property = bus.toProperty(() => initialValue);
+  return [setter, property];
+}
+
+
+function _pathToURL(track) {
   const encodedPath = track.path
     .split('/')
     .map(encodeURIComponent)
     .join('/');
-  return `${SERVER_URL}/files${encodedPath}`;
+  return URL_PREFIX + encodedPath;
+}
+
+
+function _urlToPath(url) {
+  return url
+    .slice(URL_PREFIX.length)
+    .split('/')
+    .map(decodeURIComponent)
+    .join('/');
 }
 
 
 class WebPlayer {
   constructor() {
-    this.player = new Gapless5('gapless-block');
+    this.player = new MusicPlayer();
     window.player = this.player;
 
-    const [setPlay, bPlay] = createBus();
-    this.player.onplay = () => setPlay(true);
-    this.player.onpause = () => setPlay(false);
-    this.kIsPlaying = bPlay.toProperty(() => false);
+    const [observeIsPlaying, kIsPlaying] = createBusProperty(false);
 
-    this.kPath = K.constant(null)
+    this.kIsPlaying = kIsPlaying;
+    this.player.onPlayerUnpaused = () => {
+      observeIsPlaying(true);
+      this._updateTrack();
+    }
+    this.player.onPlayerPaused = () => {
+      observeIsPlaying(false);
+      this._updateTrack();
+    }
 
-    this.kVolume = K.constant(1)
+    const [observeVolume, kVolume] = createBusProperty(1);
+    this.player.onVolumeChanged = observeVolume;
+    this.kVolume = kVolume;
 
-    this.kPlaybackSeconds = K.constant(0)
+    const [observePath, kPath] = createBusProperty(null);
+    this._observePath = observePath;
+    this.kPath = kPath.skipDuplicates();
 
-    this.kPlayingTrack = K.constant(null)
+    this.player.onSongFinished = () => this._updateTrack();
+
+    const [observePlaybackSeconds, kPlaybackSeconds] = createBusProperty(0);
+    this.kPlaybackSeconds = kPlaybackSeconds;
+
+    const updatePlaybackSeconds = () => {
+      observePlaybackSeconds(this.player.getSongPosition());
+      observeIsPlaying(
+        this.player.playlist.length > 0 &&
+        !this.player.playlist[0].paused)
+      this._updateTrack();
+
+      window.requestAnimationFrame(updatePlaybackSeconds);
+    };
+    window.requestAnimationFrame(updatePlaybackSeconds);
   }
 
-  sendAndObserve(propertyName) {
+  _updateTrack() {
+    if (this.player.playlist.length) {
+      this._observePath(_urlToPath(this.player.playlist[0].path));
+    } else {
+      this._observePath(null);
+    }
   }
 
   setIsPlaying(isPlaying) {
-    isPlaying ? this.player.pause() : this.player.play();
+    if (isPlaying) {
+      this.player.play();
+    } else {
+      this.player.pause();
+    }
   }
 
   setVolume(volume) {
+    this.player.setVolume(volume);
   }
 
   seek(seconds) {
+    this.player.setSongPosition(seconds);
   }
 
   goToBeginningOfTrack() {
+    this.player.setSongPosition(0);
   }
 
   playTrack(track) {
-    const path = _path(track);
     this.player.pause();
-    while (this.player.totalTracks() > 1) {
-      this.player.removeTrack(0);
-    }
-    if (!this.player.trk) {
-      const items = [{}];
-			items[0].file = path;
-      this.player.trk = new Gapless5FileList(items, 0, false);
-			this.player.addInitialTrack(this.player.trk.files()[0]);
-    } else {
-      // Gapless5 can't handle empty playlists, LOLOL
-      this.player.addTrack(path);
-      this.player.gotoTrack(1);
-    }
-    this.player.play();
+    this.player.removeAllTracks();
+    this.player.addTrack(_pathToURL(track), () => {
+      this.player.play();
+    });
   }
 
   playTracks(tracks) {
     this.playTrack(tracks[0]);
     tracks.slice(1).forEach((track) => {
-      this.player.addTrack(_path(track));
+      this.player.addTrack(_pathToURL(track));
     });
   }
 
   goToNextTrack() {
-    this.player.next();
+    this.player.playNext();
   }
 }
 

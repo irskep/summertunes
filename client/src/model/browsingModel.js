@@ -5,17 +5,22 @@ import trackQueryString from "./trackQueryString";
 import localStorageJSON from "../util/localStorageJSON";
 
 
+const keepAlive = (observable) => observable.onValue(() => { })
+
+
 const kArtists = K.fromPromise(
     window.fetch(`${SERVER_URL}/artists`)
       .then((response) => response.json())
       .then(({artists}) => artists)
 ).toProperty(() => []);
+keepAlive(kArtists);
 
 
 const [setArtist, bArtist] = createBus()
 const kArtist = bArtist
   .skipDuplicates()
   .toProperty(() => localStorageJSON("browsingArtist", null));
+keepAlive(kArtist);
 
 const kAlbums = kArtist
   .flatMapLatest((artistName) => {
@@ -26,16 +31,18 @@ const kAlbums = kArtist
     return K.fromPromise(
       window.fetch(query)
         .then((response) => response.json())
-        .then(({albums}) => albums));
+        .then(({albums}) => albums)
+    );
   })
-  .merge(kArtist.map(() => []))
   .toProperty(() => [])
+keepAlive(kAlbums);
 
 const [setAlbum, bAlbum] = createBus()
 const kAlbum = bAlbum
   .merge(kArtist.map(() => null).skip(1))  // don't zap initial load
   .skipDuplicates()
   .toProperty(() => localStorageJSON("browsingAlbum", null));
+keepAlive(kAlbum);
 
 const kTrackList = K.combine([kArtist, kAlbum])
   .flatMapLatest(([artist, album]) => {
@@ -49,11 +56,13 @@ const kTrackList = K.combine([kArtist, kAlbum])
     );
   })
   .toProperty(() => []);
+keepAlive(kTrackList);
 
 const [setTrackIndex, bTrackIndex] = createBus()
 const kTrackIndex = bTrackIndex
   .merge(kTrackList.changes().map(() => null))
   .toProperty(() => null);
+keepAlive(kTrackIndex);
 
 const kTrack = K.combine([kTrackList, kTrackIndex], (trackList, trackIndex) => {
   if (trackIndex === null) return null;
@@ -61,6 +70,7 @@ const kTrack = K.combine([kTrackList, kTrackIndex], (trackList, trackIndex) => {
   if (trackIndex >= trackList.length) return null;
   return trackList[trackIndex];
 }).toProperty(() => null);
+keepAlive(kTrack);
 
 const kPlayerQueueGetter = K.combine([kTrackList, kTrackIndex], (trackList, trackIndex) => {
   if (trackIndex === null) return null;
@@ -68,6 +78,7 @@ const kPlayerQueueGetter = K.combine([kTrackList, kTrackIndex], (trackList, trac
   if (trackIndex >= trackList.length) return null;
   return () => trackList.slice(trackIndex);
 }).toProperty(() => () => []);
+keepAlive(kPlayerQueueGetter);
 
 /* localStorage sync */
 

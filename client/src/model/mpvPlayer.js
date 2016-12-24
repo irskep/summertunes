@@ -2,7 +2,7 @@
 /* global window */
 import io from 'socket.io-client';
 import K from "kefir";
-import { SERVER_URL, MPV_URL } from "../config";
+import { MPV_URL } from "../config";
 
 
 class MPVPlayer {
@@ -75,17 +75,6 @@ class MPVPlayer {
       .filter(({name}) => name === "time-pos")
       .map(({data}) => data)
       .toProperty(() => 0);
-
-    this.kPlayingTrack = this.kPath
-      .flatMapLatest((path) => {
-        if (!path) return K.constant(null);
-        return K.fromPromise(
-          window.fetch(`${SERVER_URL}/track?path=${encodeURIComponent(path)}`)
-            .then((response) => response.json())
-            .then(({track}) => track)
-        );
-      })
-      .toProperty(() => null);
   }
 
   getProperty(propertyName) {
