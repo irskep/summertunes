@@ -22,6 +22,6 @@ python summertunes.py
 
 In your web browser, visit `http://localhost:3000/`.
 
-![](https://www.dropbox.com/s/hxwiumtdh72v8zp/Screenshot%202016-12-23%2018.22.19.png?dl=1)
+![](https://www.dropbox.com/s/459k4m9mkaj67sy/Screenshot%202016-12-23%2019.08.01.png?dl=1)
 
 ![](https://www.dropbox.com/s/idcmdhrwre56cov/Screenshot%202016-12-23%2018.24.54.png?dl=1)
