@@ -6,18 +6,30 @@ import apiKeys from "../apiKeys";
 import { SERVER_URL } from "../config";
 
 
+const keepAlive = (observable) => {
+  observable.onValue(() => { });
+  return observable;
+}
+
+
+const playersByName = {
+  web: webPlayer,
+  mpv: mpvPlayer,
+}
+
+
 let _PLAYER = null;
 const [setPlayer, bPlayer] = createBus();
-const kPlayer = bPlayer.toProperty(() => webPlayer);
+const kPlayer = bPlayer.toProperty(() => playersByName.web);
 kPlayer.onValue((p) => _PLAYER = p);
 
 
 const forwardPlayerProperty = (key) => {
-  return kPlayer
+  return keepAlive(kPlayer
     .flatMapLatest((player) => {
       return player[key];
     })
-    .toProperty(() => null);
+    .toProperty(() => null));
 };
 
 
@@ -67,6 +79,7 @@ const kAlbumArtURL = kLastFM
     }
     return urlBySize;
   });
+keepAlive(kAlbumArtURL);
 
 
 const setIsPlaying = forwardPlayerMethod('setIsPlaying');
