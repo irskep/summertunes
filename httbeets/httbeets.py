@@ -1,15 +1,16 @@
 import logging
 import re
+from pathlib import Path
 from subprocess import Popen, PIPE
 
 from beets.ui import _configure, _open_library
-from flask import Flask
+from flask import Flask, send_from_directory, abort
 from flask_cors import CORS
 from flask_restful import Resource, Api, reqparse
 
 log = logging.getLogger(__name__)
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 CORS(app)
 api = Api(app)
 
@@ -96,7 +97,6 @@ class Track(Resource):
         command = [
             'beet',
             '--library', library.path.decode('UTF-8', 'strict'),
-                   '--library', library.path.decode('UTF-8', 'strict'),
             'list',
             '--format', '$id',
             query
@@ -114,6 +114,19 @@ api.add_resource(Tracks, '/tracks')
 api.add_resource(Track, '/track')
 api.add_resource(Albums, '/albums')
 api.add_resource(Artists, '/artists')
+
+@app.route('/files/<path:path>')
+def send_js(path):
+    path = Path('/' + path)
+    lib_path = Path(library.directory.decode('UTF-8', 'strict'))
+    
+    for a, b in zip(lib_path.parts, path.parts):
+        if a != b:
+            abort(404)  # "security"
+
+    rel_path = path.relative_to(lib_path)
+
+    return send_from_directory(str(lib_path), str(rel_path))
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
