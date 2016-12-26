@@ -3,7 +3,7 @@ import createBus from "./createBus";
 import localStorageJSON from "../util/localStorageJSON";
 
 
-const MEDIUM_UI_BREAKPOINT = 401;
+const MEDIUM_UI_BREAKPOINT = 420;
 const LARGE_UI_BREAKPOINT = 840;
 
 
