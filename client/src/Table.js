@@ -40,7 +40,7 @@ class Table extends Component {
     const commitGroup = () => {
       if (!itemsInGroup.length) return;
       if (itemsInGroup.length) {
-        rows.push(this.props.renderGroupHeader(itemsInGroup, lastGroupKey));
+        rows.push(this.props.renderGroupHeader(itemsInGroup, "title-" + headerKey));
         rows.push(this.renderHeaderRow("header-" + headerKey));
         headerKey += 1;
 
