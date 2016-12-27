@@ -119,7 +119,7 @@ api.add_resource(Artists, '/artists')
 def send_js(path):
     path = Path('/' + path)
     lib_path = Path(library.directory.decode('UTF-8', 'strict'))
-    
+
     for a, b in zip(lib_path.parts, path.parts):
         if a != b:
             abort(404)  # "security"

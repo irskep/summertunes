@@ -25,7 +25,7 @@ keepAlive(kArtist);
 const kAlbums = kArtist
   .flatMapLatest((artistName) => {
     const query = artistName
-      ? `${SERVER_URL}/albums?albumartist=${artistName}`
+      ? `${SERVER_URL}/albums?albumartist=${encodeURIComponent(artistName)}`
       : `${SERVER_URL}/albums`;
 
     return K.fromPromise(
