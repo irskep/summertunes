@@ -27,7 +27,7 @@ class NowPlaying extends KComponent {
     const playbackFraction = this.state.track
         ? this.state.playbackSeconds / this.state.track.length
         : 0;
-    const albumArtURL = this.state.albumArtURL.small;
+    const albumArtURL = (this.state.albumArtURL || {}).small;
 
     /*
     const track = this.state.track || {
