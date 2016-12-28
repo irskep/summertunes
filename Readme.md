@@ -1,6 +1,6 @@
 ## Requirements
 
-Works on 3.5 and might work on 2.7.
+Works on Python 3.5 and might work on 2.7.
 
 ## Setup
 
