@@ -74,18 +74,6 @@
   }
 }
 
-.st-small-ui .st-toolbar-button-group {
-  height: 43px;
-  line-height: 43px;
-
-  & > div {
-    line-height: 42px;
-    min-width: 42px;
-    padding-left: 6px;
-    padding-right: 6px;
-  }
-}
-
 .st-toolbar-button-group > div:last-child {
     border-right: none;
 }

@@ -18,14 +18,26 @@
   flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-end;
-}
 
-.st-bottom-bar-right-buttons {
-  float: right;
-}
+  .st-bottom-bar-right-buttons {
+    float: right;
+  }
 
-.st-bottom-bar-left-buttons {
-  position: absolute;
-  top: 2px;
-  left: 2px;
+  .st-bottom-bar-left-buttons {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+  }
+
+  .st-toolbar-button-group {
+    height: 43px;
+    line-height: 43px;
+
+    & > div {
+      line-height: 42px;
+      min-width: 42px;
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+  }
 }
