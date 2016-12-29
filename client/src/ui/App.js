@@ -81,7 +81,7 @@ class App extends KComponent {
   renderSmallUI() {
     if (this.state.openModal) {
       return (
-        <div className="st-app">
+        <div className="st-app st-app-modal">
           <div className="st-small-ui">
             <div className="st-modal-nav-bar">
               <div className="st-modal-close-button" onClick={setOpenModal.bind(this, null)}>&times;</div>
