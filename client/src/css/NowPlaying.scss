@@ -3,8 +3,6 @@
 .st-now-playing {
   background-color: $colorBackground1;
   position: relative;
-  width: 550px;
-  max-width: 100%;
   height: 48px;
   flex-shrink: 1;
   margin-left: 10px;
@@ -20,68 +18,76 @@
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
-}
 
-.st-now-playing-title {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  max-width: calc(100% - 20px);
-  cursor: pointer;
-}
+  max-width: 550px;
+  width: calc(100% - 300px);
 
-.st-now-playing .st-album-art {
-  border-radius: 5px;
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  top: 3px;
-  left: 3px;
+  .st-toolbar-stacked & {
+    max-width: 100%;
+    width: 100%;
+  }
 
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-}
+  .st-now-playing-title {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: calc(100% - 20px);
+    cursor: pointer;
+  }
 
-.st-album-art-empty {
-  border: 1px solid $colorBorder;
-  border-style: dashed;
-}
+  .st-album-art {
+    border-radius: 5px;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 3px;
+    left: 3px;
 
-.st-playback-time-bar {
-  cursor: pointer;
-  font-size: 12px;
-  margin-top: 4px;
-  width: calc(100% - 20px);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
 
-  display: flex;
-  margin-left: 4px;
-  margin-right: 4px;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: space-between;
-}
+  .st-album-art-empty {
+    border: 1px solid $colorBorder;
+    border-style: dashed;
+  }
 
-.st-playback-time-bar-graphic {
-  overflow: hidden;
-  height: 5px;
-  border-radius: 2px;
-  background-color: $colorBackground2;
+  .st-playback-time-bar {
+    cursor: pointer;
+    font-size: 12px;
+    margin-top: 4px;
+    width: calc(100% - 20px);
 
-  flex-grow: 1;
-  flex-shrink: 1;
-}
+    display: flex;
+    margin-left: 4px;
+    margin-right: 4px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+  }
 
-.st-playback-time-bar-graphic > div {
-  background-color: $colorNowPlayingBar;
-  height: 100%;
-}
+  .st-playback-time-bar-graphic {
+    overflow: hidden;
+    height: 5px;
+    border-radius: 2px;
+    background-color: $colorBackground2;
 
-.st-playback-time-bar-now {
-  margin-right: 4px;
-}
+    flex-grow: 1;
+    flex-shrink: 1;
 
-.st-playback-time-bar-duration {
-  margin-left: 4px;
+    & > div {
+      background-color: $colorNowPlayingBar;
+      height: 100%;
+    }
+  }
+
+  .st-playback-time-bar-now {
+    margin-right: 4px;
+  }
+
+  .st-playback-time-bar-duration {
+    margin-left: 4px;
+  }
 }
