@@ -1,8 +1,8 @@
 import React from 'react';
-import KComponent from "./util/KComponent";
-import { kIsInfoVisible, setIsInfoVisible, setOpenModal, kOpenModal } from "./model/uiModel";
-import { kPlayerName, setPlayerName, playerNames } from "./model/playerModel";
-import "./css/BottomBar.css";
+import KComponent from "../util/KComponent";
+import { kIsInfoVisible, setIsInfoVisible, setOpenModal, kOpenModal } from "../model/uiModel";
+import { kPlayerName, setPlayerName, playerNames } from "../model/playerModel";
+import "../css/BottomBar.css";
 
 class BottomBar extends KComponent {
 

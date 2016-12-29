@@ -1,8 +1,8 @@
 import React from 'react';
-import List from "./uilib/List";
-import KComponent from "./util/KComponent";
-import { kAlbums, kAlbum, setAlbum } from "./model/browsingModel";
-import { setOpenModal } from "./model/uiModel";
+import List from "../uilib/List";
+import KComponent from "../util/KComponent";
+import { kAlbums, kAlbum, setAlbum } from "../model/browsingModel";
+import { setOpenModal } from "../model/uiModel";
 
 class AlbumList extends KComponent {
   observables() { return {

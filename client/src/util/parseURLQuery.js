@@ -1,4 +1,4 @@
-export default function getQueryVariable(query) {
+export default function parseURLQuery(query) {
   const result = {};
   for (const segment of query.split('&')) {
     const equalIndex = segment.indexOf("=");

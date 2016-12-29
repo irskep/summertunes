@@ -1,10 +1,10 @@
 /* global window */
 import React from 'react';
 import NowPlaying from "./NowPlaying";
-import "./css/Toolbar.css";
+import "../css/Toolbar.css";
 import PlaybackControls from "./PlaybackControls";
-import KComponent from "./util/KComponent";
-import { kVolume, setVolume } from "./model/playerModel";
+import KComponent from "../util/KComponent";
+import { kVolume, setVolume } from "../model/playerModel";
 
 class Toolbar extends KComponent {
   observables() { return {

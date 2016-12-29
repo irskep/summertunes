@@ -1,21 +1,23 @@
 import React from 'react';
 
-import './css/base.css';
-import './css/App.css';
+import '../css/base.css';
+import '../css/App.css';
+
 import BottomBar from "./BottomBar";
 import Toolbar from "./Toolbar";
 import ArtistList from "./ArtistList";
 import AlbumList from "./AlbumList";
 import TrackList from "./TrackList";
 import TrackInfo from "./TrackInfo";
-import { kArtist, kAlbum, kTrack } from "./model/browsingModel";
+
+import { kArtist, kAlbum, kTrack } from "../model/browsingModel";
 import {
   kIsInfoVisible,
   kIsMediumUI,
   kIsLargeUI,
   kOpenModal,
-} from "./model/uiModel";
-import KComponent from "./util/KComponent";
+} from "../model/uiModel";
+import KComponent from "../util/KComponent";
 
 class App extends KComponent {
   observables() { return {

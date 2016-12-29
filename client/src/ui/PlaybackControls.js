@@ -1,5 +1,5 @@
 import React from 'react';
-import "./css/Toolbar.css";
+import "../css/Toolbar.css";
 import {
   kIsPlaying,
   kPlayingTrack,
@@ -7,9 +7,9 @@ import {
   setIsPlaying,
   goToBeginningOfTrack,
   goToNextTrack,
-} from "./model/playerModel";
-import KComponent from "./util/KComponent";
-import { play, pause } from "./util/svgShapes";
+} from "../model/playerModel";
+import KComponent from "../util/KComponent";
+import { play, pause } from "../util/svgShapes";
 
 export default class PlaybackControls extends KComponent {
   observables() { return {

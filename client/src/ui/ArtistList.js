@@ -1,9 +1,9 @@
 /* global window */
 import React from 'react';
-import List from "./uilib/List";
-import { kArtists, kArtist, setArtist } from "./model/browsingModel";
-import KComponent from "./util/KComponent";
-import { setOpenModal } from "./model/uiModel";
+import List from "../uilib/List";
+import { kArtists, kArtist, setArtist } from "../model/browsingModel";
+import KComponent from "../util/KComponent";
+import { setOpenModal } from "../model/uiModel";
 
 class ArtistList extends KComponent {
   observables() { return {

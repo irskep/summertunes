@@ -1,12 +1,12 @@
 /* global window */
 import React from 'react';
-import Table from "./uilib/Table";
-import KComponent from "./util/KComponent"
-import secondsToString from "./util/secondsToString";
-import { play } from "./util/svgShapes";
+import Table from "../uilib/Table";
+import KComponent from "../util/KComponent"
+import secondsToString from "../util/secondsToString";
+import { play } from "../util/svgShapes";
 
-import { playTracks, kPlayingTrack } from "./model/playerModel";
-import { kTrackList, kTrackIndex, kPlayerQueueGetter, setTrackIndex } from "./model/browsingModel";
+import { playTracks, kPlayingTrack } from "../model/playerModel";
+import { kTrackList, kTrackIndex, kPlayerQueueGetter, setTrackIndex } from "../model/browsingModel";
 
 function areTracksEqual(a, b) {
   if (Boolean(a) !== Boolean(b)) return false;

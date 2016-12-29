@@ -2,11 +2,58 @@ import K from "kefir";
 import { SERVER_URL } from "../config";
 import createBus from "./createBus";
 import trackQueryString from "./trackQueryString";
-import localStorageJSON from "../util/localStorageJSON";
+import parseURLQuery from "../util/parseURLQuery";
+import makeURLQuery from "../util/makeURLQuery";
 
+/* utils */
 
 const keepAlive = (observable) => observable.onValue(() => { })
+const keyMapper = (k) => (obj) => obj[k] || null;
+const log = (ns) => (val) => {
+  console.log(`${ns}:`, val);
+  return val;
+};
 
+/* URL data */
+
+let latestURLData = null;
+const getURLData = () => {
+  if (!window.location.search) return {artist: null, album: null};
+  latestURLData = {
+    artist: null,
+    album: null,
+    ...parseURLQuery(window.location.search.slice(1)),
+  };
+  return latestURLData;
+}
+const [sendStatePushed, statePushes] = createBus();
+const urlDataChanges = K.fromEvents(window, 'popstate')
+  .merge(statePushes)
+  .merge(K.constant(null))
+  .map(getURLData);
+
+const updateTitle = (newURLData) => {
+  let newTitle = "Summertunes";
+  if (newURLData.artist) newTitle += ` - ${newURLData.artist}`;
+  if (newURLData.album) newTitle += ` - ${newURLData.album}`;
+  document.title = newTitle;
+};
+
+updateTitle(getURLData());
+
+const withURLChange = (k, func) => (arg) => {
+  func(arg);
+  const newURLData = {
+    ...latestURLData,
+    [k]: arg,
+  }
+  console.log("Navigate");
+  history.pushState(null, "", makeURLQuery(newURLData));
+  updateTitle(newURLData);
+  sendStatePushed();
+}
+
+/* data */
 
 const kArtists = K.fromPromise(
     window.fetch(`${SERVER_URL}/artists`)
@@ -16,10 +63,13 @@ const kArtists = K.fromPromise(
 keepAlive(kArtists);
 
 
-const [setArtist, bArtist] = createBus()
+const [setArtistRaw, bArtist] = createBus()
+const setArtist = withURLChange('artist', setArtistRaw);
 const kArtist = bArtist
+  .merge(urlDataChanges.map(keyMapper('artist')))
   .skipDuplicates()
-  .toProperty(() => localStorageJSON("browsingArtist", null));
+  .toProperty(() => getURLData()['artist'])
+  .map(log('kArtist'));
 keepAlive(kArtist);
 
 const kAlbums = kArtist
@@ -37,11 +87,14 @@ const kAlbums = kArtist
   .toProperty(() => [])
 keepAlive(kAlbums);
 
-const [setAlbum, bAlbum] = createBus()
+const [setAlbumRaw, bAlbum] = createBus()
+const setAlbum = withURLChange('album', setAlbumRaw);
 const kAlbum = bAlbum
   .merge(kArtist.map(() => null).skip(1))  // don't zap initial load
+  .merge(urlDataChanges.map(keyMapper('album')))
   .skipDuplicates()
-  .toProperty(() => localStorageJSON("browsingAlbum", null));
+  .toProperty(() => getURLData()['album'])
+  .map(log('kAlbum'));
 keepAlive(kAlbum);
 
 const kTrackList = K.combine([kArtist, kAlbum])
@@ -82,8 +135,11 @@ keepAlive(kPlayerQueueGetter);
 
 /* localStorage sync */
 
+/*
 kArtist.onValue((artist) => localStorage.browsingArtist = JSON.stringify(artist));
 kAlbum.onValue((album) => localStorage.browsingAlbum = JSON.stringify(album));
+*/
+
 
 
 export {
