@@ -8,6 +8,5 @@ export default function parseURLQuery(query) {
       result[decodeURIComponent(key)] = decodeURIComponent(value);
     }
   }
-  console.log(query, result);
   return result;
 }

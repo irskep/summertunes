@@ -47,7 +47,6 @@ const withURLChange = (k, func) => (arg) => {
     ...latestURLData,
     [k]: arg,
   }
-  console.log("Navigate");
   history.pushState(null, "", makeURLQuery(newURLData));
   updateTitle(newURLData);
   sendStatePushed();
@@ -69,7 +68,6 @@ const kArtist = bArtist
   .merge(urlDataChanges.map(keyMapper('artist')))
   .skipDuplicates()
   .toProperty(() => getURLData()['artist'])
-  .map(log('kArtist'));
 keepAlive(kArtist);
 
 const kAlbums = kArtist
@@ -94,7 +92,6 @@ const kAlbum = bAlbum
   .merge(urlDataChanges.map(keyMapper('album')))
   .skipDuplicates()
   .toProperty(() => getURLData()['album'])
-  .map(log('kAlbum'));
 keepAlive(kAlbum);
 
 const kTrackList = K.combine([kArtist, kAlbum])
