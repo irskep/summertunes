@@ -36,6 +36,8 @@ class WebPlayer {
     this.player = new MusicPlayer();
     window.player = this.player;
 
+    this.secretPlaylist = [];
+
     const [observeIsPlaying, kIsPlaying] = createBusProperty(false);
 
     this.kIsPlaying = kIsPlaying;
@@ -79,6 +81,7 @@ class WebPlayer {
     } else {
       this._observePath(null);
     }
+    this.fillWebAudioQueue();
   }
 
   setIsPlaying(isPlaying) {
@@ -111,13 +114,19 @@ class WebPlayer {
 
   playTracks(tracks) {
     this.playTrack(tracks[0]);
-    tracks.slice(1).forEach((track) => {
-      this.player.addTrack(_pathToURL(track));
-    });
+    this.secretPlaylist = tracks.slice(1);
+    this.fillWebAudioQueue();
   }
 
   goToNextTrack() {
     this.player.playNext();
+  }
+
+  fillWebAudioQueue() {
+    while (this.player.playlist.length < 2 && this.secretPlaylist.length) {
+      this.player.addTrack(_pathToURL(this.secretPlaylist[0]));
+      this.secretPlaylist.shift();
+    }
   }
 }
 
