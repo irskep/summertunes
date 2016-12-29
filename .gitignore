@@ -3,3 +3,4 @@ node_modules/
 tags
 __pycache__/
 apiKeys.js
+.vscode/

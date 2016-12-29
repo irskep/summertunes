@@ -15,7 +15,7 @@ import {
   kIsLargeUI,
   kOpenModal,
 } from "./model/uiModel";
-import KComponent from "./KComponent";
+import KComponent from "./util/KComponent";
 
 class App extends KComponent {
   observables() { return {

@@ -1,5 +1,5 @@
 import React from 'react';
-import KComponent from "./KComponent";
+import KComponent from "./util/KComponent";
 import Table from "./Table";
 import { kTrack } from "./model/browsingModel";
 

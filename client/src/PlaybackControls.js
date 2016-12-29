@@ -8,7 +8,7 @@ import {
   goToBeginningOfTrack,
   goToNextTrack,
 } from "./model/playerModel";
-import KComponent from "./KComponent";
+import KComponent from "./util/KComponent";
 import { play, pause } from "./util/svgShapes";
 
 export default class PlaybackControls extends KComponent {

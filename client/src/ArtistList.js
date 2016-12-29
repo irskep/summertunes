@@ -2,7 +2,7 @@
 import React from 'react';
 import List from "./List";
 import { kArtists, kArtist, setArtist } from "./model/browsingModel";
-import KComponent from "./KComponent";
+import KComponent from "./util/KComponent";
 import { setOpenModal } from "./model/uiModel";
 
 class ArtistList extends KComponent {

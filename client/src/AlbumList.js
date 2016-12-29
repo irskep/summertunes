@@ -1,6 +1,6 @@
 import React from 'react';
 import List from "./List";
-import KComponent from "./KComponent";
+import KComponent from "./util/KComponent";
 import { kAlbums, kAlbum, setAlbum } from "./model/browsingModel";
 import { setOpenModal } from "./model/uiModel";
 

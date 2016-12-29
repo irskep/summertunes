@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import './css/NowPlaying.css';
 import secondsToString from "./util/secondsToString";
-import KComponent from "./KComponent";
+import KComponent from "./util/KComponent";
 
 import { seek, kPlayingTrack, kPlaybackSeconds, kAlbumArtURL } from "./model/playerModel";
 import { setArtist, setAlbum } from "./model/browsingModel";
