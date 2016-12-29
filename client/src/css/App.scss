@@ -161,3 +161,28 @@
     flex-grow: 0;
   }
 }
+
+.st-modal-nav-bar {
+  height: 44px;
+  line-height: 44px;
+  border-bottom: 1px solid $colorBorder;
+  flex-grow: 0;
+  flex-shrink: 0;
+  background-color: $colorBackground2;
+
+  .st-modal-title {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+
+  .st-modal-close-button {
+    float: left;
+    width: 44px;
+    height: 44px;
+    line-height: 44px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 24px;
+  }
+}

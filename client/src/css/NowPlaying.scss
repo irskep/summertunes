@@ -27,6 +27,7 @@
   white-space: nowrap;
   overflow: hidden;
   max-width: calc(100% - 20px);
+  cursor: pointer;
 }
 
 .st-now-playing .st-album-art {
@@ -48,6 +49,7 @@
 }
 
 .st-playback-time-bar {
+  cursor: pointer;
   font-size: 12px;
   margin-top: 4px;
   width: calc(100% - 20px);

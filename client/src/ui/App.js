@@ -16,6 +16,7 @@ import {
   kIsMediumUI,
   kIsLargeUI,
   kOpenModal,
+  setOpenModal,
 } from "../model/uiModel";
 import KComponent from "../util/KComponent";
 
@@ -78,19 +79,32 @@ class App extends KComponent {
   }
 
   renderSmallUI() {
-    return (
-      <div className="st-app">
-        <Toolbar stacked={true} />
-        <div className="st-small-ui">
-          {this.state.openModal === "artist" && <ArtistList />}
-          {this.state.openModal === "album" && <AlbumList />}
-
-          {!this.state.openModal && <TrackList />}
-          {!this.state.openModal && this.state.isInfoVisible && <TrackInfo />}
-          <BottomBar artistAndAlbumButtons={true} />
+    if (this.state.openModal) {
+      return (
+        <div className="st-app">
+          <div className="st-small-ui">
+            <div className="st-modal-nav-bar">
+              <div className="st-modal-close-button" onClick={setOpenModal.bind(this, null)}>&times;</div>
+              {this.state.openModal === "artist" && <div className="st-modal-title">Artist</div>}
+              {this.state.openModal === "album" && <div className="st-modal-title">Album</div>}
+            </div>
+            {this.state.openModal === "artist" && <ArtistList />}
+            {this.state.openModal === "album" && <AlbumList />}
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className="st-app">
+          <Toolbar stacked={true} />
+          <div className="st-small-ui">
+            <TrackList />
+            {this.state.isInfoVisible && <TrackInfo />}
+            <BottomBar artistAndAlbumButtons={true} />
+          </div>
+        </div>
+      );
+    }
   }
 }
 

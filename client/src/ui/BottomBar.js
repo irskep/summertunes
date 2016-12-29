@@ -33,7 +33,7 @@ class BottomBar extends KComponent {
                 key={name}
                 className={this.state.playerName === name ? "st-toolbar-button-selected" : ""}>
               {{
-                mpv: "Remote",
+                mpv: "Server",
                 web: "Local"
               }[name]}
             </div>

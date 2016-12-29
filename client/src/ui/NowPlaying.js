@@ -39,16 +39,16 @@ class NowPlaying extends KComponent {
     */
     const track = this.state.track;
 
-    return <div
-        onClick={() => {
-            if (!track) return;
-            setArtist(track.albumartist);
-            setAlbum(track.album);
-        }}
-        className={`st-now-playing ${this.props.className}`}>
+    const navigateToPlayingTrack = () => {
+      if (!track) return;
+      setArtist(track.albumartist);
+      setAlbum(track.album);
+    };
+
+    return <div className={`st-now-playing ${this.props.className}`}>
       <div className={`st-album-art ${albumArtURL ? "" : "st-album-art-empty"}`}
           style={{backgroundImage: `url(${this.state.albumArtURL.small})`}} />
-      {track && <div className="st-now-playing-title">
+      {track && <div className="st-now-playing-title" onClick={navigateToPlayingTrack}>
           <strong>{track.title}</strong>
           {" by "}
           <strong>{track.artist}</strong>
