@@ -130,5 +130,4 @@ class WebPlayer {
   }
 }
 
-
 export default new WebPlayer();

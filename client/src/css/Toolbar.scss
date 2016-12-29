@@ -56,9 +56,8 @@
   flex-wrap: nowrap;
   align-items: stretch;
   overflow: hidden;
-}
 
-.st-toolbar-button-group > div {
+  & > div {
     flex-grow: 1;
     text-align: center;
     border-right: 1px solid $colorBorder;
@@ -72,6 +71,19 @@
       background-color: $colorToolbarButtonText;
       color: $colorListSelectionText;
     }
+  }
+}
+
+.st-small-ui .st-toolbar-button-group {
+  height: 43px;
+  line-height: 43px;
+
+  & > div {
+    line-height: 42px;
+    min-width: 42px;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
 }
 
 .st-toolbar-button-group > div:last-child {

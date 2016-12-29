@@ -1,5 +1,19 @@
 @import "common";
 
+.st-small-ui {
+  .st-table {
+    td, th {
+      height: 40px;
+      padding-left: 4px;
+      padding-right: 4px;
+
+      svg {
+        margin-top: 9px;
+      }
+    }
+  }
+}
+
 .st-table {
   cursor: pointer;
 
@@ -56,9 +70,11 @@
         }
 
         .st-track-list-header-album {
+          white-space: normal;
           font-size: 2rem;
         }
         .st-track-list-header-artist {
+          white-space: normal;
         }
         .st-track-list-header-year {
         }
