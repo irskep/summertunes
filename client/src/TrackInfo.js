@@ -1,6 +1,6 @@
 import React from 'react';
 import KComponent from "./util/KComponent";
-import Table from "./Table";
+import Table from "./uilib/Table";
 import { kTrack } from "./model/browsingModel";
 
 export default class TrackInfo extends KComponent {

@@ -1,6 +1,6 @@
 /* global window */
 import React from 'react';
-import Table from "./Table";
+import Table from "./uilib/Table";
 import KComponent from "./util/KComponent"
 import secondsToString from "./util/secondsToString";
 import { play } from "./util/svgShapes";

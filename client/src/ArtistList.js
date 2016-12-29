@@ -1,6 +1,6 @@
 /* global window */
 import React from 'react';
-import List from "./List";
+import List from "./uilib/List";
 import { kArtists, kArtist, setArtist } from "./model/browsingModel";
 import KComponent from "./util/KComponent";
 import { setOpenModal } from "./model/uiModel";
