@@ -129,6 +129,18 @@ class MusicPlayer {
     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
     this.gainNode = this.ctx.createGain();
     this.gainNode.connect(this.ctx.destination);
+
+    /* stupid iOS magic */
+    window.addEventListener('touchstart', () => {
+      // create empty buffer
+      var buffer = this.ctx.createBuffer(1, 1, 22050);
+      var source = this.ctx.createBufferSource();
+      source.buffer = buffer;
+      // connect to output (your speakers)
+      source.connect(this.ctx.destination);
+      // play the file
+      source.noteOn(0);
+    }, false);
   }
 
   setVolume(value) {
