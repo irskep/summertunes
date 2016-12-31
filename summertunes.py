@@ -20,7 +20,12 @@ def cmd(q, args, kwargs=None):
     kwargs = kwargs or {}
     p = Popen(args, **kwargs)
     q.put(p.pid)
-    p.communicate()
+    try:
+        p.communicate()
+    except SystemExit:
+        p.kill()
+    except KeyboardInterrupt:
+        p.kill()
 
 def run_some_processes(procs, pid_queue):
     try:
@@ -31,6 +36,8 @@ def run_some_processes(procs, pid_queue):
 
         if last_p:
             last_p.join()
+    except KeyboardInterrupt:
+        pass
     finally:
         while not pid_queue.empty():
             pid = pid_queue.get()
