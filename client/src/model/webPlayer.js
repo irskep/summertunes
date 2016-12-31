@@ -1,9 +1,11 @@
 import createBus from "./createBus";
-import { SERVER_URL } from "../config";
+import { kStaticFilesURL } from "../config";
 import MusicPlayer from "../util/webAudioWrapper";
 
 
-const URL_PREFIX = `${SERVER_URL}/files`
+let URL_PREFIX = '';
+// a little cheap but whatever
+kStaticFilesURL.onValue((url) => URL_PREFIX = url);
 
 
 const createBusProperty = (initialValue) => {

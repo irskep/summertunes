@@ -1,5 +1,6 @@
 import logging
 import re
+from argparse import ArgumentParser
 from pathlib import Path
 from subprocess import Popen, PIPE
 
@@ -128,5 +129,15 @@ def send_js(path):
 
     return send_from_directory(str(lib_path), str(rel_path))
 
+def main(port=5000):
+    app.run(host="0.0.0.0", port=port, debug=False)
+
+def main_cmd():
+    parser = ArgumentParser(
+        description="Exposes a REST interface to a beets library")
+    parser.add_argument('--httbeets-port', type=int, default=5000)
+    args = parser.parse_args()
+    main(port=args.httbeets_port)
+
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    main_cmd()

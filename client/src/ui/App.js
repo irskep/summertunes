@@ -10,6 +10,7 @@ import AlbumList from "./AlbumList";
 import TrackList from "./TrackList";
 import TrackInfo from "./TrackInfo";
 
+import { kIsConfigReady } from "../config";
 import { kArtist, kAlbum, kTrack } from "../model/browsingModel";
 import {
   kIsInfoVisible,
@@ -22,6 +23,8 @@ import KComponent from "../util/KComponent";
 
 class App extends KComponent {
   observables() { return {
+    isConfigReady: kIsConfigReady,
+
     selectedArtist: kArtist,
     selectedAlbum: kAlbum,
     selectedTrack: kTrack,
@@ -33,6 +36,9 @@ class App extends KComponent {
   }; }
 
   render() {
+    if (!this.state.isConfigReady) {
+      return <div>Loading config...</div>;
+    }
     if (this.state.isLargeUI) {
       return this.renderLargeUI();
     } else if (this.state.isMediumUI) {

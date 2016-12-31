@@ -2,7 +2,8 @@
 /* global window */
 import io from 'socket.io-client';
 import K from "kefir";
-import { MPV_URL } from "../config";
+import { kMPVURL } from "../config";
+import createBus from "./createBus";
 
 
 const keepAlive = (observable) => {
@@ -12,28 +13,11 @@ const keepAlive = (observable) => {
 
 
 class MPVPlayer {
-  constructor(socketURL) {
-    this.socket = io(socketURL);
-
-    // get_property doesn't include the property name in the return value, so
-    // we need to do this silly request_id thing
-    this.i = 0;
-    this.requestIdToPropertyName = {};
-
-    /* setup */
-    this.socket.on('connect', () => {
-      console.log("socket.io connected");  // eslint-disable-line no-console
-      this.sendAndObserve("path");
-      this.sendAndObserve("pause");
-      this.sendAndObserve("time-pos");
-      this.sendAndObserve("volume");
-    });
-    this.socket.on('disconnect', () => {
-      console.warn("socket.io disconnected");  // eslint-disable-line no-console
-    });
+  constructor(kSocketURL) {
+    this.ready = false;
 
     /* events */
-    this.events = K.fromEvents(this.socket, 'message');
+    [this.sendEvent, this.events] = createBus();
 
     this.kPropertyChanges = this.events
       .map((event) => {
@@ -84,6 +68,33 @@ class MPVPlayer {
       .filter(({name}) => name === "time-pos")
       .map(({data}) => data)
       .toProperty(() => 0));
+
+    kSocketURL.onValue((url) => this.initSocket(url));
+  }
+
+  initSocket(socketURL) {
+    this.socket = io(socketURL);
+
+    // get_property doesn't include the property name in the return value, so
+    // we need to do this silly request_id thing
+    this.i = 0;
+    this.requestIdToPropertyName = {};
+
+    /* setup */
+    this.socket.on('connect', () => {
+      console.log("socket.io connected");  // eslint-disable-line no-console
+      this.sendAndObserve("path");
+      this.sendAndObserve("pause");
+      this.sendAndObserve("time-pos");
+      this.sendAndObserve("volume");
+    });
+    this.socket.on('disconnect', () => {
+      console.warn("socket.io disconnected");  // eslint-disable-line no-console
+    });
+
+    K.fromEvents(this.socket, 'message').onValue(this.sendEvent);
+
+    this.ready = true;
   }
 
   getProperty(propertyName) {
@@ -136,4 +147,4 @@ class MPVPlayer {
   }
 }
 
-export default new MPVPlayer(MPV_URL);
+export default new MPVPlayer(kMPVURL);
