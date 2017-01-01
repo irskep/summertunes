@@ -83,10 +83,12 @@ optional arguments:
                         Print default config and exit
   --player-services PLAYER_SERVICES
                         Players to expose to the web interface (default
-                        {'mpv', 'html5'}). Example: 'mpv,html5'
+                        {'mpv', 'html5'}). Example: mpv,html5
   --disable-player-services PLAYER_SERVICES
                         Remove a previously added player service
   --library-services LIBRARY_SERVICES
+                        Libraries to expose to the web interface (default
+                        {'httbeets'}).
   --disable-library-services LIBRARY_SERVICES
 
 mpv arguments:
