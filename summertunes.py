@@ -213,8 +213,12 @@ def main():
         'library_services': list(args.library_services),
         'player_services': list(args.player_services),
     })
-    with open('client/build/server_config.js', 'w') as f:
-        f.write(config_json_string)
+
+    try:
+        with open('client/build/server_config.js', 'w') as f:
+            f.write(config_json_string)
+    except FileNotFoundError:
+        pass
     with open('client/public/server_config.js', 'w') as f:
         f.write(config_json_string)
 

@@ -1,12 +1,17 @@
+$colorAppleUIBlue: rgb(60, 104, 214);
+
 $colorBorder: #ddd;
 $colorBorderLight: #eee;
 $colorBackground1: #fff;
 $colorBackground2: #eee;
-$colorListSelectionBackground: rgb(60, 104, 214);
+$colorListSelectionBackground: $colorAppleUIBlue;
 $colorListSelectionText: #fff;
 $colorTableRow: #fff;
 $colorTableRowAlternate: #f8f4f4;
 $colorNowPlayingText: #444;
-$colorNowPlayingBar: $colorListSelectionBackground;
+$colorNowPlayingBar: $colorAppleUIBlue;
 $colorToolbarButtonText: #666;
 $colorToolbarButtonBackgroundActive: #ccc;
+
+$colorTextFaint: #ddd;
+$colorTextLink: $colorAppleUIBlue;

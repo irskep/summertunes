@@ -1,0 +1,32 @@
+@import "common";
+
+.st-track-list {
+    &.st-track-list-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: nowrap;
+
+        h1 {
+            color: $colorTextFaint;
+        }
+
+        & > div {
+            margin-top: 1.4em;
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            flex-wrap: nowrap;
+            width: 100%;
+
+            & > div {
+                color: $colorTextLink;
+                cursor: pointer;
+                font-size: 1.4em;
+            }
+        }
+    }
+}

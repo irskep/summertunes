@@ -15,6 +15,9 @@ const kIsMediumUI = kWindowWidth
   .map((width) => width >= MEDIUM_UI_BREAKPOINT && width < LARGE_UI_BREAKPOINT);
 const kIsLargeUI = kWindowWidth
   .map((width) => width >= LARGE_UI_BREAKPOINT);
+const kIsSmallUI = K.combine([kIsLargeUI, kIsMediumUI], (isLarge, isMedium) => {
+    return !isLarge && !isMedium;
+});
 
 
 const [setIsInfoVisible, bIsInfoVisible] = createBus()
@@ -41,6 +44,7 @@ export {
 
   kIsMediumUI,
   kIsLargeUI,
+  kIsSmallUI,
 
   kOpenModal,
   setOpenModal,

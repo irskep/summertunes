@@ -4,7 +4,9 @@ import Table from "../uilib/Table";
 import KComponent from "../util/KComponent"
 import secondsToString from "../util/secondsToString";
 import { play } from "../util/svgShapes";
+import "../css/TrackList.css";
 
+import { kIsSmallUI, setOpenModal } from "../model/uiModel";
 import { playTracks, kPlayingTrack } from "../model/playerModel";
 import { kTrackList, kTrackIndex, kPlayerQueueGetter, setTrackIndex } from "../model/browsingModel";
 
@@ -19,6 +21,7 @@ class TrackList extends KComponent {
     trackIndex: kTrackIndex,
     playingTrack: kPlayingTrack,
     playerQueueGetter: kPlayerQueueGetter,
+    isSmallUI: kIsSmallUI,
   }; }
 
   selectedTrack() {
@@ -27,7 +30,22 @@ class TrackList extends KComponent {
     return this.state.tracks[this.state.trackIndex];
   }
 
+  renderEmpty() {
+    return (
+      <div className="st-track-list st-track-list-empty">
+        <h1>No tracks selected</h1>
+        {this.state.isSmallUI && (
+          <div>
+            <div onClick={() => setOpenModal('artist')}>Pick artist</div>
+            <div onClick={() => setOpenModal('album')}>Pick album</div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   render() {
+    if (!this.state.tracks || !this.state.tracks.length) return this.renderEmpty();
     return <Table className="st-track-list"
 
       onClick={(item, i) => {
