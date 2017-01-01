@@ -141,6 +141,9 @@ def create_parser():
     parser.add_argument(
         '--debug-args', default=False, action='store_true',
         help="Show parsed arg values and exit")
+    parser.add_argument(
+        '--print-default-config', default=False, action='store_true',
+        help="Print default config and exit")
 
     parser.add_argument(
         "--player-services", action=add_to_set_action(default_player_services),
@@ -161,11 +164,15 @@ def create_parser():
         dest="library_services", type=str)
 
     g_mpv = parser.add_argument_group("mpv arguments")
-    g_mpv.add_argument('--mpv-websocket-port', type=int, default=config.getint('player.mpv', 'port', fallback=3001))
+    g_mpv.add_argument(
+        '--mpv-websocket-port', type=int,
+        default=config.getint('player.mpv', 'port', fallback=3001))
     g_mpv.add_argument('--mpv-socket-path', type=str, default='/tmp/mpv_socket')
 
     g_beets = parser.add_argument_group("httbeets arguments")
-    g_beets.add_argument('--httbeets-port', type=int, default=config.getint('library.httbeets', 'port', fallback=3002))
+    g_beets.add_argument(
+        '--httbeets-port', type=int,
+        default=config.getint('library.httbeets', 'port', fallback=3002))
 
     return parser
 
@@ -217,6 +224,8 @@ def main():
 
     if args.debug_args:
         pprint(vars(args))
+    elif args.print_default_config:
+        print(DEFAULT_CONFIG.strip())
     else:
         run_some_processes(procs, q)
 
