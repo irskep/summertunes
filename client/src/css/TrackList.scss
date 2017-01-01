@@ -8,8 +8,11 @@
         justify-content: center;
         flex-wrap: nowrap;
 
-        h1 {
+        h1, h2 {
             color: $colorTextFaint;
+            text-align: center;
+            margin-left: 1em;
+            margin-right: 1em;
         }
 
         & > div {

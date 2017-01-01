@@ -5,6 +5,8 @@ import trackQueryString from "./trackQueryString";
 import parseURLQuery from "../util/parseURLQuery";
 import makeURLQuery from "../util/makeURLQuery";
 
+window.K = K;
+
 /* utils */
 
 const keepAlive = (observable) => observable.onValue(() => { })
@@ -129,13 +131,26 @@ const kPlayerQueueGetter = K.combine([kTrackList, kTrackIndex], (trackList, trac
 }).toProperty(() => () => []);
 keepAlive(kPlayerQueueGetter);
 
-/* localStorage sync */
+/* filterable artists/albums */
 
-/*
-kArtist.onValue((artist) => localStorage.browsingArtist = JSON.stringify(artist));
-kAlbum.onValue((album) => localStorage.browsingAlbum = JSON.stringify(album));
-*/
+const [setArtistFilter, bArtistFilter] = createBus();
+const kArtistFilter = bArtistFilter.toProperty(() => "");
+const [setAlbumFilter, bAlbumFilter] = createBus();
+const kAlbumFilter = bAlbumFilter.toProperty(() => "");
 
+const kFilteredArtists = K.combine([kArtists, kArtistFilter.debounce(300)], (artists, filter) => {
+  filter = filter.toLocaleLowerCase();
+  if (!filter) return artists;
+  if (!artists) return [];
+  return artists.filter((a) => a.toLocaleLowerCase().indexOf(filter) > -1);
+}).toProperty(() => []);
+
+const kFilteredAlbums = K.combine([kAlbums, kAlbumFilter.debounce(300)], (albums, filter) => {
+  filter = filter.toLocaleLowerCase();
+  if (!filter) return albums;
+  if (!albums) return [];
+  return albums.filter((a) => a.album.toLocaleLowerCase().indexOf(filter) > -1);
+}).toProperty(() => []);;
 
 
 export {
@@ -151,4 +166,11 @@ export {
   setArtist,
   setAlbum,
   setTrackIndex,
+
+  setArtistFilter,
+  kArtistFilter,
+  kFilteredArtists,
+  setAlbumFilter,
+  kAlbumFilter,
+  kFilteredAlbums,
 }

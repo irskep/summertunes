@@ -13,9 +13,34 @@
   justify-content: stretch;
 }
 
+.st-filter-control {
+  width: 100%;
+  height: $heightListFilterControlNormal;
+
+  .st-small-ui & {
+    height: $heightListFilterControlMobile;
+  }
+}
+
+.st-app-overflowing-section {
+  .st-list {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    height: 100%;
+
+    &.st-list-under-filter-control {
+      /* scss variables don't work here */
+      height: calc(100% - 20px);
+
+      .st-small-ui & {
+        /* scss variables don't work here */
+        height: calc(100% - 40px);
+      }
+    }
+  }
+}
+
 .st-list {
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
   cursor: pointer;
   flex-shrink: 0;
 
@@ -29,11 +54,6 @@
     background-color: $colorListSelectionBackground;
     color: $colorListSelectionText;
   }
-}
-
-.st-track-list {
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .st-large-ui {
@@ -144,14 +164,7 @@
     z-index: 1;
   }
 
-  .st-list {
-    flex-grow: 1;
-    flex-shrink: 1;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .st-track-list {
+  .st-app-overflowing-section {
     flex-grow: 1;
     flex-shrink: 1;
     overflow: auto;

@@ -1,13 +1,23 @@
 /* global window */
-import React from 'react';
-import List from "../uilib/List";
-import { kArtists, kArtist, setArtist } from "../model/browsingModel";
-import KComponent from "../util/KComponent";
+import React            from 'react';
+import List             from "../uilib/List";
+import {
+    kArtist,
+    setArtist,
+
+    kArtistFilter,
+    setArtistFilter,
+    kFilteredArtists,
+}                       from "../model/browsingModel";
+import KComponent       from "../util/KComponent";
 import { setOpenModal } from "../model/uiModel";
+
 
 class ArtistList extends KComponent {
   observables() { return {
-    artists: kArtists, artist: kArtist
+    artists: kFilteredArtists,
+    artist: kArtist,
+    artistFilter: kArtistFilter,
   }; }
 
   componentDidUpdate(prevProps, prevState) {
@@ -28,28 +38,41 @@ class ArtistList extends KComponent {
     }
   }
 
+  onChangeArtistFilter(e) {
+    setArtistFilter(e.target.value);
+  }
+
   render() {
     this.selectedItemIndex = this.state.artist === null ? 0 : null;
-    return <List className="st-list st-artist-list st-list"
-      ref2={(el) => this.listEl = el}
-      onClick={({value}) => {
-        setArtist(value);
-        setOpenModal(null);
-      }}
-      items={[
-        {
-          label: "All",
-          value: null,
-          isSelected: this.state.artist === null,
-        }].concat(this.state.artists.map((artistName, i) => {
-          const isSelected = this.state.artist === artistName;
-          if (isSelected) this.selectedItemIndex = i + 1;
-          return {
-            label: artistName,
-            value: artistName,
-            isSelected,
-          };
-        }))} />;
+    return (
+      <div className="st-artist-list st-app-overflowing-section">
+        <input
+          className="st-filter-control"
+          value={this.state.artistFilter}
+          onChange={this.onChangeArtistFilter}
+          placeholder="Filter" />
+        <List className="st-list st-list-under-filter-control"
+          ref2={(el) => this.listEl = el}
+          onClick={({value}) => {
+            setArtist(value);
+            setOpenModal(null);
+          }}
+          items={[
+            {
+              label: "All",
+              value: null,
+              isSelected: this.state.artist === null,
+            }].concat(this.state.artists.map((artistName, i) => {
+              const isSelected = this.state.artist === artistName;
+              if (isSelected) this.selectedItemIndex = i + 1;
+              return {
+                label: artistName,
+                value: artistName,
+                isSelected,
+              };
+            }))} />
+      </div>
+    );
   }
 }
 

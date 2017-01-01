@@ -1,12 +1,18 @@
 import React from 'react';
 import List from "../uilib/List";
 import KComponent from "../util/KComponent";
-import { kAlbums, kAlbum, setAlbum } from "../model/browsingModel";
+import {
+    kFilteredAlbums,
+    kAlbum,
+    setAlbum,
+    setAlbumFilter,
+    kAlbumFilter,
+} from "../model/browsingModel";
 import { setOpenModal } from "../model/uiModel";
 
 class AlbumList extends KComponent {
   observables() { return {
-    albums: kAlbums, selectedAlbum: kAlbum
+    albums: kFilteredAlbums, selectedAlbum: kAlbum, albumFilter: kAlbumFilter,
   }; }
 
   componentDidUpdate(prevProps, prevState) {
@@ -27,28 +33,44 @@ class AlbumList extends KComponent {
     }
   }
 
+  onChangeAlbumFilter(e) {
+    setAlbumFilter(e.target.value);
+  }
+
   render() {
     this.selectedItemIndex = this.state.selectedAlbum === null ? 0 : null;
-    return <List className="st-list st-album-list st-list"
-      ref2={(el) => this.listEl = el}
-      onClick={({value}) => {
-        setAlbum(value);
-        setOpenModal(null);
-      }}
-      items={[
-        {
-          label: "All",
-          value: null,
-          isSelected: this.state.selectedAlbum === null,
-        }].concat(this.state.albums.map((album, i) => {
-          const isSelected = album.album === this.state.selectedAlbum;
-          if (isSelected) this.selectedItemIndex = i + 1;
-          return {
-            label: `${album.album || "Unknown Album"} (${album.year})`,
-            value: album.album,
-            isSelected,
-          };
-        }))} />;
+
+    const listItems = [
+      {
+        label: "All",
+        value: null,
+        isSelected: this.state.selectedAlbum === null,
+      }].concat(this.state.albums.map((album, i) => {
+        const isSelected = album.album === this.state.selectedAlbum;
+        if (isSelected) this.selectedItemIndex = i + 1;
+        return {
+          label: `${album.album || "Unknown Album"} (${album.year})`,
+          value: album.album,
+          isSelected,
+        };
+      }));
+
+    return (
+      <div className="st-album-list st-app-overflowing-section">
+        <input
+          className="st-filter-control"
+          value={this.state.albumFilter}
+          onChange={this.onChangeAlbumFilter}
+          placeholder="Filter" />
+        <List className="st-list st-list-under-filter-control"
+          ref2={(el) => this.listEl = el}
+          onClick={({value}) => {
+            setAlbum(value);
+            setOpenModal(null);
+          }}
+          items={listItems} />
+      </div>
+    );
   }
 }
 

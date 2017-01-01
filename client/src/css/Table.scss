@@ -3,7 +3,7 @@
 .st-small-ui {
   .st-table {
     td, th {
-      height: 40px;
+      height: $heightListItemMobile;
       padding-left: 4px;
       padding-right: 4px;
 
@@ -33,7 +33,7 @@
     padding-left: 2px;
     padding-right: 2px;
     min-width: 40px;
-    height: 20px;
+    height: $heightListItemNormal;
   }
 
   td:last-child, th:last-child {

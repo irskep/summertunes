@@ -32,8 +32,9 @@ class TrackList extends KComponent {
 
   renderEmpty() {
     return (
-      <div className="st-track-list st-track-list-empty">
+      <div className="st-track-list st-track-list-empty st-app-overflowing-section">
         <h1>No tracks selected</h1>
+        <h2>You must select at least one artist or album.</h2>
         {this.state.isSmallUI && (
           <div>
             <div onClick={() => setOpenModal('artist')}>Pick artist</div>
@@ -46,7 +47,7 @@ class TrackList extends KComponent {
 
   render() {
     if (!this.state.tracks || !this.state.tracks.length) return this.renderEmpty();
-    return <Table className="st-track-list"
+    return <Table className="st-track-list st-app-overflowing-section"
 
       onClick={(item, i) => {
         const track = this.state.tracks[this.state.trackIndex]
