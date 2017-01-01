@@ -1,1 +1,1 @@
-{"HTTBEETS_PORT": 3002, "MPV_PORT": 3001}
+{"HTTBEETS_PORT": 3002, "player_services": ["mpv", "html5"], "library_services": ["httbeets"], "MPV_PORT": 3001}
