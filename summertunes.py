@@ -148,12 +148,12 @@ def create_parser():
     parser.add_argument(
         "--player-services", action=add_to_set_action(default_player_services),
         dest="player_services", type=str, default=default_player_services,
-        help="Players to expose to the web interface (default none). Example: 'mpv,html5'")
+        help="Players to expose to the web interface (default %(default)s). Example: 'mpv,html5'")
 
     parser.add_argument(
         "--disable-player-services", action=remove_from_set_action(default_player_services),
         dest="player_services", type=str,
-        help="Players to expose to the web interface (default none). Example: 'mpv,html5'")
+        help="Remove a previously added player service")
 
     parser.add_argument(
         "--library-services", action=add_to_set_action(default_library_services),
