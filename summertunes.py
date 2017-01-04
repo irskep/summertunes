@@ -3,17 +3,17 @@ import json
 import logging
 import os
 import signal
+import socket
 from argparse import ArgumentParser, ArgumentError, Action as ArgparseAction
 from configparser import ConfigParser
 from multiprocessing import Process, Queue
 from pprint import pprint
 from subprocess import Popen, PIPE
 
-#from mpv2websocket.mpv2websocket import main as mpv_main
-#from httbeets.httbeets import main as beets_main
-
 log = logging.getLogger("summertunes")
 logging.basicConfig()
+
+local_ip_string = socket.gethostbyname(socket.gethostname())
 
 
 DEFAULT_CONFIG = """
@@ -144,6 +144,9 @@ def create_parser():
     parser.add_argument(
         '--print-default-config', default=False, action='store_true',
         help="Print default config and exit")
+    parser.add_argument(
+        '--run-mpv', default=False, action='store_true',
+        help="Instead of running summertunes, run mpv to match the current config")
 
     parser.add_argument(
         "--player-services", action=add_to_set_action(default_player_services),
@@ -183,6 +186,15 @@ def main():
     q = Queue()
     procs = []
 
+    mpv_cmd = [
+        'python', 'mpv2websocket/mpv2websocket.py',
+        '--mpv-websocket-port', str(args.mpv_websocket_port),
+        '--mpv-socket-path', str(args.mpv_socket_path),
+    ]
+    if args.run_mpv:
+        Popen(mpv_cmd).wait()
+        return
+
     if args.dev:
         procs.append(Process(target=cmd, args=(q, ['npm', 'start'], {"cwd": "client"})))
     else:
@@ -193,16 +205,11 @@ def main():
                 ['python', '-m', 'http.server', str(args.web_interface_port)],
                 {"cwd": "client/build"})))
 
-    if 'mpv' in args.player_services:
-        if is_program_in_path('mpv'):
-            procs.append(Process(target=cmd, args=(
-                q, [
-                    'python', 'mpv2websocket/mpv2websocket.py',
-                    '--mpv-websocket-port', str(args.mpv_websocket_port),
-                    '--mpv-socket-path', str(args.mpv_socket_path),
-                ])))
-        else:
-            log.error("mpv not in path; skipping mpv player service")
+    #if 'mpv' in args.player_services:
+    #    if is_program_in_path('mpv'):
+    #        procs.append(Process(target=cmd, args=(q, mpv_cmd)))
+    #    else:
+    #        log.error("mpv not in path; skipping mpv player service")
     if 'httbeets' in args.library_services:
         procs.append(Process(target=cmd, args=(
             q, ['python', 'httbeets/httbeets.py', '--httbeets-port', str(args.httbeets_port)])))
@@ -232,6 +239,8 @@ def main():
     elif args.print_default_config:
         print(DEFAULT_CONFIG.strip())
     else:
+        print("Summertunes should now be accessible at http://{}:{}".format(
+            local_ip_string, args.web_interface_port))
         run_some_processes(procs, q)
 
 
