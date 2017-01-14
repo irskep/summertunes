@@ -1,6 +1,9 @@
 @import "common";
 
 .st-track-list {
+    height: 100%;
+    overflow: auto;
+
     &.st-track-list-empty {
         display: flex;
         flex-direction: column;
@@ -31,5 +34,22 @@
                 font-size: 1.4em;
             }
         }
+    }
+
+    .st-track-overflow-button {
+        position: absolute;
+        top: 0px;
+        right: 2px;
+        bottom: 0px;
+        width: 16px;
+        height: 16px;
+        margin: auto;
+        line-height: 14px;
+        text-align: center;
+        border-radius: 8px;
+        border: 1px solid $colorBorder;
+        font-size: 9px;
+        background-color: $colorBackground1;
+        color: $colorText;
     }
 }

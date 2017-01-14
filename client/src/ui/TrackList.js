@@ -69,7 +69,12 @@ class TrackList extends KComponent {
             )}
           </span>;
         }},
-        {name: 'Title', itemKey: 'title'},
+        {name: 'Title', itemKey: 'func', func: ({title}) => {
+          return <div>
+            {title}
+            <span className="st-track-overflow-button">v</span>
+          </div>
+        }},
         /*
         {name: 'Album Artist', itemKey: 'albumartist', groupSplitter: true},
         {name: 'Album', itemKey: 'album', groupSplitter: true},

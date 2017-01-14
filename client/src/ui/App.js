@@ -40,28 +40,58 @@ class App extends KComponent {
       return <div>Loading config...</div>;
     }
     if (this.state.isLargeUI) {
-      return this.renderLargeUI();
+      return this.renderLargeUI([
+        ['albumartist', 'album', 'tracks'],
+      ]);
     } else if (this.state.isMediumUI) {
-      return this.renderMediumUI();
+      return this.renderLargeUI([
+        ['albumartist', 'album'],
+        ['tracks'],
+      ]);
     } else {
       return this.renderSmallUI();
     }
   }
 
-  renderLargeUI() {
+  renderTableUI() {
+    return (
+      <div className="st-app">
+        <table className="st-table-ui" cellSpacing={0} cellPadding={0}>
+          <tbody>
+            <tr className="st-table-ui-top-bar">
+              <Toolbar />
+            </tr>
+            <tr className="st-table-ui-content">
+              <ArtistList />
+            </tr>
+            <tr className="st-table-ui-bottom-bar">
+              <BottomBar />
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+
+  renderLargeUI(config) {
+    const rowHeight = `${(1 / config.length) * 100}%`;
     return (
       <div className="st-app">
         <Toolbar />
         <div className="st-large-ui">
-          <div className="st-library">
-            <ArtistList />
-            <AlbumList />
-            <TrackList />
-            {this.state.isInfoVisible && <TrackInfo />}
-          </div>
-
-          <BottomBar />
+          {config.map((row, i) => {
+            return <div key={i} style={{height: rowHeight}}>
+              {row.map((item, j) => {
+                switch (item) {
+                  case 'albumartist': return <ArtistList />;
+                  case 'album': return <AlbumList />;
+                  case 'tracks': return <TrackList />;
+                }
+              })}
+            </div>
+          })}
         </div>
+        <BottomBar />
       </div>
     );
   }
