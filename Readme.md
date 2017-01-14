@@ -28,6 +28,10 @@ pip install -r requirements.txt
 # if you have beets plugins, you may need to install them
 # into the virtualenv as well.
 
+# in a separate terminal, run this to invoke mpv with the settings from
+# your summertunes config:
+./summertunes.py --run-mpv
+
 # run everything:
 python summertunes.py
 ```
