@@ -3,7 +3,7 @@ import createBus from "./createBus";
 import mpvPlayer from "./mpvPlayer";
 import webPlayer from "./webPlayer";
 import apiKeys from "../apiKeys";
-import { kHTTBeetsURL } from "../config";
+import { kBeetsWebURL } from "../config";
 import localStorageJSON from "../util/localStorageJSON";
 
 
@@ -49,13 +49,12 @@ const kIsPlaying = forwardPlayerProperty('kIsPlaying');
 const kPlaybackSeconds = forwardPlayerProperty('kPlaybackSeconds');
 const kPath = forwardPlayerProperty('kPath');
 
-const kPlayingTrack = K.combine([kHTTBeetsURL, kPath])
+const kPlayingTrack = K.combine([kBeetsWebURL, kPath])
   .flatMapLatest(([url, path]) => {
     if (!path) return K.constant(null);
     return K.fromPromise(
-      window.fetch(`${url}/track?path=${encodeURIComponent(path)}`)
+      window.fetch(`${url}/item/path${path}`)
         .then((response) => response.json())
-        .then(({track}) => track)
     );
   })
   .toProperty(() => null);

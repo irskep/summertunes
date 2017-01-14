@@ -28,9 +28,8 @@ enabled = true
 port = 3001
 socket_path = /tmp/mpv_socket
 
-[library.httbeets]
-enabled = true
-port = 3002
+[beets.web]
+port = 8337
 """
 
 
@@ -122,13 +121,10 @@ def create_parser():
     config.read('summertunes.conf')
 
     default_player_services = set()
-    default_library_services = set()
     if config.getboolean('player.mpv', 'enabled', fallback=False):
         default_player_services.add('mpv')
     if config.getboolean('player.html5', 'enabled', fallback=False):
         default_player_services.add('html5')
-    if config.getboolean('library.httbeets', 'enabled', fallback=False):
-        default_library_services.add('httbeets')
 
     parser = ArgumentParser(
         description="Run the Summertunes web frontend and whatever backends you want")
@@ -158,25 +154,16 @@ def create_parser():
         dest="player_services", type=str,
         help="Remove a previously added player service")
 
-    parser.add_argument(
-        "--library-services", action=add_to_set_action(default_library_services),
-        help="Libraries to expose to the web interface (default %(default)s).",
-        dest="library_services", type=str, default=default_library_services)
-
-    parser.add_argument(
-        "--disable-library-services", action=remove_from_set_action(default_library_services),
-        dest="library_services", type=str)
-
     g_mpv = parser.add_argument_group("mpv arguments")
     g_mpv.add_argument(
         '--mpv-websocket-port', type=int,
         default=config.getint('player.mpv', 'port', fallback=3001))
     g_mpv.add_argument('--mpv-socket-path', type=str, default='/tmp/mpv_socket')
 
-    g_beets = parser.add_argument_group("httbeets arguments")
+    g_beets = parser.add_argument_group("beets web arguments")
     g_beets.add_argument(
-        '--httbeets-port', type=int,
-        default=config.getint('library.httbeets', 'port', fallback=3002))
+        '--beets-web-port', type=int, default=config.getint('beets.web', 'port', fallback=8337),
+        help="'beet web' is serving on this port")
 
     return parser
 
@@ -205,19 +192,9 @@ def main():
                 ['python', '-m', 'http.server', str(args.web_interface_port)],
                 {"cwd": "client/build"})))
 
-    #if 'mpv' in args.player_services:
-    #    if is_program_in_path('mpv'):
-    #        procs.append(Process(target=cmd, args=(q, mpv_cmd)))
-    #    else:
-    #        log.error("mpv not in path; skipping mpv player service")
-    if 'httbeets' in args.library_services:
-        procs.append(Process(target=cmd, args=(
-            q, ['python', 'httbeets/httbeets.py', '--httbeets-port', str(args.httbeets_port)])))
-
     config_json_string = json.dumps({
-        'HTTBEETS_PORT': args.httbeets_port,
         'MPV_PORT': args.mpv_websocket_port,
-        'library_services': list(args.library_services),
+        'BEETSWEB_PORT': args.beets_web_port,
         'player_services': list(args.player_services),
     })
 
@@ -229,8 +206,6 @@ def main():
     with open('client/public/server_config.js', 'w') as f:
         f.write(config_json_string)
 
-    if not args.library_services:
-        log.warning("No library services enabled. How will you pick anything?")
     if not args.player_services:
         log.warning("No player services enabled. How will you play anything?")
 
