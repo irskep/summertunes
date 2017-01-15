@@ -75,9 +75,9 @@ class MPVPlayer {
     this.kPlaylistCount = keepAlive(this.kPropertyChanges
       .filter(({name}) => name === "playlist/count")
       .map(({data}) => data)
-      .toProperty(() => 0)).log("kPlaylistCount");
+      .toProperty(() => 0));
 
-    this.kPlaylistFilenames = keepAlive(this.kPlaylistCount
+    this.kPlaylistPaths = keepAlive(this.kPlaylistCount
       .flatMapLatest((count) => {
         const numbers = [];
         for (let i = 0; i < count; i++) {
@@ -87,9 +87,9 @@ class MPVPlayer {
         return K.combine(numbers.map((i) => {
           return this.kPropertyChanges
             .filter(({name}) => name === `playlist/${i}/filename`)
+            .map(({data}) => data)
         }));
-      }).log('kPlaylistFilenames')
-    ).toProperty(() => []);
+      }).toProperty(() => []));
 
     kSocketURL.onValue((url) => this.initSocket(url));
   }

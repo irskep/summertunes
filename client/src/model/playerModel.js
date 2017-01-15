@@ -44,12 +44,7 @@ const forwardPlayerMethod = (key) => {
 };
 
 
-const kVolume = forwardPlayerProperty('kVolume');
-const kIsPlaying = forwardPlayerProperty('kIsPlaying');
-const kPlaybackSeconds = forwardPlayerProperty('kPlaybackSeconds');
-const kPath = forwardPlayerProperty('kPath');
-
-const kPlayingTrack = K.combine([kBeetsWebURL, kPath])
+const createKPathToTrack = (kPathProperty) => K.combine([kBeetsWebURL, kPathProperty])
   .flatMapLatest(([url, path]) => {
     if (!path) return K.constant(null);
     return K.fromPromise(
@@ -58,6 +53,23 @@ const kPlayingTrack = K.combine([kBeetsWebURL, kPath])
     );
   })
   .toProperty(() => null);
+
+
+const kVolume = forwardPlayerProperty('kVolume');
+const kIsPlaying = forwardPlayerProperty('kIsPlaying');
+const kPlaybackSeconds = forwardPlayerProperty('kPlaybackSeconds');
+const kPath = forwardPlayerProperty('kPath');
+const kPlaylistCount = forwardPlayerProperty('kPlaylistCount');
+const kPlaylistPaths = forwardPlayerProperty('kPlaylistPaths');
+
+const kPlayingTrack = createKPathToTrack(kPath);
+
+const kPlaylistTracks = keepAlive(kPlaylistPaths
+    .flatMapLatest((paths) => {
+      return K.combine(paths.map((path) => createKPathToTrack(K.constant(path))));
+    })
+  ).toProperty(() => []);
+
 
 const kLastFM = kPlayingTrack
   .flatMapLatest((track) => {
@@ -108,6 +120,9 @@ export {
   kPlaybackSeconds,
   kPlayingTrack,
   kAlbumArtURL,
+
+  kPlaylistCount,
+  kPlaylistTracks,
 
   setIsPlaying,
   setVolume,
