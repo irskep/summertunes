@@ -6,7 +6,7 @@ import secondsToString from "../util/secondsToString";
 import { play } from "../util/svgShapes";
 import "../css/TrackList.css";
 
-import { kIsSmallUI, setOpenModal } from "../model/uiModel";
+import { kIsSmallUI, setOpenModal, setIsInfoModalOpen } from "../model/uiModel";
 import { playTracks, kPlayingTrack } from "../model/playerModel";
 import { kTrackList, kTrackIndex, kPlayerQueueGetter, setTrackIndex } from "../model/browsingModel";
 
@@ -69,10 +69,13 @@ class TrackList extends KComponent {
             )}
           </span>;
         }},
-        {name: 'Title', itemKey: 'func', func: ({title}) => {
+        {name: 'Title', itemKey: 'func', func: ({title}, i) => {
           return <div>
             {title}
-            <span className="st-track-overflow-button">v</span>
+            <span className="st-track-overflow-button" onClick={() => {
+              setTrackIndex(i);
+              setIsInfoModalOpen(true);
+            }}>v</span>
           </div>
         }},
         /*

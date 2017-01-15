@@ -13,13 +13,39 @@ import TrackInfo from "./TrackInfo";
 import { kIsConfigReady } from "../config";
 import { kArtist, kAlbum, kTrack } from "../model/browsingModel";
 import {
-  kIsInfoVisible,
+  kIsInfoModalOpen,
   kIsMediumUI,
   kIsLargeUI,
   kOpenModal,
   setOpenModal,
+  setIsInfoModalOpen,
 } from "../model/uiModel";
 import KComponent from "../util/KComponent";
+
+import "../css/modal.css";
+class Modal extends React.Component {
+  render() {
+    return <div className="st-modal-container">
+      {this.props.children}
+    </div>;
+  }
+}
+
+const TrackInfoModal = () => {
+  return (
+    <Modal>
+      <div className="st-track-info-modal">
+        <div className="st-nav-bar">
+          Track Info
+          <div className="st-close-button" onClick={() => setIsInfoModalOpen(false)}>
+            &times;
+          </div>
+        </div>
+        <TrackInfo />
+      </div>
+    </Modal>
+  );
+}
 
 class App extends KComponent {
   observables() { return {
@@ -28,7 +54,7 @@ class App extends KComponent {
     selectedArtist: kArtist,
     selectedAlbum: kAlbum,
     selectedTrack: kTrack,
-    isInfoVisible: kIsInfoVisible,
+    isInfoModalOpen: kIsInfoModalOpen,
 
     isMediumUI: kIsMediumUI,
     isLargeUI: kIsLargeUI,
@@ -53,26 +79,6 @@ class App extends KComponent {
     }
   }
 
-  renderTableUI() {
-    return (
-      <div className="st-app">
-        <table className="st-table-ui" cellSpacing={0} cellPadding={0}>
-          <tbody>
-            <tr className="st-table-ui-top-bar">
-              <Toolbar />
-            </tr>
-            <tr className="st-table-ui-content">
-              <ArtistList />
-            </tr>
-            <tr className="st-table-ui-bottom-bar">
-              <BottomBar />
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    )
-  }
-
   renderLargeUI(config) {
     const rowHeight = `${(1 / config.length) * 100}%`;
     return (
@@ -83,33 +89,17 @@ class App extends KComponent {
             return <div key={i} style={{height: rowHeight}}>
               {row.map((item, j) => {
                 switch (item) {
-                  case 'albumartist': return <ArtistList />;
-                  case 'album': return <AlbumList />;
-                  case 'tracks': return <TrackList />;
+                  case 'albumartist': return <ArtistList key={j}/>;
+                  case 'album': return <AlbumList key={j}/>;
+                  case 'tracks': return <TrackList key={j}/>;
+                  default: return null;
                 }
               })}
             </div>
           })}
         </div>
         <BottomBar />
-      </div>
-    );
-  }
-
-  renderMediumUI() {
-    return (
-      <div className="st-app">
-        <Toolbar />
-        <div className="st-medium-ui">
-          <div className="st-library">
-            <ArtistList />
-            <AlbumList />
-          </div>
-          <TrackList />
-
-          {this.state.isInfoVisible && <TrackInfo />}
-          <BottomBar />
-        </div>
+        {this.state.isInfoModalOpen && <TrackInfoModal />}
       </div>
     );
   }
@@ -135,9 +125,9 @@ class App extends KComponent {
           <Toolbar stacked={true} />
           <div className="st-small-ui">
             <TrackList />
-            {this.state.isInfoVisible && <TrackInfo />}
             <BottomBar artistAndAlbumButtons={true} />
           </div>
+          {this.state.isInfoModalOpen && <TrackInfoModal />}
         </div>
       );
     }

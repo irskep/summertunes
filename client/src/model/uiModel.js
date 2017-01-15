@@ -20,8 +20,8 @@ const kIsSmallUI = K.combine([kIsLargeUI, kIsMediumUI], (isLarge, isMedium) => {
 });
 
 
-const [setIsInfoVisible, bIsInfoVisible] = createBus()
-const kIsInfoVisible = bIsInfoVisible
+const [setIsInfoModalOpen, bIsInfoModalOpen] = createBus()
+const kIsInfoModalOpen = bIsInfoModalOpen
   .skipDuplicates()
   .toProperty(() => localStorageJSON("uiIsInfoVisible", false));
 
@@ -36,11 +36,11 @@ const kOpenModal = bOpenModal
 
 /* localStorage sync */
 
-kIsInfoVisible.onValue((isInfoVisible) => localStorage.uiIsInfoVisible = JSON.stringify(isInfoVisible))
+kIsInfoModalOpen.onValue((isInfoVisible) => localStorage.uiIsInfoVisible = JSON.stringify(isInfoVisible))
 
 export {
-  kIsInfoVisible,
-  setIsInfoVisible,
+  kIsInfoModalOpen,
+  setIsInfoModalOpen,
 
   kIsMediumUI,
   kIsLargeUI,

@@ -12,9 +12,9 @@ class Table extends Component {
 
   getColumnValues(columns, item) {
     return columns
-      .map((column) =>
+      .map((column, i) =>
         [column, column.itemKey === 'func'
-          ? column.func(item)
+          ? column.func(item, i)
           : item[column.itemKey]]);
   }
 
