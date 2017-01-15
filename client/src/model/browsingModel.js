@@ -125,7 +125,8 @@ keepAlive(kAlbum);
 const kTrackList = K.combine([kBeetsWebURL, kArtist, kAlbum])
   .flatMapLatest(([serverURL, artist, album]) => {
     if (!artist && !album) return K.constant([])
-    const url = `${serverURL}/item/query/${albumQueryString({artist, album_id: album})}`;
+    const url = `${serverURL}/item/query/${albumQueryString({albumartist: artist, album_id: album})}`;
+    console.log(url);
     return K.fromPromise(
       window.fetch(url)
         .then((response) => response.json())
@@ -179,7 +180,7 @@ const kFilteredAlbums = K.combine([kAlbums, kAlbumFilter.debounce(300)], (albums
 
 
 const [setInfoModalTrack, bInfoModalTrack] = createBus()
-const kInfoModalTrack = bInfoModalTrack.toProperty(() => null).log('kimt');
+const kInfoModalTrack = bInfoModalTrack.toProperty(() => null);
 
 
 export {
