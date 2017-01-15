@@ -53,7 +53,7 @@ const kPlayingTrack = K.combine([kBeetsWebURL, kPath])
   .flatMapLatest(([url, path]) => {
     if (!path) return K.constant(null);
     return K.fromPromise(
-      window.fetch(`${url}/item/path${path}`)
+      window.fetch(`${url}/item/path/${path}`)
         .then((response) => response.json())
     );
   })
