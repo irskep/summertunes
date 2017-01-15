@@ -179,6 +179,7 @@ def main():
         '--mpv-socket-path', str(args.mpv_socket_path),
     ]
     if args.run_mpv:
+        print(" ".join(mpv_cmd))
         Popen(mpv_cmd).wait()
         return
 

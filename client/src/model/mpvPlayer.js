@@ -19,6 +19,10 @@ class MPVPlayer {
     /* events */
     [this.sendEvent, this.events] = createBus();
 
+    this.events.filter((e) => {
+      return e.event !== "property-change" || e.name !== "time-pos";
+    }).log("mpv");
+
     this.kPropertyChanges = this.events
       .map((event) => {
         if (!event.request_id) {
@@ -29,14 +33,13 @@ class MPVPlayer {
         const name = this.requestIdToPropertyName[event.request_id];
         if (!name) {
           console.error("Couldn't decode response", event);
-        }
+        };
         delete this.requestIdToPropertyName[event.request_id];
         const reconstructedEvent = {
           "event": "property-change",
           "name": name,
           "data": event.data,
         }
-        console.debug(reconstructedEvent);
         return reconstructedEvent;
       })
       .filter((event) => {
@@ -68,6 +71,25 @@ class MPVPlayer {
       .filter(({name}) => name === "time-pos")
       .map(({data}) => data)
       .toProperty(() => 0));
+
+    this.kPlaylistCount = keepAlive(this.kPropertyChanges
+      .filter(({name}) => name === "playlist/count")
+      .map(({data}) => data)
+      .toProperty(() => 0)).log("kPlaylistCount");
+
+    this.kPlaylistFilenames = keepAlive(this.kPlaylistCount
+      .flatMapLatest((count) => {
+        const numbers = [];
+        for (let i = 0; i < count; i++) {
+          numbers.push(i);
+          this.getProperty(`playlist/${i}/filename`)
+        }
+        return K.combine(numbers.map((i) => {
+          return this.kPropertyChanges
+            .filter(({name}) => name === `playlist/${i}/filename`)
+        }));
+      }).log('kPlaylistFilenames')
+    ).toProperty(() => []);
 
     kSocketURL.onValue((url) => this.initSocket(url));
   }
@@ -144,6 +166,10 @@ class MPVPlayer {
 
   goToNextTrack() {
     this.socket.send({"command": ["playlist-next", "force"]});
+  }
+
+  refreshPlaylist() {
+    this.getProperty('playlist/count');
   }
 }
 

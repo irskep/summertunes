@@ -94,6 +94,7 @@ const goToBeginningOfTrack = forwardPlayerMethod('goToBeginningOfTrack');
 const playTrack = forwardPlayerMethod('playTrack');
 const playTracks = forwardPlayerMethod('playTracks');
 const goToNextTrack = forwardPlayerMethod('goToNextTrack');
+const refreshPlaylist = forwardPlayerMethod('refreshPlaylist');
 
 
 export {
@@ -115,4 +116,5 @@ export {
   playTrack,
   playTracks,
   goToNextTrack,
+  refreshPlaylist,
 }

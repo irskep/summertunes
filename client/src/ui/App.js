@@ -9,6 +9,7 @@ import ArtistList from "./ArtistList";
 import AlbumList from "./AlbumList";
 import TrackList from "./TrackList";
 import TrackInfo from "./TrackInfo";
+import Playlist from "./Playlist";
 
 import { kIsConfigReady } from "../config";
 import { kArtist, kAlbum, kTrack } from "../model/browsingModel";
@@ -90,6 +91,7 @@ class App extends KComponent {
       case 'albumartist': return <ArtistList key={key}/>;
       case 'album': return <AlbumList key={key}/>;
       case 'tracks': return <TrackList key={key}/>;
+      case 'queue': return <Playlist key={key}/>;
       default: return null;
     }
   }

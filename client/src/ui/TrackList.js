@@ -32,7 +32,6 @@ class TrackList extends KComponent {
   }
 
   renderEmpty() {
-    console.log(this.state);
     return (
       <div className="st-track-list st-track-list-empty st-app-overflowing-section">
         <h1>No tracks selected</h1>
