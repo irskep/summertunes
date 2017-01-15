@@ -6,7 +6,7 @@ import secondsToString from "../util/secondsToString";
 import { play } from "../util/svgShapes";
 import "../css/TrackList.css";
 
-import { kIsSmallUI, setOpenModal, setIsInfoModalOpen } from "../model/uiModel";
+import { kIsSmallUI, kUIConfigSetter, setIsInfoModalOpen } from "../model/uiModel";
 import { playTracks, kPlayingTrack } from "../model/playerModel";
 import { kTrackList, kTrackIndex, kPlayerQueueGetter, setTrackIndex } from "../model/browsingModel";
 
@@ -22,6 +22,7 @@ class TrackList extends KComponent {
     playingTrack: kPlayingTrack,
     playerQueueGetter: kPlayerQueueGetter,
     isSmallUI: kIsSmallUI,
+    uiConfigSetter: kUIConfigSetter,
   }; }
 
   selectedTrack() {
@@ -37,8 +38,8 @@ class TrackList extends KComponent {
         <h2>You must select at least one artist or album.</h2>
         {this.state.isSmallUI && (
           <div>
-            <div onClick={() => setOpenModal('artist')}>Pick artist</div>
-            <div onClick={() => setOpenModal('album')}>Pick album</div>
+            <div onClick={() => this.props.uiConfigSetter('Artist')}>Pick artist</div>
+            <div onClick={() => this.props.uiConfigSetter('Album')}>Pick album</div>
           </div>
         )}
       </div>

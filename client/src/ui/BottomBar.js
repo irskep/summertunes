@@ -1,23 +1,21 @@
 import React from 'react';
 import KComponent from "../util/KComponent";
-import { setOpenModal, kOpenModal } from "../model/uiModel";
+import {
+  kUIConfigSetter,
+  kUIConfigOptions,
+  kUIConfig,
+} from "../model/uiModel";
 import { kPlayerName, setPlayerName, playerNames } from "../model/playerModel";
 import "../css/BottomBar.css";
 
 class BottomBar extends KComponent {
 
   observables() { return {
-    openModal: kOpenModal,
+    uiConfigSetter: kUIConfigSetter,
+    uiConfigOptions: kUIConfigOptions,
+    uiConfig: kUIConfig,
     playerName: kPlayerName,
   }; }
-
-  setOpenModal(modalName) {
-    if (this.state.openModal === modalName) {
-      setOpenModal(null);
-    } else {
-      setOpenModal(modalName);
-    }
-  }
 
   render() {
     return <div className="st-bottom-bar noselect">
@@ -36,17 +34,20 @@ class BottomBar extends KComponent {
         </div>
       </div>
 
-      {this.props.artistAndAlbumButtons &&
-        <div className="st-toolbar-button-group st-toolbar-modal-button"
-              onClick={() => this.setOpenModal("artist")}>
-              <div>Artist</div>
-      </div>}
-
-      {this.props.artistAndAlbumButtons &&
-        <div className="st-toolbar-button-group st-toolbar-modal-button"
-              onClick={() => this.setOpenModal("album")}>
-              <div>Album</div>
-        </div>}
+      <div className="st-bottom-bar-right-buttons">
+        <div className="st-toolbar-button-group">
+          {Object.keys(this.state.uiConfigOptions).sort().map((label) => {
+            const className = this.state.uiConfig === label ? "st-toolbar-button-selected" : "";
+            return (
+              <div key={label}
+                   className={className}
+                   onClick={() => this.state.uiConfigSetter(label)}>
+                {label}  
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>;
   }
 }

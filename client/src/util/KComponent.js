@@ -8,6 +8,9 @@ export default class KComponent extends Component {
     this.subscribers = {};
     for (const k of keys) {
       const s = (v) => this.setState({[k]: v});
+      if (!o[k] || !o[k].onValue) {
+        throw new Error(`Key is not an observable: ${k}`);
+      }
       o[k].onValue(s);
       this.subscribers[k] = s;
     }

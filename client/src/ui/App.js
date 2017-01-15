@@ -16,8 +16,8 @@ import {
   kIsInfoModalOpen,
   kIsMediumUI,
   kIsLargeUI,
-  kOpenModal,
-  setOpenModal,
+  kUIConfig,
+  kUIConfigOptions,
   setIsInfoModalOpen,
 } from "../model/uiModel";
 import KComponent from "../util/KComponent";
@@ -58,28 +58,33 @@ class App extends KComponent {
 
     isMediumUI: kIsMediumUI,
     isLargeUI: kIsLargeUI,
-    openModal: kOpenModal,
+    uiConfig: kUIConfig,
+    uiConfigOptions: kUIConfigOptions,
   }; }
 
   render() {
     if (!this.state.isConfigReady) {
       return <div>Loading config...</div>;
     }
-    if (this.state.isLargeUI) {
-      return this.renderLargeUI([
-        ['albumartist', 'album', 'tracks'],
-      ]);
-    } else if (this.state.isMediumUI) {
-      return this.renderLargeUI([
-        ['albumartist', 'album'],
-        ['tracks'],
-      ]);
+    if (this.state.isSmallUI) {
+      return this.renderSmallUI(this.state.uiConfigOptions[this.state.uiConfig]);
     } else {
-      return this.renderSmallUI();
+      console.log(this.state.uiConfig, this.state.uiConfigOptions);
+      return this.renderLargeUI(this.state.uiConfigOptions[this.state.uiConfig]);
+    }
+  }
+
+  configValueToComponent(item, key) {
+    switch (item) {
+      case 'albumartist': return <ArtistList key={key}/>;
+      case 'album': return <AlbumList key={key}/>;
+      case 'tracks': return <TrackList key={key}/>;
+      default: return null;
     }
   }
 
   renderLargeUI(config) {
+    if (!config) return null;
     const rowHeight = `${(1 / config.length) * 100}%`;
     return (
       <div className="st-app">
@@ -87,14 +92,7 @@ class App extends KComponent {
         <div className="st-large-ui">
           {config.map((row, i) => {
             return <div key={i} style={{height: rowHeight}}>
-              {row.map((item, j) => {
-                switch (item) {
-                  case 'albumartist': return <ArtistList key={j}/>;
-                  case 'album': return <AlbumList key={j}/>;
-                  case 'tracks': return <TrackList key={j}/>;
-                  default: return null;
-                }
-              })}
+              {row.map((item, j) => this.configValueToComponent(item, j))}
             </div>
           })}
         </div>
@@ -104,33 +102,18 @@ class App extends KComponent {
     );
   }
 
-  renderSmallUI() {
-    if (this.state.openModal) {
-      return (
-        <div className="st-app st-app-modal">
-          <div className="st-small-ui">
-            <div className="st-modal-nav-bar">
-              <div className="st-modal-close-button" onClick={setOpenModal.bind(this, null)}>&times;</div>
-              {this.state.openModal === "artist" && <div className="st-modal-title">Artist</div>}
-              {this.state.openModal === "album" && <div className="st-modal-title">Album</div>}
-            </div>
-            {this.state.openModal === "artist" && <ArtistList />}
-            {this.state.openModal === "album" && <AlbumList />}
-          </div>
+  renderSmallUI(config) {
+    if (!config) return null;
+    return (
+      <div className="st-app">
+        <Toolbar stacked={true} />
+        <div className="st-small-ui">
+          <TrackList />
+          <BottomBar artistAndAlbumButtons={true} />
         </div>
-      );
-    } else {
-      return (
-        <div className="st-app">
-          <Toolbar stacked={true} />
-          <div className="st-small-ui">
-            <TrackList />
-            <BottomBar artistAndAlbumButtons={true} />
-          </div>
-          {this.state.isInfoModalOpen && <TrackInfoModal />}
-        </div>
-      );
-    }
+        {this.state.isInfoModalOpen && <TrackInfoModal />}
+      </div>
+    );
   }
 }
 

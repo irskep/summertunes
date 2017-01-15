@@ -7,6 +7,31 @@ const MEDIUM_UI_BREAKPOINT = 600;
 const LARGE_UI_BREAKPOINT = 840;
 
 
+const largeUIOptions = {
+  A: [
+    ['albumartist', 'album'],
+    ['tracks'],
+  ],
+  B: [
+    ['albumartist', 'album', 'tracks'],
+  ],
+  C: [
+    ['hierarchy', 'queue'],
+  ],
+};
+
+
+const mediumUIOptions = largeUIOptions;
+
+
+const smallUIOptions = {
+  Artist: [['albumartist']],
+  Album: [['album']],
+  Tracks: [['tracks']],
+  Queue: [['queue']],
+};
+
+
 const getWindowWidth = () => window.document.body.clientWidth
 const kWindowWidth = K.fromEvents(window, 'resize')
   .map(getWindowWidth)
@@ -23,20 +48,47 @@ const kIsSmallUI = K.combine([kIsLargeUI, kIsMediumUI], (isLarge, isMedium) => {
 const [setIsInfoModalOpen, bIsInfoModalOpen] = createBus()
 const kIsInfoModalOpen = bIsInfoModalOpen
   .skipDuplicates()
-  .toProperty(() => localStorageJSON("uiIsInfoVisible", false));
+  .toProperty(() => false);
 
+/* ui configs */
 
-const [setOpenModal, bOpenModal] = createBus("openModal")
-const kOpenModal = bOpenModal
+const [setLargeUIConfig, bLargeUIConfig] = createBus()
+const kLargeUIConfig = bLargeUIConfig
   .skipDuplicates()
-  //.merge(kArtist.changes().map(() => null).map(logMapper("artist kill")))
-  //.merge(kAlbum.changes().map(() => null).map(logMapper("album kill")))
-  //.map(logMapper("openModal"))
-  .toProperty(() => null);
+  .toProperty(() => localStorageJSON("uiLargeUIConfig", 'B'))
+  .log('kLargeUIConfig');
 
-/* localStorage sync */
+const [setMediumUIConfig, bMediumUIConfig] = createBus()
+const kMediumUIConfig = bMediumUIConfig
+  .skipDuplicates()
+  .toProperty(() => localStorageJSON("uiMediumUIConfig", 'A'))
+  .log('kMediumUIConfig');
 
-kIsInfoModalOpen.onValue((isInfoVisible) => localStorage.uiIsInfoVisible = JSON.stringify(isInfoVisible))
+const [setSmallUIConfig, bSmallUIConfig] = createBus()
+const kSmallUIConfig = bSmallUIConfig
+  .skipDuplicates()
+  .toProperty(() => localStorageJSON("uiSmallUIConfig", 'Tracks'))
+  .log('kSmallUIConfig');
+
+const kUIConfigSetter = K.combine([kIsLargeUI, kIsMediumUI], (isLargeUI, isMediumUI) => {
+  if (isLargeUI) return setLargeUIConfig;
+  if (isMediumUI) return setMediumUIConfig;
+  return setSmallUIConfig;
+}).toProperty(() => setLargeUIConfig);
+
+const kUIConfigOptions = K.combine([kIsLargeUI, kIsMediumUI], (isLargeUI, isMediumUI) => {
+  console.log(isLargeUI, isMediumUI);
+  if (isLargeUI) return largeUIOptions;
+  if (isMediumUI) return mediumUIOptions;
+  return smallUIOptions;
+}).toProperty(() => largeUIOptions);
+
+const kUIConfig = K.combine([kIsLargeUI, kIsMediumUI])
+  .flatMapLatest(([isLargeUI, isMediumUI]) => {
+    if (isLargeUI) return kLargeUIConfig;
+    if (isMediumUI) return kMediumUIConfig;
+    return kSmallUIConfig;
+  }).toProperty(() => largeUIOptions.B);
 
 export {
   kIsInfoModalOpen,
@@ -46,6 +98,7 @@ export {
   kIsLargeUI,
   kIsSmallUI,
 
-  kOpenModal,
-  setOpenModal,
+  kUIConfigSetter,
+  kUIConfigOptions,
+  kUIConfig,
 }

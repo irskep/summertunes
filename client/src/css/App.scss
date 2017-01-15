@@ -92,11 +92,21 @@
       &.st-artist-list {
         flex-shrink: 100; flex-grow: 0.1;
         max-width: 300px;
+
+        &:first-child:last-child {
+          max-width: 100%;
+          width: 100%;
+        }
       }
 
       &.st-album-list {
         flex-shrink: 10; flex-grow: 0.1;
         max-width: 300px;
+
+        &:first-child:last-child {
+          max-width: 100%;
+          width: 100%;
+        }
       }
 
       &.st-track-list {
