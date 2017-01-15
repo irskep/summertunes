@@ -8,7 +8,12 @@ import {
     kArtistFilter,
     setArtistFilter,
     kFilteredArtists,
+    setAlbum,
 }                       from "../model/browsingModel";
+import {
+  setSmallUIConfig,
+  kIsSmallUI,
+}                       from "../model/uiModel";
 import KComponent       from "../util/KComponent";
 // import { setOpenModal } from "../model/uiModel";
 
@@ -18,6 +23,7 @@ class ArtistList extends KComponent {
     artists: kFilteredArtists,
     artist: kArtist,
     artistFilter: kArtistFilter,
+    isSmallUI: kIsSmallUI,
   }; }
 
   componentDidMount() {
@@ -63,6 +69,10 @@ class ArtistList extends KComponent {
           ref2={(el) => this.listEl = el}
           onClick={({value}) => {
             setArtist(value);
+            setAlbum(null);
+            if (this.state.isSmallUI) {
+              setSmallUIConfig('Album');
+            }
             // setOpenModal(null);
           }}
           items={[

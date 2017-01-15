@@ -139,7 +139,11 @@ class MusicPlayer {
       // connect to output (your speakers)
       source.connect(this.ctx.destination);
       // play the file
-      source.noteOn(0);
+      try {
+        source.noteOn(0);
+      } catch (e) {
+        source.start(0);
+      }
     }, false);
   }
 

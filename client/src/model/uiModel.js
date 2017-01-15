@@ -15,7 +15,7 @@ const largeUIOptions = {
   B: [
     ['albumartist', 'album', 'tracks'],
   ],
-  C: [
+  Q: [
     ['hierarchy', 'queue'],
   ],
 };
@@ -42,7 +42,7 @@ const kIsLargeUI = kWindowWidth
   .map((width) => width >= LARGE_UI_BREAKPOINT);
 const kIsSmallUI = K.combine([kIsLargeUI, kIsMediumUI], (isLarge, isMedium) => {
     return !isLarge && !isMedium;
-});
+}).toProperty(() => false);
 
 
 const [setIsInfoModalOpen, bIsInfoModalOpen] = createBus()
@@ -55,20 +55,17 @@ const kIsInfoModalOpen = bIsInfoModalOpen
 const [setLargeUIConfig, bLargeUIConfig] = createBus()
 const kLargeUIConfig = bLargeUIConfig
   .skipDuplicates()
-  .toProperty(() => localStorageJSON("uiLargeUIConfig", 'B'))
-  .log('kLargeUIConfig');
+  .toProperty(() => localStorageJSON("uiLargeUIConfig", 'B'));
 
 const [setMediumUIConfig, bMediumUIConfig] = createBus()
 const kMediumUIConfig = bMediumUIConfig
   .skipDuplicates()
-  .toProperty(() => localStorageJSON("uiMediumUIConfig", 'A'))
-  .log('kMediumUIConfig');
+  .toProperty(() => localStorageJSON("uiMediumUIConfig", 'A'));
 
 const [setSmallUIConfig, bSmallUIConfig] = createBus()
 const kSmallUIConfig = bSmallUIConfig
   .skipDuplicates()
-  .toProperty(() => localStorageJSON("uiSmallUIConfig", 'Artist'))
-  .log('kSmallUIConfig');
+  .toProperty(() => localStorageJSON("uiSmallUIConfig", 'Artist'));
 
 const kUIConfigSetter = K.combine([kIsLargeUI, kIsMediumUI], (isLargeUI, isMediumUI) => {
   if (isLargeUI) return setLargeUIConfig;
@@ -77,7 +74,6 @@ const kUIConfigSetter = K.combine([kIsLargeUI, kIsMediumUI], (isLargeUI, isMediu
 }).toProperty(() => setLargeUIConfig);
 
 const kUIConfigOptions = K.combine([kIsLargeUI, kIsMediumUI], (isLargeUI, isMediumUI) => {
-  console.log(isLargeUI, isMediumUI);
   if (isLargeUI) return largeUIOptions;
   if (isMediumUI) return mediumUIOptions;
   return smallUIOptions;
@@ -90,6 +86,12 @@ const kUIConfig = K.combine([kIsLargeUI, kIsMediumUI])
     return kSmallUIConfig;
   }).toProperty(() => largeUIOptions.B);
 
+/* local storage sync */
+
+kLargeUIConfig.onValue((v) => localStorage.uiLargeUIConfig = JSON.stringify(v));
+kMediumUIConfig.onValue((v) => localStorage.uiMediumUIConfig = JSON.stringify(v));
+kSmallUIConfig.onValue((v) => localStorage.uiSmallUIConfig = JSON.stringify(v));
+
 export {
   kIsInfoModalOpen,
   setIsInfoModalOpen,
@@ -101,4 +103,6 @@ export {
   kUIConfigSetter,
   kUIConfigOptions,
   kUIConfig,
+
+  setSmallUIConfig,
 }

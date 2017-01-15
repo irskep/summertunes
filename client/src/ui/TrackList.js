@@ -32,14 +32,15 @@ class TrackList extends KComponent {
   }
 
   renderEmpty() {
+    console.log(this.state);
     return (
       <div className="st-track-list st-track-list-empty st-app-overflowing-section">
         <h1>No tracks selected</h1>
         <h2>You must select at least one artist or album.</h2>
         {this.state.isSmallUI && (
-          <div>
-            <div onClick={() => this.props.uiConfigSetter('Artist')}>Pick artist</div>
-            <div onClick={() => this.props.uiConfigSetter('Album')}>Pick album</div>
+          <div className="st-pick-artist-album-prompt">
+            <div onClick={() => this.state.uiConfigSetter('Artist')}>Pick artist</div>
+            <div onClick={() => this.state.uiConfigSetter('Album')}>Pick album</div>
           </div>
         )}
       </div>
