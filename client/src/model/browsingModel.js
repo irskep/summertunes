@@ -150,10 +150,13 @@ const kTrack = K.combine([kTrackList, kTrackIndex], (trackList, trackIndex) => {
 keepAlive(kTrack);
 
 const kPlayerQueueGetter = K.combine([kTrackList, kTrackIndex], (trackList, trackIndex) => {
-  if (trackIndex === null) return null;
-  if (trackList.length < 1) return null;
-  if (trackIndex >= trackList.length) return null;
-  return () => trackList.slice(trackIndex);
+  return (overrideTrackIndex = null) => {
+    const actualTrackIndex = overrideTrackIndex === null ? trackIndex : overrideTrackIndex;
+    if (actualTrackIndex === null) return [];
+    if (trackList.length < 1) return [];
+    if (actualTrackIndex >= trackList.length) return [];
+    return trackList.slice(actualTrackIndex);
+  }
 }).toProperty(() => () => []);
 keepAlive(kPlayerQueueGetter);
 
@@ -179,10 +182,6 @@ const kFilteredAlbums = K.combine([kAlbums, kAlbumFilter.debounce(300)], (albums
 }).toProperty(() => []);;
 
 
-const [setInfoModalTrack, bInfoModalTrack] = createBus()
-const kInfoModalTrack = bInfoModalTrack.toProperty(() => null);
-
-
 export {
   kArtists,
   kArtist,
@@ -203,7 +202,4 @@ export {
   setAlbumFilter,
   kAlbumFilter,
   kFilteredAlbums,
-
-  setInfoModalTrack,
-  kInfoModalTrack,
 }

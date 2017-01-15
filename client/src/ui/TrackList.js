@@ -1,24 +1,64 @@
 /* global window */
-import React from 'react';
-import Table from "../uilib/Table";
-import KComponent from "../util/KComponent"
-import secondsToString from "../util/secondsToString";
-import { play } from "../util/svgShapes";
 import "../css/TrackList.css";
+import React, { Component } from 'react';
+import Table                from "../uilib/Table";
+import KComponent           from "../util/KComponent"
+import secondsToString      from "../util/secondsToString";
+import { play }             from "../util/svgShapes";
 
-import { kIsSmallUI, kUIConfigSetter, setIsInfoModalOpen } from "../model/uiModel";
-import { playTracks, kPlayingTrack } from "../model/playerModel";
+import {
+  kIsSmallUI,
+  kUIConfigSetter,
+  openInfoModal,
+}                           from "../model/uiModel";
+import {
+  playTracks,
+  enqueueTrack,
+  enqueueTracks,
+  kPlayingTrack,
+}                           from "../model/playerModel";
 import {
   kTrackList,
   kTrackIndex,
   kPlayerQueueGetter,
   setTrackIndex,
-  setInfoModalTrack,
-} from "../model/browsingModel";
+}                           from "../model/browsingModel";
 
 function areTracksEqual(a, b) {
   if (Boolean(a) !== Boolean(b)) return false;
   return a.id === b.id;
+}
+
+class TrackListOverflowButton extends Component {
+  constructor() {
+    super();
+    this.state = { isOpen: false };
+  }
+
+  render() {
+    return (
+      <span
+          className="st-track-overflow-button"
+          onClick={() => this.setState({isOpen: !this.state.isOpen})}
+          onMouseLeave={() => null}>
+        v
+        {this.state.isOpen && (
+          <div className="st-track-overflow-menu">
+            <div onClick={() => { openInfoModal(this.props.item); }}>
+              info
+            </div>
+            <div onClick={() => { playTracks(this.props.playerQueueGetter(this.props.i)); }}>
+              play now
+            </div>
+            <div onClick={() => { enqueueTrack(this.props.item); }}>
+              enqueue
+            </div>
+          </div>
+        )}
+       </span>
+    );
+
+  }
 }
 
 class TrackList extends KComponent {
@@ -79,10 +119,10 @@ class TrackList extends KComponent {
         {name: 'Title', itemKey: 'func', func: (item, i) => {
           return <div>
             {item.title}
-            <span className="st-track-overflow-button" onClick={() => {
-              setInfoModalTrack(item);
-              setIsInfoModalOpen(true);
-            }}>v</span>
+            <TrackListOverflowButton
+              item={item}
+              i={i}
+              playerQueueGetter={this.state.playerQueueGetter} />
           </div>
         }},
         /*

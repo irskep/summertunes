@@ -18,7 +18,7 @@ import {
   kIsSmallUI,
   kUIConfig,
   kUIConfigOptions,
-  setIsInfoModalOpen,
+  closeInfoModal,
 } from "../model/uiModel";
 import KComponent from "../util/KComponent";
 
@@ -37,7 +37,7 @@ const TrackInfoModal = () => {
       <div className="st-track-info-modal">
         <div className="st-nav-bar">
           Track Info
-          <div className="st-close-button" onClick={() => setIsInfoModalOpen(false)}>
+          <div className="st-close-button" onClick={closeInfoModal}>
             &times;
           </div>
         </div>

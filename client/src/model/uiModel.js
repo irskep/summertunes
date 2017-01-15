@@ -50,6 +50,20 @@ const kIsInfoModalOpen = bIsInfoModalOpen
   .skipDuplicates()
   .toProperty(() => false);
 
+
+const [setInfoModalTrack, bInfoModalTrack] = createBus()
+const kInfoModalTrack = bInfoModalTrack.toProperty(() => null);
+
+
+const openInfoModal = (track) => {
+  setInfoModalTrack(track);
+  setIsInfoModalOpen(true);
+}
+
+const closeInfoModal = () => {
+  setIsInfoModalOpen(false);
+}
+
 /* ui configs */
 
 const [setLargeUIConfig, bLargeUIConfig] = createBus()
@@ -94,7 +108,9 @@ kSmallUIConfig.onValue((v) => localStorage.uiSmallUIConfig = JSON.stringify(v));
 
 export {
   kIsInfoModalOpen,
-  setIsInfoModalOpen,
+  kInfoModalTrack,
+  openInfoModal,
+  closeInfoModal,
 
   kIsMediumUI,
   kIsLargeUI,

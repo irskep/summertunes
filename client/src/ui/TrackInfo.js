@@ -1,7 +1,7 @@
 import React from 'react';
 import KComponent from "../util/KComponent";
 import Table from "../uilib/Table";
-import { kInfoModalTrack } from "../model/browsingModel";
+import { kInfoModalTrack } from "../model/uiModel";
 
 export default class TrackInfo extends KComponent {
   observables() { return {
