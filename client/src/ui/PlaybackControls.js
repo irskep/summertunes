@@ -7,6 +7,7 @@ import {
   setIsPlaying,
   goToBeginningOfTrack,
   goToNextTrack,
+  goToPreviousTrack,
 } from "../model/playerModel";
 import KComponent from "../util/KComponent";
 import { play, pause } from "../util/svgShapes";
@@ -27,14 +28,17 @@ export default class PlaybackControls extends KComponent {
   }
 
   goBack() {
-    // In the future, we'll reset the playback queue based on trackList + trackIndex - 1.
-    goToBeginningOfTrack();
+    if (this.state.playbackSeconds < 2) {
+      goToPreviousTrack();
+    } else {
+      goToBeginningOfTrack();
+    }
   }
 
   render() {
     return (
         <div className="st-toolbar-button-group st-playback-controls">
-          <div onClick={this.goBack}>{play(true, true)}</div>
+          <div onClick={() => { this.goBack(); }}>{play(true, true)}</div>
           {this.state.isPlaying && <div onClick={this.pause}>{pause()}</div>}
           {!this.state.isPlaying && <div onClick={this.play}>{play(false, false)}</div>}
           <div onClick={goToNextTrack}>{play(true, false)}</div>

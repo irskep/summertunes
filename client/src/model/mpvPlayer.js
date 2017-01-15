@@ -164,6 +164,10 @@ class MPVPlayer {
     });
   }
 
+  goToPreviousTrack() {
+    this.socket.send({"command": ["playlist-prev", "force"]});
+  }
+
   goToNextTrack() {
     this.socket.send({"command": ["playlist-next", "force"]});
   }

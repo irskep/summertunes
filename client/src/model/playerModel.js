@@ -44,12 +44,20 @@ const forwardPlayerMethod = (key) => {
 };
 
 
+const trackInfoCache = {};
+
+
 const createKPathToTrack = (kPathProperty) => K.combine([kBeetsWebURL, kPathProperty])
   .flatMapLatest(([url, path]) => {
     if (!path) return K.constant(null);
+    if (trackInfoCache[path]) return K.constant(trackInfoCache[path]);
     return K.fromPromise(
       window.fetch(`${url}/item/path/${path}`)
         .then((response) => response.json())
+        .then((json) => {
+          trackInfoCache[path] = json;
+          return trackInfoCache[path];
+        })
     );
   })
   .toProperty(() => null);
@@ -106,6 +114,7 @@ const goToBeginningOfTrack = forwardPlayerMethod('goToBeginningOfTrack');
 const playTrack = forwardPlayerMethod('playTrack');
 const playTracks = forwardPlayerMethod('playTracks');
 const goToNextTrack = forwardPlayerMethod('goToNextTrack');
+const goToPreviousTrack = forwardPlayerMethod('goToPreviousTrack');
 const refreshPlaylist = forwardPlayerMethod('refreshPlaylist');
 
 
@@ -131,5 +140,6 @@ export {
   playTrack,
   playTracks,
   goToNextTrack,
+  goToPreviousTrack,
   refreshPlaylist,
 }

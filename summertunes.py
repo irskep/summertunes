@@ -82,7 +82,9 @@ def cmd(q, args, kwargs=None):
         p.communicate()
     except SystemExit:
         p.kill()
+        p.kill()
     except KeyboardInterrupt:
+        p.kill()
         p.kill()
 
 def is_program_in_path(name):

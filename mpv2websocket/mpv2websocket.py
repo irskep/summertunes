@@ -36,6 +36,7 @@ COMMAND_WHITELIST = {
     "playlist-remove",
     "loadfile",
     "playlist-next",
+    "playlist-prev",
 }
 
 def _kill_socket(path):
