@@ -12,10 +12,12 @@ class Table extends Component {
 
   getColumnValues(columns, item) {
     return columns
-      .map((column, i) =>
-        [column, column.itemKey === 'func'
+      .map((column, i) => {
+        if (!item) return "";
+        return [column, column.itemKey === 'func'
           ? column.func(item, i)
-          : item[column.itemKey]]);
+          : item[column.itemKey]];
+      });
   }
 
   renderHeaderRow(key) {
@@ -48,11 +50,12 @@ class Table extends Component {
           const j = i;
           rows.push(
             <tr key={i}
-                className={this.props.selectedItem === item ? "st-table-item-selected" : ""}
+                className={item && this.props.selectedItem === item ? "st-table-item-selected" : ""}
                 onClick={() => this.props.onClick(item, j)}>
-              {this.getColumnValues(inlineColumns, item).map(([column, value]) => (
-                <td key={`${column.itemKey}-${column.name}`}>{value}</td>
-              ))}
+              {this.getColumnValues(inlineColumns, item).map(([column, value], i) => {
+                const itemKey = column ? `${column.itemKey}-${column.name}` : i;
+                return <td key={`${itemKey}`}>{value}</td>;
+              })}
             </tr>
           );
           i++;

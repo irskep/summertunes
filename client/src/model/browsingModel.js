@@ -178,6 +178,10 @@ const kFilteredAlbums = K.combine([kAlbums, kAlbumFilter.debounce(300)], (albums
 }).toProperty(() => []);;
 
 
+const [setInfoModalTrack, bInfoModalTrack] = createBus()
+const kInfoModalTrack = bInfoModalTrack.toProperty(() => null).log('kimt');
+
+
 export {
   kArtists,
   kArtist,
@@ -198,4 +202,7 @@ export {
   setAlbumFilter,
   kAlbumFilter,
   kFilteredAlbums,
+
+  setInfoModalTrack,
+  kInfoModalTrack,
 }

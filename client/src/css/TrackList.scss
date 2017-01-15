@@ -4,39 +4,6 @@
     height: 100%;
     overflow: auto;
 
-    &.st-track-list-empty {
-        max-width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: nowrap;
-
-        h1, h2 {
-            color: $colorTextFaint;
-            text-align: center;
-            margin-left: 1em;
-            margin-right: 1em;
-        }
-
-        .st-pick-artist-album-prompt {
-            margin-top: 1.4em;
-
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-around;
-            flex-wrap: nowrap;
-            width: 100%;
-
-            & > div {
-                color: $colorTextLink;
-                cursor: pointer;
-                font-size: 1.4em;
-            }
-        }
-    }
-
     .st-track-overflow-button {
         cursor: pointer;
         position: absolute;
@@ -53,5 +20,43 @@
         font-size: 9px;
         background-color: $colorBackground1;
         color: $colorText;
+    }
+}
+
+
+.st-track-list-empty {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+
+    &:first-child:last-child {
+        width: 100%;
+    }
+
+    h1, h2 {
+        color: $colorTextFaint;
+        text-align: center;
+        margin-left: 1em;
+        margin-right: 1em;
+    }
+
+    .st-pick-artist-album-prompt {
+        margin-top: 1.4em;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+        flex-wrap: nowrap;
+        width: 100%;
+
+        & > div {
+            color: $colorTextLink;
+            cursor: pointer;
+            font-size: 1.4em;
+        }
     }
 }

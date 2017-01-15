@@ -70,12 +70,17 @@ class App extends KComponent {
 
     if (!config) return null;
     const rowHeight = `${(1 / config.length) * 100}%`;
+    const outerClassName = (
+      `st-rows-${config.length} ` +
+      (this.state.isSmallUI ? "st-ui st-small-ui" : "st-ui st-large-ui")
+    );
     return (
       <div className="st-app">
         <Toolbar stacked={this.state.isSmallUI} />
-        <div className={this.state.isSmallUI ? "st-ui st-small-ui" : "st-ui st-large-ui"}>
+        <div className={outerClassName}>
           {config.map((row, i) => {
-            return <div key={i} style={{height: rowHeight}}>
+            const innerClassName = `st-columns-${row.length}`;
+            return <div key={i} className={innerClassName} style={{height: rowHeight}}>
               {row.map((item, j) => this.configValueToComponent(item, j))}
             </div>
           })}

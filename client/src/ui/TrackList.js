@@ -8,7 +8,13 @@ import "../css/TrackList.css";
 
 import { kIsSmallUI, kUIConfigSetter, setIsInfoModalOpen } from "../model/uiModel";
 import { playTracks, kPlayingTrack } from "../model/playerModel";
-import { kTrackList, kTrackIndex, kPlayerQueueGetter, setTrackIndex } from "../model/browsingModel";
+import {
+  kTrackList,
+  kTrackIndex,
+  kPlayerQueueGetter,
+  setTrackIndex,
+  setInfoModalTrack,
+} from "../model/browsingModel";
 
 function areTracksEqual(a, b) {
   if (Boolean(a) !== Boolean(b)) return false;
@@ -70,11 +76,11 @@ class TrackList extends KComponent {
             )}
           </span>;
         }},
-        {name: 'Title', itemKey: 'func', func: ({title}, i) => {
+        {name: 'Title', itemKey: 'func', func: (item, i) => {
           return <div>
-            {title}
+            {item.title}
             <span className="st-track-overflow-button" onClick={() => {
-              setTrackIndex(i);
+              setInfoModalTrack(item);
               setIsInfoModalOpen(true);
             }}>v</span>
           </div>
