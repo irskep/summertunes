@@ -14,8 +14,7 @@ import { kIsConfigReady } from "../config";
 import { kArtist, kAlbum, kTrack } from "../model/browsingModel";
 import {
   kIsInfoModalOpen,
-  kIsMediumUI,
-  kIsLargeUI,
+  kIsSmallUI,
   kUIConfig,
   kUIConfigOptions,
   setIsInfoModalOpen,
@@ -56,8 +55,7 @@ class App extends KComponent {
     selectedTrack: kTrack,
     isInfoModalOpen: kIsInfoModalOpen,
 
-    isMediumUI: kIsMediumUI,
-    isLargeUI: kIsLargeUI,
+    isSmallUI: kIsSmallUI,
     uiConfig: kUIConfig,
     uiConfigOptions: kUIConfigOptions,
   }; }
@@ -66,30 +64,15 @@ class App extends KComponent {
     if (!this.state.isConfigReady) {
       return <div>Loading config...</div>;
     }
-    if (this.state.isSmallUI) {
-      return this.renderSmallUI(this.state.uiConfigOptions[this.state.uiConfig]);
-    } else {
-      console.log(this.state.uiConfig, this.state.uiConfigOptions);
-      return this.renderLargeUI(this.state.uiConfigOptions[this.state.uiConfig]);
-    }
-  }
 
-  configValueToComponent(item, key) {
-    switch (item) {
-      case 'albumartist': return <ArtistList key={key}/>;
-      case 'album': return <AlbumList key={key}/>;
-      case 'tracks': return <TrackList key={key}/>;
-      default: return null;
-    }
-  }
+    const config = this.state.uiConfigOptions[this.state.uiConfig];
 
-  renderLargeUI(config) {
     if (!config) return null;
     const rowHeight = `${(1 / config.length) * 100}%`;
     return (
       <div className="st-app">
-        <Toolbar />
-        <div className="st-large-ui">
+        <Toolbar stacked={this.state.isSmallUI} />
+        <div className={this.state.isSmallUI ? "st-ui st-small-ui" : "st-ui st-large-ui"}>
           {config.map((row, i) => {
             return <div key={i} style={{height: rowHeight}}>
               {row.map((item, j) => this.configValueToComponent(item, j))}
@@ -102,18 +85,13 @@ class App extends KComponent {
     );
   }
 
-  renderSmallUI(config) {
-    if (!config) return null;
-    return (
-      <div className="st-app">
-        <Toolbar stacked={true} />
-        <div className="st-small-ui">
-          <TrackList />
-          <BottomBar artistAndAlbumButtons={true} />
-        </div>
-        {this.state.isInfoModalOpen && <TrackInfoModal />}
-      </div>
-    );
+  configValueToComponent(item, key) {
+    switch (item) {
+      case 'albumartist': return <ArtistList key={key}/>;
+      case 'album': return <AlbumList key={key}/>;
+      case 'tracks': return <TrackList key={key}/>;
+      default: return null;
+    }
   }
 }
 

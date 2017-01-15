@@ -67,7 +67,7 @@ const kMediumUIConfig = bMediumUIConfig
 const [setSmallUIConfig, bSmallUIConfig] = createBus()
 const kSmallUIConfig = bSmallUIConfig
   .skipDuplicates()
-  .toProperty(() => localStorageJSON("uiSmallUIConfig", 'Tracks'))
+  .toProperty(() => localStorageJSON("uiSmallUIConfig", 'Artist'))
   .log('kSmallUIConfig');
 
 const kUIConfigSetter = K.combine([kIsLargeUI, kIsMediumUI], (isLargeUI, isMediumUI) => {

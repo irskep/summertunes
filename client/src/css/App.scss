@@ -55,11 +55,15 @@
   }
 }
 
-.st-large-ui {
+.st-ui {
   position: absolute;
   top: 81px;
   bottom: 50px;
   left: 0; right: 0;
+
+  &.st-small-ui {
+    top: 100px;
+  }
 
   display: flex;
   flex-direction: column;
@@ -115,42 +119,6 @@
         min-width: 50%;
       }
     }
-  }
-}
-
-.st-small-ui {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  align-items: stretch;
-  width: 100%;
-  height: calc(100% - 100px);
-
-  .st-app & {
-    padding-bottom: 50px;  // toolbar
-  }
-
-  .st-app-modal & {
-    height: 100%;
-  }
-
-  .st-bottom-bar {
-    z-index: 1;
-  }
-
-  .st-app-overflowing-section {
-    flex-grow: 1;
-    flex-shrink: 1;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
- .st-info-sidebar {
-    border-top: 1px solid $colorBorder;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    height: 30%;
-    flex-grow: 0;
   }
 }
 
