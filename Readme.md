@@ -116,6 +116,8 @@ beets web arguments:
                         'beet web' is serving on this port
 ```
 
-![](https://www.dropbox.com/s/459k4m9mkaj67sy/Screenshot%202016-12-23%2019.08.01.png?dl=1)
+![](https://www.dropbox.com/s/i1yf42p5vu7eidt/Screenshot%202017-01-17%2012.59.32.png?dl=1)
+
+![](https://www.dropbox.com/s/r5gz3ijisx5h4pr/Screenshot%202017-01-17%2013.00.00.png?dl=1)
 
 ![](https://www.dropbox.com/s/idcmdhrwre56cov/Screenshot%202016-12-23%2018.24.54.png?dl=1)
