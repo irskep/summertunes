@@ -47,12 +47,12 @@ const updateTitle = (newURLData) => {
 
 updateTitle(getURLData());
 
-const withURLChange = (k, func) => (arg) => {
-  func(arg);
+const urlUpdater = (k) => (arg) => {
   const newURLData = {
     ...latestURLData,
     [k]: arg,
   }
+  latestURLData = newURLData;
   history.pushState(null, "", makeURLQuery(newURLData));
   updateTitle(newURLData);
   sendStatePushed();
@@ -65,7 +65,7 @@ const kAllAlbums = kBeetsWebURL
     return K.fromPromise(
         window.fetch(`${url}/album/`)
           .then((response) => response.json())
-          .then(({albums}) => albums))
+          .then(({albums}) => albums.sort((a, b) => a.album < b.album ? -1 : 1)))
   })
   .toProperty(() => [])
 keepAlive(kAllAlbums);
@@ -100,23 +100,25 @@ const kArtists = kAlbumsByArtist
 keepAlive(kArtists);
 
 
-const [setArtistRaw, bArtist] = createBus()
-const setArtist = withURLChange('artist', setArtistRaw);
-const kArtist = bArtist
-  .merge(urlDataChanges.map(keyMapper('artist')))
+const setArtist = urlUpdater('artist');
+const kArtist = urlDataChanges.map(keyMapper('artist'))
   .skipDuplicates()
   .toProperty(() => getURLData()['artist'])
 keepAlive(kArtist);
 
-const kAlbums = K.combine([kAlbumsByArtist, kArtist])
-  .map(([albumsByArtist, artistName]) => albumsByArtist[artistName] || [])
+const kAlbums = K.combine([kAlbumsByArtist, kArtist, kAllAlbums])
+  .map(([albumsByArtist, artistName, allAlbums]) => {
+    if (artistName) {
+      return albumsByArtist[artistName] || [];
+    } else {
+      return allAlbums;
+    }
+  })
   .toProperty(() => []);
 keepAlive(kAlbums);
 
-const [setAlbumRaw, bAlbum] = createBus()
-const setAlbum = withURLChange('album', setAlbumRaw);
-const kAlbum = bAlbum
-  .merge(kArtist.map(() => null).skip(1))  // don't zap initial load
+const setAlbum = urlUpdater('album');
+const kAlbum = kArtist.map(() => null).skip(1)  // don't zap initial load
   .merge(urlDataChanges.map(keyMapper('album')))
   .skipDuplicates()
   .toProperty(() => getURLData()['album'])
@@ -126,7 +128,6 @@ const kTrackList = K.combine([kBeetsWebURL, kArtist, kAlbum])
   .flatMapLatest(([serverURL, artist, album]) => {
     if (!artist && !album) return K.constant([])
     const url = `${serverURL}/item/query/${albumQueryString({albumartist: artist, album_id: album})}`;
-    console.log(url);
     return K.fromPromise(
       window.fetch(url)
         .then((response) => response.json())
