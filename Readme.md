@@ -8,8 +8,8 @@ Works on Python 3.5 and might work on 2.7.
 # install mpv on your platform
 brew install mpv
 
-# install beets globally
-pip install beets
+# install beets from master and web plugin dependencies
+pip install -r requirements.txt
 # this file does not exist for you. add a lastFM: "API_KEY" entry
 # to get album art.
 echo "export default {};" > client/apiKeys.js
@@ -21,12 +21,6 @@ beet import -A -C /folder/of/files
 cd client
 npm install
 cd ..
-
-# install Python dependencies
-mkvirtualenv summertunes
-pip install -r requirements.txt
-# if you have beets plugins, you may need to install them
-# into the virtualenv as well.
 
 # in a separate terminal, run this to invoke mpv with the settings from
 # your summertunes config:
@@ -66,14 +60,12 @@ port = 3002
 ```sh
 > ./summertunes.py -h
 usage: summertunes.py [-h] [--web-interface-port WEB_INTERFACE_PORT] [--dev]
-                      [--debug-args] [--print-default-config]
+                      [--debug-args] [--print-default-config] [--run-mpv]
                       [--player-services PLAYER_SERVICES]
                       [--disable-player-services PLAYER_SERVICES]
-                      [--library-services LIBRARY_SERVICES]
-                      [--disable-library-services LIBRARY_SERVICES]
                       [--mpv-websocket-port MPV_WEBSOCKET_PORT]
                       [--mpv-socket-path MPV_SOCKET_PATH]
-                      [--httbeets-port HTTBEETS_PORT]
+                      [--beets-web-port BEETS_WEB_PORT]
 
 Run the Summertunes web frontend and whatever backends you want
 
@@ -85,22 +77,21 @@ optional arguments:
   --debug-args          Show parsed arg values and exit
   --print-default-config
                         Print default config and exit
+  --run-mpv             Instead of running summertunes, run mpv to match the
+                        current config
   --player-services PLAYER_SERVICES
                         Players to expose to the web interface (default
                         {'mpv', 'html5'}). Example: mpv,html5
   --disable-player-services PLAYER_SERVICES
                         Remove a previously added player service
-  --library-services LIBRARY_SERVICES
-                        Libraries to expose to the web interface (default
-                        {'httbeets'}).
-  --disable-library-services LIBRARY_SERVICES
 
 mpv arguments:
   --mpv-websocket-port MPV_WEBSOCKET_PORT
   --mpv-socket-path MPV_SOCKET_PATH
 
-httbeets arguments:
-  --httbeets-port HTTBEETS_PORT
+beets web arguments:
+  --beets-web-port BEETS_WEB_PORT
+                        'beet web' is serving on this port
 ```
 
 ![](https://www.dropbox.com/s/459k4m9mkaj67sy/Screenshot%202016-12-23%2019.08.01.png?dl=1)
