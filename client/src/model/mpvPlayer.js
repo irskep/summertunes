@@ -19,6 +19,10 @@ class MPVPlayer {
     /* events */
     [this.sendEvent, this.events] = createBus();
 
+    this.events.filter((e) => {
+      return e.event !== "property-change" || e.name !== "time-pos";
+    }).log("mpv");
+
     this.kPropertyChanges = this.events
       .map((event) => {
         if (!event.request_id) {
@@ -29,14 +33,13 @@ class MPVPlayer {
         const name = this.requestIdToPropertyName[event.request_id];
         if (!name) {
           console.error("Couldn't decode response", event);
-        }
+        };
         delete this.requestIdToPropertyName[event.request_id];
         const reconstructedEvent = {
           "event": "property-change",
           "name": name,
           "data": event.data,
         }
-        console.debug(reconstructedEvent);
         return reconstructedEvent;
       })
       .filter((event) => {
@@ -68,6 +71,25 @@ class MPVPlayer {
       .filter(({name}) => name === "time-pos")
       .map(({data}) => data)
       .toProperty(() => 0));
+
+    this.kPlaylistCount = keepAlive(this.kPropertyChanges
+      .filter(({name}) => name === "playlist/count")
+      .map(({data}) => data)
+      .toProperty(() => 0));
+
+    this.kPlaylistPaths = keepAlive(this.kPlaylistCount
+      .flatMapLatest((count) => {
+        const numbers = [];
+        for (let i = 0; i < count; i++) {
+          numbers.push(i);
+          this.getProperty(`playlist/${i}/filename`)
+        }
+        return K.combine(numbers.map((i) => {
+          return this.kPropertyChanges
+            .filter(({name}) => name === `playlist/${i}/filename`)
+            .map(({data}) => data)
+        }));
+      }).toProperty(() => []));
 
     kSocketURL.onValue((url) => this.initSocket(url));
   }
@@ -132,6 +154,10 @@ class MPVPlayer {
     this.setIsPlaying(true);
   }
 
+  enqueueTrack(track) {
+    this.socket.send({"command": ["loadfile", track.path, "append"]});
+  }
+
   playTracks(tracks) {
     this.socket.send({"command": ["playlist-clear"]});
     this.socket.send({"command": ["playlist-remove", "current"]});
@@ -142,8 +168,22 @@ class MPVPlayer {
     });
   }
 
+  enqueueTracks(tracks) {
+    tracks.forEach((track) => {
+      this.socket.send({"command": ["loadfile", track.path, "append"]});
+    });
+  }
+
+  goToPreviousTrack() {
+    this.socket.send({"command": ["playlist-prev", "force"]});
+  }
+
   goToNextTrack() {
     this.socket.send({"command": ["playlist-next", "force"]});
+  }
+
+  refreshPlaylist() {
+    this.getProperty('playlist/count');
   }
 }
 

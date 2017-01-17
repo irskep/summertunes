@@ -1,18 +1,66 @@
 /* global window */
-import React from 'react';
-import Table from "../uilib/Table";
-import KComponent from "../util/KComponent"
-import secondsToString from "../util/secondsToString";
-import { play } from "../util/svgShapes";
 import "../css/TrackList.css";
+import React, { Component } from 'react';
+import Table                from "../uilib/Table";
+import KComponent           from "../util/KComponent"
+import secondsToString      from "../util/secondsToString";
+import { play }             from "../util/svgShapes";
+import { ContextMenuTrigger } from "react-contextmenu";
 
-import { kIsSmallUI, setOpenModal } from "../model/uiModel";
-import { playTracks, kPlayingTrack } from "../model/playerModel";
-import { kTrackList, kTrackIndex, kPlayerQueueGetter, setTrackIndex } from "../model/browsingModel";
+import rcm from "react-contextmenu"
+console.log(rcm);
+
+import {
+  kIsSmallUI,
+  kUIConfigSetter,
+}                           from "../model/uiModel";
+import {
+  playTracks,
+  kPlayingTrack,
+}                           from "../model/playerModel";
+import {
+  kTrackList,
+  kTrackIndex,
+  kPlayerQueueGetter,
+  setTrackIndex,
+}                           from "../model/browsingModel";
 
 function areTracksEqual(a, b) {
   if (Boolean(a) !== Boolean(b)) return false;
   return a.id === b.id;
+}
+
+function collectTrack(props) {
+  return {
+    item: props.item,
+    i: props.i,
+    playerQueueGetter: props.playerQueueGetter,
+  };
+}
+
+class TrackListOverflowButton extends Component {
+  constructor() {
+    super();
+    this.state = { isOpen: false };
+  }
+
+  render() {
+    return (
+      <ContextMenuTrigger
+          id="trackList"
+          holdToDisplay={0}
+          {...this.props}
+          collect={collectTrack}>
+        <span
+            className="st-track-overflow-button"
+            onClick={() => this.setState({isOpen: !this.state.isOpen})}
+            onMouseLeave={() => null}>
+          v
+        </span>
+      </ContextMenuTrigger>
+    );
+
+  }
 }
 
 class TrackList extends KComponent {
@@ -22,6 +70,7 @@ class TrackList extends KComponent {
     playingTrack: kPlayingTrack,
     playerQueueGetter: kPlayerQueueGetter,
     isSmallUI: kIsSmallUI,
+    uiConfigSetter: kUIConfigSetter,
   }; }
 
   selectedTrack() {
@@ -36,9 +85,9 @@ class TrackList extends KComponent {
         <h1>No tracks selected</h1>
         <h2>You must select at least one artist or album.</h2>
         {this.state.isSmallUI && (
-          <div>
-            <div onClick={() => setOpenModal('artist')}>Pick artist</div>
-            <div onClick={() => setOpenModal('album')}>Pick album</div>
+          <div className="st-pick-artist-album-prompt">
+            <div onClick={() => this.state.uiConfigSetter('Artist')}>Pick artist</div>
+            <div onClick={() => this.state.uiConfigSetter('Album')}>Pick album</div>
           </div>
         )}
       </div>
@@ -69,7 +118,15 @@ class TrackList extends KComponent {
             )}
           </span>;
         }},
-        {name: 'Title', itemKey: 'title'},
+        {name: 'Title', itemKey: 'func', func: (item, i) => {
+          return <div>
+            {item.title}
+            <TrackListOverflowButton
+              item={item}
+              i={i}
+              playerQueueGetter={this.state.playerQueueGetter} />
+          </div>
+        }},
         /*
         {name: 'Album Artist', itemKey: 'albumartist', groupSplitter: true},
         {name: 'Album', itemKey: 'album', groupSplitter: true},
@@ -89,6 +146,21 @@ class TrackList extends KComponent {
           </td>
         </tr>;
       }}
+
+      rowFactory={(item, i, trProps, children) => (
+        <ContextMenuTrigger
+            key={i}
+            id="trackList"
+            holdToDisplay={1000}
+            attributes={trProps}
+            renderTag="tr"
+            item={item}
+            i={i}
+            playerQueueGetter={this.state.playerQueueGetter}
+            collect={collectTrack}>
+          {children}
+        </ContextMenuTrigger>
+      )}
 
       selectedItem={this.state.trackIndex === null ? null : this.selectedTrack()}
       items={this.state.tracks} />;

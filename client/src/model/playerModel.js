@@ -3,7 +3,7 @@ import createBus from "./createBus";
 import mpvPlayer from "./mpvPlayer";
 import webPlayer from "./webPlayer";
 import apiKeys from "../apiKeys";
-import { kHTTBeetsURL } from "../config";
+import { kBeetsWebURL } from "../config";
 import localStorageJSON from "../util/localStorageJSON";
 
 
@@ -44,21 +44,40 @@ const forwardPlayerMethod = (key) => {
 };
 
 
+const trackInfoCache = {};
+
+
+const createKPathToTrack = (kPathProperty) => K.combine([kBeetsWebURL, kPathProperty])
+  .flatMapLatest(([url, path]) => {
+    if (!path) return K.constant(null);
+    if (trackInfoCache[path]) return K.constant(trackInfoCache[path]);
+    return K.fromPromise(
+      window.fetch(`${url}/item/path/${path}`)
+        .then((response) => response.json())
+        .then((json) => {
+          trackInfoCache[path] = json;
+          return trackInfoCache[path];
+        })
+    );
+  })
+  .toProperty(() => null);
+
+
 const kVolume = forwardPlayerProperty('kVolume');
 const kIsPlaying = forwardPlayerProperty('kIsPlaying');
 const kPlaybackSeconds = forwardPlayerProperty('kPlaybackSeconds');
 const kPath = forwardPlayerProperty('kPath');
+const kPlaylistCount = forwardPlayerProperty('kPlaylistCount');
+const kPlaylistPaths = forwardPlayerProperty('kPlaylistPaths');
 
-const kPlayingTrack = K.combine([kHTTBeetsURL, kPath])
-  .flatMapLatest(([url, path]) => {
-    if (!path) return K.constant(null);
-    return K.fromPromise(
-      window.fetch(`${url}/track?path=${encodeURIComponent(path)}`)
-        .then((response) => response.json())
-        .then(({track}) => track)
-    );
-  })
-  .toProperty(() => null);
+const kPlayingTrack = createKPathToTrack(kPath);
+
+const kPlaylistTracks = keepAlive(kPlaylistPaths
+    .flatMapLatest((paths) => {
+      return K.combine(paths.map((path) => createKPathToTrack(K.constant(path))));
+    })
+  ).toProperty(() => []);
+
 
 const kLastFM = kPlayingTrack
   .flatMapLatest((track) => {
@@ -93,8 +112,12 @@ const setVolume = forwardPlayerMethod('setVolume');
 const seek = forwardPlayerMethod('seek');
 const goToBeginningOfTrack = forwardPlayerMethod('goToBeginningOfTrack');
 const playTrack = forwardPlayerMethod('playTrack');
+const enqueueTrack = forwardPlayerMethod('enqueueTrack');
 const playTracks = forwardPlayerMethod('playTracks');
+const enqueueTracks = forwardPlayerMethod('enqueueTracks');
 const goToNextTrack = forwardPlayerMethod('goToNextTrack');
+const goToPreviousTrack = forwardPlayerMethod('goToPreviousTrack');
+const refreshPlaylist = forwardPlayerMethod('refreshPlaylist');
 
 
 export {
@@ -109,11 +132,18 @@ export {
   kPlayingTrack,
   kAlbumArtURL,
 
+  kPlaylistCount,
+  kPlaylistTracks,
+
   setIsPlaying,
   setVolume,
   seek,
   goToBeginningOfTrack,
   playTrack,
   playTracks,
+  enqueueTrack,
+  enqueueTracks,
   goToNextTrack,
+  goToPreviousTrack,
+  refreshPlaylist,
 }

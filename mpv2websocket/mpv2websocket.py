@@ -26,6 +26,19 @@ except ImportError:
 app = Flask(__name__)
 socketio = SocketIO(app)
 
+COMMAND_WHITELIST = {
+    "get_property",
+    "observe_property",
+    "set_property",
+
+    "seek",
+    "playlist-clear",
+    "playlist-remove",
+    "loadfile",
+    "playlist-next",
+    "playlist-prev",
+}
+
 def _kill_socket(path):
     try:
         os.unlink(path)
@@ -65,6 +78,10 @@ def handle_json(body):
             return
         else:
             OBSERVED_PROPERTIES.add(body["command"][2])
+
+    if 'command' in body and body["command"][0] not in COMMAND_WHITELIST:
+        log.warning("Skipping non-whitelisted command %s", body["command"][0])
+        return
 
     app.config['mpv_socket'].sendall(body_bytes)
 

@@ -1,9 +1,17 @@
 import K from "kefir";
-import { kHTTBeetsURL } from "../config";
+import { kBeetsWebURL } from "../config";
 import createBus from "./createBus";
-import trackQueryString from "./trackQueryString";
 import parseURLQuery from "../util/parseURLQuery";
 import makeURLQuery from "../util/makeURLQuery";
+
+/// pass {artist, album, id}
+export default function albumQueryString({album_id, albumartist}) {
+  if (album_id) {
+    return `album_id:${album_id}`;
+  } else {
+    return `albumartist:${albumartist}`;
+  }
+};
 
 window.K = K;
 
@@ -39,12 +47,12 @@ const updateTitle = (newURLData) => {
 
 updateTitle(getURLData());
 
-const withURLChange = (k, func) => (arg) => {
-  func(arg);
+const urlUpdater = (k) => (arg) => {
   const newURLData = {
     ...latestURLData,
     [k]: arg,
   }
+  latestURLData = newURLData;
   history.pushState(null, "", makeURLQuery(newURLData));
   updateTitle(newURLData);
   sendStatePushed();
@@ -52,62 +60,81 @@ const withURLChange = (k, func) => (arg) => {
 
 /* data */
 
-const kArtists = kHTTBeetsURL
+const kAllAlbums = kBeetsWebURL
   .flatMapLatest((url) => {
     return K.fromPromise(
-        window.fetch(`${url}/artists`)
+        window.fetch(`${url}/album/`)
           .then((response) => response.json())
-          .then(({artists}) => artists))
+          .then(({albums}) => albums.sort((a, b) => a.album < b.album ? -1 : 1)))
   })
-  .toProperty(() => []);
+  .toProperty(() => [])
+keepAlive(kAllAlbums);
+
+const kAlbumsByArtist = kAllAlbums
+  .map((albums) => {
+    const albumsByArtist = {};
+    for (const album of albums) {
+      if (!albumsByArtist[album.albumartist]) {
+        albumsByArtist[album.albumartist] = [];
+      }
+      albumsByArtist[album.albumartist].push(album);
+    }
+    for (const k of Object.keys(albumsByArtist)) {
+      albumsByArtist[k].sort((a, b) => {
+        if (a.year !== b.year) {
+          return a.year > b.year ? 1 : -1;
+        } else {
+          return a.album > b.album ? 1 : -1;
+        }
+      });
+    }
+    return albumsByArtist;
+  })
+  .toProperty(() => {})
+keepAlive(kAllAlbums);
+
+const kArtists = kAlbumsByArtist
+  .map((albumsByArtist) => {
+    return Object.keys(albumsByArtist).sort((a, b) => a > b ? 1 : -1);
+  });
 keepAlive(kArtists);
 
 
-const [setArtistRaw, bArtist] = createBus()
-const setArtist = withURLChange('artist', setArtistRaw);
-const kArtist = bArtist
-  .merge(urlDataChanges.map(keyMapper('artist')))
+const setArtist = urlUpdater('artist');
+const kArtist = urlDataChanges.map(keyMapper('artist'))
   .skipDuplicates()
   .toProperty(() => getURLData()['artist'])
 keepAlive(kArtist);
 
-const kAlbums = K.combine([kHTTBeetsURL, kArtist])
-  .flatMapLatest(([url, artistName]) => {
-    const query = artistName
-      ? `${url}/albums?albumartist=${encodeURIComponent(artistName)}`
-      : `${url}/albums`;
-
-    return K.fromPromise(
-      window.fetch(query)
-        .then((response) => response.json())
-        .then(({albums}) => albums)
-    );
+const kAlbums = K.combine([kAlbumsByArtist, kArtist, kAllAlbums])
+  .map(([albumsByArtist, artistName, allAlbums]) => {
+    if (artistName) {
+      return albumsByArtist[artistName] || [];
+    } else {
+      return allAlbums;
+    }
   })
   .toProperty(() => []);
 keepAlive(kAlbums);
 
-const [setAlbumRaw, bAlbum] = createBus()
-const setAlbum = withURLChange('album', setAlbumRaw);
-const kAlbum = bAlbum
-  .merge(kArtist.map(() => null).skip(1))  // don't zap initial load
+const setAlbum = urlUpdater('album');
+const kAlbum = kArtist.map(() => null).skip(1)  // don't zap initial load
   .merge(urlDataChanges.map(keyMapper('album')))
   .skipDuplicates()
   .toProperty(() => getURLData()['album'])
 keepAlive(kAlbum);
 
-const kTrackList = K.combine([kHTTBeetsURL, kArtist, kAlbum])
+const kTrackList = K.combine([kBeetsWebURL, kArtist, kAlbum])
   .flatMapLatest(([serverURL, artist, album]) => {
     if (!artist && !album) return K.constant([])
-    const url = `${serverURL}/tracks?${trackQueryString({artist, album})}`;
+    const url = `${serverURL}/item/query/${albumQueryString({albumartist: artist, album_id: album})}`;
     return K.fromPromise(
       window.fetch(url)
         .then((response) => response.json())
-        // API does a substring match but we want exact.
-        .then(({tracks}) => tracks.filter((track) => album === null || track.album === album))
+        .then(({results}) => results)
     );
   })
   .toProperty(() => []);
-keepAlive(kTrackList);
 
 const [setTrackIndex, bTrackIndex] = createBus()
 const kTrackIndex = bTrackIndex
@@ -124,10 +151,13 @@ const kTrack = K.combine([kTrackList, kTrackIndex], (trackList, trackIndex) => {
 keepAlive(kTrack);
 
 const kPlayerQueueGetter = K.combine([kTrackList, kTrackIndex], (trackList, trackIndex) => {
-  if (trackIndex === null) return null;
-  if (trackList.length < 1) return null;
-  if (trackIndex >= trackList.length) return null;
-  return () => trackList.slice(trackIndex);
+  return (overrideTrackIndex = null) => {
+    const actualTrackIndex = overrideTrackIndex === null ? trackIndex : overrideTrackIndex;
+    if (actualTrackIndex === null) return [];
+    if (trackList.length < 1) return [];
+    if (actualTrackIndex >= trackList.length) return [];
+    return trackList.slice(actualTrackIndex);
+  }
 }).toProperty(() => () => []);
 keepAlive(kPlayerQueueGetter);
 

@@ -9,17 +9,68 @@ import ArtistList from "./ArtistList";
 import AlbumList from "./AlbumList";
 import TrackList from "./TrackList";
 import TrackInfo from "./TrackInfo";
+import Playlist from "./Playlist";
+
+import { ContextMenu, MenuItem } from "react-contextmenu";
 
 import { kIsConfigReady } from "../config";
 import { kArtist, kAlbum, kTrack } from "../model/browsingModel";
 import {
-  kIsInfoVisible,
-  kIsMediumUI,
-  kIsLargeUI,
-  kOpenModal,
-  setOpenModal,
+  kIsInfoModalOpen,
+  kIsSmallUI,
+  kUIConfig,
+  kUIConfigOptions,
+  closeInfoModal,
+  openInfoModal,
 } from "../model/uiModel";
 import KComponent from "../util/KComponent";
+
+import "../css/modal.css";
+class Modal extends React.Component {
+  render() {
+    return <div className="st-modal-container">
+      {this.props.children}
+    </div>;
+  }
+}
+
+
+import {
+  enqueueTrack,
+  playTracks,
+} from "../model/playerModel";
+
+const TrackInfoModal = () => {
+  return (
+    <Modal>
+      <div className="st-track-info-modal">
+        <div className="st-nav-bar">
+          Track Info
+          <div className="st-close-button" onClick={closeInfoModal}>
+            &times;
+          </div>
+        </div>
+        <TrackInfo />
+      </div>
+    </Modal>
+  );
+}
+
+const TrackContextMenu = () => {
+  return (
+    <ContextMenu id="trackList">
+      <MenuItem onClick={(e, data) => openInfoModal(data.item)}>
+        info
+      </MenuItem>
+      <MenuItem onClick={(e, data) => enqueueTrack(data.item)}>
+        enqueue
+      </MenuItem>
+      <MenuItem onClick={(e, data) => playTracks(data.playerQueueGetter(data.i))}>
+        play from here
+      </MenuItem>
+    </ContextMenu>
+  );
+}
 
 class App extends KComponent {
   observables() { return {
@@ -28,88 +79,52 @@ class App extends KComponent {
     selectedArtist: kArtist,
     selectedAlbum: kAlbum,
     selectedTrack: kTrack,
-    isInfoVisible: kIsInfoVisible,
+    isInfoModalOpen: kIsInfoModalOpen,
 
-    isMediumUI: kIsMediumUI,
-    isLargeUI: kIsLargeUI,
-    openModal: kOpenModal,
+    isSmallUI: kIsSmallUI,
+    uiConfig: kUIConfig,
+    uiConfigOptions: kUIConfigOptions,
   }; }
 
   render() {
     if (!this.state.isConfigReady) {
       return <div>Loading config...</div>;
     }
-    if (this.state.isLargeUI) {
-      return this.renderLargeUI();
-    } else if (this.state.isMediumUI) {
-      return this.renderMediumUI();
-    } else {
-      return this.renderSmallUI();
-    }
-  }
 
-  renderLargeUI() {
+    const config = this.state.uiConfigOptions[this.state.uiConfig];
+
+    if (!config) return null;
+    const rowHeight = `${(1 / config.length) * 100}%`;
+    const outerClassName = (
+      `st-rows-${config.length} ` +
+      (this.state.isSmallUI ? "st-ui st-small-ui" : "st-ui st-large-ui")
+    );
     return (
       <div className="st-app">
-        <Toolbar />
-        <div className="st-large-ui">
-          <div className="st-library">
-            <ArtistList />
-            <AlbumList />
-            <TrackList />
-            {this.state.isInfoVisible && <TrackInfo />}
-          </div>
-
-          <BottomBar />
-        </div>
-      </div>
-    );
-  }
-
-  renderMediumUI() {
-    return (
-      <div className="st-app">
-        <Toolbar />
-        <div className="st-medium-ui">
-          <div className="st-library">
-            <ArtistList />
-            <AlbumList />
-          </div>
-          <TrackList />
-
-          {this.state.isInfoVisible && <TrackInfo />}
-          <BottomBar />
-        </div>
-      </div>
-    );
-  }
-
-  renderSmallUI() {
-    if (this.state.openModal) {
-      return (
-        <div className="st-app st-app-modal">
-          <div className="st-small-ui">
-            <div className="st-modal-nav-bar">
-              <div className="st-modal-close-button" onClick={setOpenModal.bind(this, null)}>&times;</div>
-              {this.state.openModal === "artist" && <div className="st-modal-title">Artist</div>}
-              {this.state.openModal === "album" && <div className="st-modal-title">Album</div>}
+        <Toolbar stacked={this.state.isSmallUI} />
+        <div className={outerClassName}>
+          {config.map((row, i) => {
+            const innerClassName = `st-columns-${row.length}`;
+            return <div key={i} className={innerClassName} style={{height: rowHeight}}>
+              {row.map((item, j) => this.configValueToComponent(item, j))}
             </div>
-            {this.state.openModal === "artist" && <ArtistList />}
-            {this.state.openModal === "album" && <AlbumList />}
-          </div>
+          })}
         </div>
-      );
-    } else {
-      return (
-        <div className="st-app">
-          <Toolbar stacked={true} />
-          <div className="st-small-ui">
-            <TrackList />
-            {this.state.isInfoVisible && <TrackInfo />}
-            <BottomBar artistAndAlbumButtons={true} />
-          </div>
-        </div>
-      );
+        <BottomBar />
+        {this.state.isInfoModalOpen && <TrackInfoModal />}
+
+        <TrackContextMenu />
+      </div>
+    );
+  }
+
+  configValueToComponent(item, key) {
+    switch (item) {
+      case 'albumartist': return <ArtistList key={key}/>;
+      case 'album': return <AlbumList key={key}/>;
+      case 'tracks': return <TrackList key={key}/>;
+      case 'queue': return <Playlist key={key}/>;
+      default: return null;
     }
   }
 }

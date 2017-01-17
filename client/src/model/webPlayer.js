@@ -124,6 +124,10 @@ class WebPlayer {
     this.player.playNext();
   }
 
+  refreshPlaylist() {
+    // playlist is always refreshed
+  }
+
   fillWebAudioQueue() {
     while (this.player.playlist.length < 2 && this.secretPlaylist.length) {
       this.player.addTrack(_pathToURL(this.secretPlaylist[0]));

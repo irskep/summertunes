@@ -8,14 +8,22 @@ import {
     setAlbumFilter,
     kAlbumFilter,
 } from "../model/browsingModel";
-import { setOpenModal } from "../model/uiModel";
+// import { setOpenModal } from "../model/uiModel";
 
 class AlbumList extends KComponent {
   observables() { return {
     albums: kFilteredAlbums, selectedAlbum: kAlbum, albumFilter: kAlbumFilter,
   }; }
 
+  componentDidMount() {
+    this.scrollToSelection();
+  }
+
   componentDidUpdate(prevProps, prevState) {
+    this.scrollToSelection();
+  }
+
+  scrollToSelection() {
     if (!this.selectedItemIndex === null) return;
     const y = this.selectedItemIndex * 20;
 
@@ -39,18 +47,17 @@ class AlbumList extends KComponent {
 
   render() {
     this.selectedItemIndex = this.state.selectedAlbum === null ? 0 : null;
-
     const listItems = [
       {
         label: "All",
         value: null,
         isSelected: this.state.selectedAlbum === null,
       }].concat(this.state.albums.map((album, i) => {
-        const isSelected = album.album === this.state.selectedAlbum;
+        const isSelected = ("" + album.id) === this.state.selectedAlbum;
         if (isSelected) this.selectedItemIndex = i + 1;
         return {
           label: `${album.album || "Unknown Album"} (${album.year})`,
-          value: album.album,
+          value: album.id,
           isSelected,
         };
       }));
@@ -66,7 +73,7 @@ class AlbumList extends KComponent {
           ref2={(el) => this.listEl = el}
           onClick={({value}) => {
             setAlbum(value);
-            setOpenModal(null);
+            // setOpenModal(null);
           }}
           items={listItems} />
       </div>
