@@ -11,6 +11,8 @@ import TrackList from "./TrackList";
 import TrackInfo from "./TrackInfo";
 import Playlist from "./Playlist";
 
+import { ContextMenu, MenuItem } from "react-contextmenu";
+
 import { kIsConfigReady } from "../config";
 import { kArtist, kAlbum, kTrack } from "../model/browsingModel";
 import {
@@ -19,6 +21,7 @@ import {
   kUIConfig,
   kUIConfigOptions,
   closeInfoModal,
+  openInfoModal,
 } from "../model/uiModel";
 import KComponent from "../util/KComponent";
 
@@ -30,6 +33,12 @@ class Modal extends React.Component {
     </div>;
   }
 }
+
+
+import {
+  enqueueTrack,
+  playTracks,
+} from "../model/playerModel";
 
 const TrackInfoModal = () => {
   return (
@@ -44,6 +53,22 @@ const TrackInfoModal = () => {
         <TrackInfo />
       </div>
     </Modal>
+  );
+}
+
+const TrackContextMenu = () => {
+  return (
+    <ContextMenu id="trackList">
+      <MenuItem onClick={(e, data) => openInfoModal(data.item)}>
+        info
+      </MenuItem>
+      <MenuItem onClick={(e, data) => enqueueTrack(data.item)}>
+        enqueue
+      </MenuItem>
+      <MenuItem onClick={(e, data) => playTracks(data.playerQueueGetter(data.i))}>
+        play from here
+      </MenuItem>
+    </ContextMenu>
   );
 }
 
@@ -87,6 +112,8 @@ class App extends KComponent {
         </div>
         <BottomBar />
         {this.state.isInfoModalOpen && <TrackInfoModal />}
+
+        <TrackContextMenu />
       </div>
     );
   }

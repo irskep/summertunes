@@ -13,7 +13,10 @@ export default class TrackInfo extends KComponent {
     return <div className="st-track-info">
       <Table
         columns={[{name: "Key", itemKey: "key"}, {name: "Value", itemKey: "value"}]}
-        items={Object.keys(this.state.track).map((key) => ({key, value: this.state.track[key]}))}
+        items={Object
+           .keys(this.state.track)
+           .sort()
+           .map((key) => ({key, value: this.state.track[key]}))}
         />
     </div>;
   }

@@ -149,3 +149,19 @@
     font-size: 24px;
   }
 }
+
+.react-contextmenu--visible {
+  background-color: $colorBackground2;
+  border: 1px solid $colorBorder;
+
+  .react-contextmenu-item {
+    cursor: pointer;
+    border-bottom: 1px solid $colorBorder;
+    &:last-child { border-bottom: none; }
+    height: 20px; line-height: 20px;
+    padding: 0 2px;
+    &:hover {
+      background-color: $colorBackground1;
+    }
+  }
+}

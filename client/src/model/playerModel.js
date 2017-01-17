@@ -112,7 +112,9 @@ const setVolume = forwardPlayerMethod('setVolume');
 const seek = forwardPlayerMethod('seek');
 const goToBeginningOfTrack = forwardPlayerMethod('goToBeginningOfTrack');
 const playTrack = forwardPlayerMethod('playTrack');
+const enqueueTrack = forwardPlayerMethod('enqueueTrack');
 const playTracks = forwardPlayerMethod('playTracks');
+const enqueueTracks = forwardPlayerMethod('enqueueTracks');
 const goToNextTrack = forwardPlayerMethod('goToNextTrack');
 const goToPreviousTrack = forwardPlayerMethod('goToPreviousTrack');
 const refreshPlaylist = forwardPlayerMethod('refreshPlaylist');
@@ -139,6 +141,8 @@ export {
   goToBeginningOfTrack,
   playTrack,
   playTracks,
+  enqueueTrack,
+  enqueueTracks,
   goToNextTrack,
   goToPreviousTrack,
   refreshPlaylist,

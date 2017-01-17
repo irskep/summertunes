@@ -154,12 +154,22 @@ class MPVPlayer {
     this.setIsPlaying(true);
   }
 
+  enqueueTrack(track) {
+    this.socket.send({"command": ["loadfile", track.path, "append"]});
+  }
+
   playTracks(tracks) {
     this.socket.send({"command": ["playlist-clear"]});
     this.socket.send({"command": ["playlist-remove", "current"]});
     this.socket.send({"command": ["loadfile", tracks[0].path, "append-play"]});
     this.setIsPlaying(true);
     tracks.slice(1).forEach((track) => {
+      this.socket.send({"command": ["loadfile", track.path, "append"]});
+    });
+  }
+
+  enqueueTracks(tracks) {
+    tracks.forEach((track) => {
       this.socket.send({"command": ["loadfile", track.path, "append"]});
     });
   }

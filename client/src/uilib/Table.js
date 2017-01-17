@@ -1,6 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import "../css/Table.css";
 
+const defaultRowFactory = (item, i, props, children) => {
+  return <tr {...props}>{children}</tr>;
+}
+
 class Table extends Component {
   inlineColumns() {
     return this.props.columns.filter(({groupSplitter}) => !groupSplitter);
@@ -48,16 +52,16 @@ class Table extends Component {
 
         for (const item of itemsInGroup) {
           const j = i;
-          rows.push(
-            <tr key={i}
-                className={item && this.props.selectedItem === item ? "st-table-item-selected" : ""}
-                onClick={() => this.props.onClick(item, j)}>
-              {this.getColumnValues(inlineColumns, item).map(([column, value], i) => {
-                const itemKey = column ? `${column.itemKey}-${column.name}` : i;
-                return <td key={`${itemKey}`}>{value}</td>;
-              })}
-            </tr>
-          );
+          const trProps = {
+            key: i,
+            className: (item && this.props.selectedItem === item) ? "st-table-item-selected" : "",
+            onClick: () => this.props.onClick(item, j),
+          };
+          const tdComponents = this.getColumnValues(inlineColumns, item).map(([column, value], i) => {
+            const itemKey = column ? `${column.itemKey}-${column.name}` : i;
+            return <td key={`${itemKey}`}>{value}</td>;
+          });
+          rows.push(this.props.rowFactory(item, i, trProps, tdComponents));
           i++;
         }
       }
@@ -102,6 +106,7 @@ Table.defaultProps = {
   className: "",
   onClick: () => { },
   renderGroupHeader: () => null,
+  rowFactory: defaultRowFactory,
 };
 
 export default Table;

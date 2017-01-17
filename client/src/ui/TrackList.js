@@ -5,16 +5,17 @@ import Table                from "../uilib/Table";
 import KComponent           from "../util/KComponent"
 import secondsToString      from "../util/secondsToString";
 import { play }             from "../util/svgShapes";
+import { ContextMenuTrigger } from "react-contextmenu";
+
+import rcm from "react-contextmenu"
+console.log(rcm);
 
 import {
   kIsSmallUI,
   kUIConfigSetter,
-  openInfoModal,
 }                           from "../model/uiModel";
 import {
   playTracks,
-  enqueueTrack,
-  enqueueTracks,
   kPlayingTrack,
 }                           from "../model/playerModel";
 import {
@@ -29,6 +30,14 @@ function areTracksEqual(a, b) {
   return a.id === b.id;
 }
 
+function collectTrack(props) {
+  return {
+    item: props.item,
+    i: props.i,
+    playerQueueGetter: props.playerQueueGetter,
+  };
+}
+
 class TrackListOverflowButton extends Component {
   constructor() {
     super();
@@ -37,25 +46,18 @@ class TrackListOverflowButton extends Component {
 
   render() {
     return (
-      <span
-          className="st-track-overflow-button"
-          onClick={() => this.setState({isOpen: !this.state.isOpen})}
-          onMouseLeave={() => null}>
-        v
-        {this.state.isOpen && (
-          <div className="st-track-overflow-menu">
-            <div onClick={() => { openInfoModal(this.props.item); }}>
-              info
-            </div>
-            <div onClick={() => { playTracks(this.props.playerQueueGetter(this.props.i)); }}>
-              play now
-            </div>
-            <div onClick={() => { enqueueTrack(this.props.item); }}>
-              enqueue
-            </div>
-          </div>
-        )}
-       </span>
+      <ContextMenuTrigger
+          id="trackList"
+          holdToDisplay={0}
+          {...this.props}
+          collect={collectTrack}>
+        <span
+            className="st-track-overflow-button"
+            onClick={() => this.setState({isOpen: !this.state.isOpen})}
+            onMouseLeave={() => null}>
+          v
+        </span>
+      </ContextMenuTrigger>
     );
 
   }
@@ -144,6 +146,21 @@ class TrackList extends KComponent {
           </td>
         </tr>;
       }}
+
+      rowFactory={(item, i, trProps, children) => (
+        <ContextMenuTrigger
+            key={i}
+            id="trackList"
+            holdToDisplay={1000}
+            attributes={trProps}
+            renderTag="tr"
+            item={item}
+            i={i}
+            playerQueueGetter={this.state.playerQueueGetter}
+            collect={collectTrack}>
+          {children}
+        </ContextMenuTrigger>
+      )}
 
       selectedItem={this.state.trackIndex === null ? null : this.selectedTrack()}
       items={this.state.tracks} />;
