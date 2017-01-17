@@ -75,12 +75,15 @@ def remove_from_set_action(choices):
     return RemoveFromSetAction
 
 
-def cmd(q, args, kwargs=None):
+def cmd(q, args, kwargs=None, wait=False):
     kwargs = kwargs or {}
     p = Popen(args, **kwargs)
     q.put(p.pid)
     try:
-        p.communicate()
+        if wait:
+            p.wait()
+        else:
+            p.communicate()
     except SystemExit:
         p.kill()
         p.kill()
@@ -186,7 +189,8 @@ def main():
     ]
     if args.run_mpv:
         print(" ".join(mpv_cmd))
-        Popen(mpv_cmd).wait()
+        procs.append(Process(target=cmd, args=(q, mpv_cmd, {}, False)))
+        run_some_processes(procs, q)
         return
 
     if args.dev:
