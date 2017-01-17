@@ -7,6 +7,15 @@ import {
 } from "../model/uiModel";
 import { kPlayerName, setPlayerName, playerNames } from "../model/playerModel";
 import "../css/BottomBar.css";
+import {
+  uiConfigIconMedium,
+  uiConfigIconLarge,
+} from "../util/svgShapes";
+
+const configKeyToSVG = {
+  A: uiConfigIconMedium,
+  B: uiConfigIconLarge,
+}
 
 class BottomBar extends KComponent {
 
@@ -37,12 +46,14 @@ class BottomBar extends KComponent {
       <div className="st-bottom-bar-right-buttons">
         <div className="st-toolbar-button-group">
           {Object.keys(this.state.uiConfigOptions).sort().map((label) => {
-            const className = this.state.uiConfig === label ? "st-toolbar-button-selected" : "";
+            const isSelected = this.state.uiConfig === label;
+            const className = isSelected ? "st-toolbar-button-selected" : "";
+            const color = isSelected ? "#eee" : "#666";
             return (
               <div key={label}
                    className={className}
                    onClick={() => this.state.uiConfigSetter(label)}>
-                {label}  
+                {configKeyToSVG[label] ? configKeyToSVG[label](36, color) : label}
               </div>
             );
           })}

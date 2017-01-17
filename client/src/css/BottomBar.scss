@@ -34,8 +34,10 @@
     line-height: 43px;
 
     & > div {
-      line-height: 42px;
+      line-height: 38px;
       min-width: 42px;
+      padding-top: 2px;
+      padding-bottom: 2px;
       padding-left: 6px;
       padding-right: 6px;
     }

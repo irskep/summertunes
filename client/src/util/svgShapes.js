@@ -39,7 +39,29 @@ function pause(size=22, color="#666") {
   );
 }
 
+function uiConfigIconLarge(size=30, color="#666") {
+  return (
+    <svg width={size} height={size} version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <rect x={0} y={0} width={size} height={size} fill="none" stroke={color} strokeWidth="1"/>
+        <line x1={size / 4} y1={0} x2={size / 4} y2={size} strokeWidth="1" stroke={color} />
+        <line x1={size / 2} y1={0} x2={size / 2} y2={size} strokeWidth="1" stroke={color} />
+    </svg>
+  )
+}
+
+function uiConfigIconMedium(size=30, color="#666") {
+  return (
+    <svg width={size} height={size} version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <rect x={0} y={0} width={size} height={size} fill="none" stroke={color} strokeWidth="1"/>
+        <line x1={size / 2} y1={0} x2={size / 2} y2={size / 2} strokeWidth="1" stroke={color} />
+        <line x1={0} y1={size / 2} x2={size} y2={size / 2} strokeWidth="1" stroke={color} />
+    </svg>
+  )
+}
+
 export {
   play,
-  pause
+  pause,
+  uiConfigIconLarge,
+  uiConfigIconMedium,
 }
