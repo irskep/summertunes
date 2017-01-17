@@ -19,6 +19,7 @@ local_ip_string = socket.gethostbyname(socket.gethostname())
 DEFAULT_CONFIG = """
 [summertunes]
 port = 3000
+last_fm_api_key =
 
 [player.html5]
 enabled = true
@@ -134,6 +135,9 @@ def create_parser():
         '--web-interface-port', type=int, default=config.getint('summertunes', 'port', fallback=3000),
         help="Serve the web interface from this port")
     parser.add_argument(
+        '--last-fm-api-key', type=str, default=config.get('summertunes', 'last_fm_api_key', fallback=None),
+        help="API key to use to fetch album art from last.fm")
+    parser.add_argument(
         '--dev', default=False, action='store_true',
         help="Run debug node server with livereload")
     parser.add_argument(
@@ -199,6 +203,7 @@ def main():
         'MPV_PORT': args.mpv_websocket_port,
         'BEETSWEB_PORT': args.beets_web_port,
         'player_services': list(args.player_services),
+        'LAST_FM_API_KEY': args.last_fm_api_key,
     })
 
     try:

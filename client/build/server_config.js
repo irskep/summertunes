@@ -1,1 +1,0 @@
-{"MPV_PORT": 3001, "BEETSWEB_PORT": 8337, "player_services": ["mpv", "html5"]}

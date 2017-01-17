@@ -1,35 +1,60 @@
-## Requirements
+# Requirements
 
 Works on Python 3.5 and might work on 2.7.
 
-## Setup
+# Setup
+
+## Installation
+
+### Install mpv on your platform
+```sh
+brew install mpv
+```
+
+### Install dependencies (beets must come from master, not last release)
+```sh
+pip install -r requirements.txt
+```
+
+### Add this to your beets config (on OS X, at `~/.config/beets/config.yaml`):
+```yaml
+web:
+    cors: '*'
+    host: 0.0.0.0
+    include_paths: true
+```
+
+### Import your files into beets without rewriting tags or copying
+
+Skip this step if you already use beets to manage your library.
 
 ```sh
-# install mpv on your platform
-brew install mpv
-
-# install beets from master and web plugin dependencies
-pip install -r requirements.txt
-# this file does not exist for you. add a lastFM: "API_KEY" entry
-# to get album art.
-echo "export default {};" > client/apiKeys.js
-# import your files into beets without rewriting tags or copying
 beet import -A -C /folder/of/files
+```
 
-# in terminal A, run beet web:
+## Running
+
+### In terminal A, run beet web
+
+```sh
 beet web
+```
 
-# in terminal B, run mpv via summertunes so it uses the right config
-# and gets a websocket:
+### In terminal B, run mpv via summertunes so it uses the right config and gets a websocket
+
+```sh
 ./summertunes.py --run-mpv
+```
 
-# in terminal C, serve the Summertunes web interface:
+### In terminal C, serve the Summertunes web interface
+
+```sh
 python summertunes.py
 ```
 
 In your web browser, visit `http://localhost:3000/`.
 
-## Configuration
+# Configuration
 
 Summertunes currently reads a config file in the working directory called
 `summertunes.conf`. For now there isn't much interesting in there except
@@ -52,7 +77,7 @@ enabled = true
 port = 3002
 ```
 
-## Command Line
+# Command Line
 
 ```sh
 > ./summertunes.py -h

@@ -12,6 +12,8 @@ const kMPVURL = kServerConfig
   .map(({MPV_PORT}) => `${protocol}//${hostname}:${MPV_PORT}`);
 const kStaticFilesURL = kServerConfig
   .map(({HTTBEETS_PORT}) => `${protocol}//${hostname}:${HTTBEETS_PORT}/files`);
+const kLastFMAPIKey = kServerConfig
+  .map(({LAST_FM_API_KEY}) => LAST_FM_API_KEY);
 
 const kIsConfigReady = kServerConfig.map(() => true).toProperty(() => false);
 
@@ -19,5 +21,6 @@ export {
   kBeetsWebURL,
   kMPVURL,
   kStaticFilesURL,
+  kLastFMAPIKey,
   kIsConfigReady,
 };

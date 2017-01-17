@@ -2,8 +2,7 @@ import K from "kefir";
 import createBus from "./createBus";
 import mpvPlayer from "./mpvPlayer";
 import webPlayer from "./webPlayer";
-import apiKeys from "../apiKeys";
-import { kBeetsWebURL } from "../config";
+import { kBeetsWebURL, kLastFMAPIKey } from "../config";
 import localStorageJSON from "../util/localStorageJSON";
 
 
@@ -79,12 +78,12 @@ const kPlaylistTracks = keepAlive(kPlaylistPaths
   ).toProperty(() => []);
 
 
-const kLastFM = kPlayingTrack
-  .flatMapLatest((track) => {
-    if (!track) return K.constant(null);
+const kLastFM = K.combine([kPlayingTrack, kLastFMAPIKey])
+  .flatMapLatest(([track, lastFMAPIKey]) => {
+    if (!track || !lastFMAPIKey) return K.constant(null);
     return K.fromPromise(window.fetch(
           `http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=${
-            apiKeys.lastFM
+            lastFMAPIKey
           }&artist=${
             track.artist
           }&album=${

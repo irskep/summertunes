@@ -2,6 +2,6 @@ node_modules/
 *.sublime-workspace
 tags
 __pycache__/
-apiKeys.js
 .vscode/
 summertunes.conf
+client/build/server_config.js
