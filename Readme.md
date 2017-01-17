@@ -72,9 +72,8 @@ enabled = true
 port = 3001
 socket_path = /tmp/mpv_socket
 
-[library.httbeets]
-enabled = true
-port = 3002
+[beets.web]
+port = 8337
 ```
 
 # Command Line
