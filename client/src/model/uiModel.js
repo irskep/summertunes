@@ -4,7 +4,7 @@ import localStorageJSON from "../util/localStorageJSON";
 
 
 const MEDIUM_UI_BREAKPOINT = 600;
-const LARGE_UI_BREAKPOINT = 840;
+const LARGE_UI_BREAKPOINT = 1100;
 
 
 const largeUIOptions = {
