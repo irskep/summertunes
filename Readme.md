@@ -16,17 +16,14 @@ echo "export default {};" > client/apiKeys.js
 # import your files into beets without rewriting tags or copying
 beet import -A -C /folder/of/files
 
-# install JS dependencies
-# (this step will go away in the future)
-cd client
-npm install
-cd ..
+# in terminal A, run beet web:
+beet web
 
-# in a separate terminal, run this to invoke mpv with the settings from
-# your summertunes config:
+# in terminal B, run mpv via summertunes so it uses the right config
+# and gets a websocket:
 ./summertunes.py --run-mpv
 
-# run everything:
+# in terminal C, serve the Summertunes web interface:
 python summertunes.py
 ```
 
