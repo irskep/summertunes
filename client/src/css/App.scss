@@ -70,6 +70,10 @@
   flex-wrap: nowrap;
   align-items: stretch;
 
+  .st-columns-1 {
+    overflow-x: auto;
+  }
+
   .st-columns-2 .st-artist-list { flex-grow: 1; flex-shrink: 0.5; }
   .st-columns-3 .st-artist-list { max-width: 300px; }
   .st-columns-2 .st-album-list { flex-grow: 1; flex-shrink: 0.5; }
