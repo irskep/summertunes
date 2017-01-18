@@ -8,7 +8,6 @@ import { play }             from "../util/svgShapes";
 import { ContextMenuTrigger } from "react-contextmenu";
 
 import rcm from "react-contextmenu"
-console.log(rcm);
 
 import {
   kIsSmallUI,

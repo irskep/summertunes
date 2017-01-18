@@ -27,7 +27,6 @@ class List extends Component {
     let i = 0;
     for (const item of items) {
       if (item.isSelected) {
-        console.log(i);
         if (i > 0) {
           this._previousItem = items[i - 1];
         }
