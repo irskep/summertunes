@@ -58,6 +58,29 @@ class ArtistList extends KComponent {
 
   render() {
     this.selectedItemIndex = this.state.artist === null ? 0 : null;
+    const listItems = [
+      {
+        label: "All",
+        value: null,
+        isSelected: this.state.artist === null,
+      }].concat(this.state.artists.map((artistName, i) => {
+        const isSelected = this.state.artist === artistName;
+        if (isSelected) this.selectedItemIndex = i + 1;
+        return {
+          label: artistName,
+          value: artistName,
+          isSelected,
+        };
+      }));
+    const onSelectItem = ({value}) => {
+      setArtist(value);
+      setAlbum(null);
+      if (this.state.isSmallUI) {
+        setSmallUIConfig('Album');
+      }
+      // setOpenModal(null);
+    };
+
     return (
       <div className="st-artist-list st-app-overflowing-section">
         <input
@@ -67,28 +90,8 @@ class ArtistList extends KComponent {
           placeholder="Filter" />
         <List className="st-list st-list-under-filter-control"
           ref2={(el) => this.listEl = el}
-          onClick={({value}) => {
-            setArtist(value);
-            setAlbum(null);
-            if (this.state.isSmallUI) {
-              setSmallUIConfig('Album');
-            }
-            // setOpenModal(null);
-          }}
-          items={[
-            {
-              label: "All",
-              value: null,
-              isSelected: this.state.artist === null,
-            }].concat(this.state.artists.map((artistName, i) => {
-              const isSelected = this.state.artist === artistName;
-              if (isSelected) this.selectedItemIndex = i + 1;
-              return {
-                label: artistName,
-                value: artistName,
-                isSelected,
-              };
-            }))} />
+          onClick={onSelectItem}
+          items={listItems} />
       </div>
     );
   }
