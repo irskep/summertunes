@@ -3,6 +3,13 @@ import createBus from "./createBus";
 import localStorageJSON from "../util/localStorageJSON";
 
 
+const createBusProperty = (initialValue, skipDuplicates = true) => {
+  const [setter, bus] = createBus();
+  const property = (skipDuplicates ? bus.skipDuplicates() : bus).toProperty(() => initialValue);
+  return [setter, property];
+}
+
+
 const MEDIUM_UI_BREAKPOINT = 600;
 const LARGE_UI_BREAKPOINT = 1100;
 
@@ -45,14 +52,8 @@ const kIsSmallUI = K.combine([kIsLargeUI, kIsMediumUI], (isLarge, isMedium) => {
 }).toProperty(() => false);
 
 
-const [setIsInfoModalOpen, bIsInfoModalOpen] = createBus()
-const kIsInfoModalOpen = bIsInfoModalOpen
-  .skipDuplicates()
-  .toProperty(() => false);
-
-
-const [setInfoModalTrack, bInfoModalTrack] = createBus()
-const kInfoModalTrack = bInfoModalTrack.toProperty(() => null);
+const [setIsInfoModalOpen, kIsInfoModalOpen] = createBusProperty(false);
+const [setInfoModalTrack, kInfoModalTrack] = createBusProperty(null);
 
 
 const openInfoModal = (track) => {
@@ -66,20 +67,9 @@ const closeInfoModal = () => {
 
 /* ui configs */
 
-const [setLargeUIConfig, bLargeUIConfig] = createBus()
-const kLargeUIConfig = bLargeUIConfig
-  .skipDuplicates()
-  .toProperty(() => localStorageJSON("uiLargeUIConfig", 'B'));
-
-const [setMediumUIConfig, bMediumUIConfig] = createBus()
-const kMediumUIConfig = bMediumUIConfig
-  .skipDuplicates()
-  .toProperty(() => localStorageJSON("uiMediumUIConfig", 'A'));
-
-const [setSmallUIConfig, bSmallUIConfig] = createBus()
-const kSmallUIConfig = bSmallUIConfig
-  .skipDuplicates()
-  .toProperty(() => localStorageJSON("uiSmallUIConfig", 'Artist'));
+const [setLargeUIConfig, kLargeUIConfig] = createBusProperty(localStorageJSON("uiLargeUIConfig", 'B'));
+const [setMediumUIConfig, kMediumUIConfig] = createBusProperty(localStorageJSON("uiMediumUIConfig", 'A'));
+const [setSmallUIConfig, kSmallUIConfig] = createBusProperty(localStorageJSON("uiSmallUIConfig", 'Artist'));
 
 const kUIConfigSetter = K.combine([kIsLargeUI, kIsMediumUI], (isLargeUI, isMediumUI) => {
   if (isLargeUI) return setLargeUIConfig;

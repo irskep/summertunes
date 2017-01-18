@@ -8,9 +8,9 @@ let URL_PREFIX = '';
 kStaticFilesURL.onValue((url) => URL_PREFIX = url);
 
 
-const createBusProperty = (initialValue) => {
+const createBusProperty = (initialValue, skipDuplicates = true) => {
   const [setter, bus] = createBus();
-  const property = bus.toProperty(() => initialValue);
+  const property = (skipDuplicates ? bus.skipDuplicates() : bus).toProperty(() => initialValue);
   return [setter, property];
 }
 
