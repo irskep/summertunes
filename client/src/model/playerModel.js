@@ -4,6 +4,7 @@ import mpvPlayer from "./mpvPlayer";
 import webPlayer from "./webPlayer";
 import { kBeetsWebURL, kLastFMAPIKey } from "../config";
 import localStorageJSON from "../util/localStorageJSON";
+import { kSpaces } from "../model/keyboardModel";
 
 
 const keepAlive = (observable) => {
@@ -51,7 +52,7 @@ const createKPathToTrack = (kPathProperty) => K.combine([kBeetsWebURL, kPathProp
     if (!path) return K.constant(null);
     if (trackInfoCache[path]) return K.constant(trackInfoCache[path]);
     return K.fromPromise(
-      window.fetch(`${url}/item/path/${path}`)
+      window.fetch(`${url}/item/path/${encodeURIComponent(path)}`)
         .then((response) => response.json())
         .then((json) => {
           trackInfoCache[path] = json;
@@ -117,6 +118,9 @@ const enqueueTracks = forwardPlayerMethod('enqueueTracks');
 const goToNextTrack = forwardPlayerMethod('goToNextTrack');
 const goToPreviousTrack = forwardPlayerMethod('goToPreviousTrack');
 const refreshPlaylist = forwardPlayerMethod('refreshPlaylist');
+
+
+kIsPlaying.sampledBy(kSpaces).onValue((wasPlaying) => setIsPlaying(!wasPlaying));
 
 
 export {

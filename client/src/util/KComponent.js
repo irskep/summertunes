@@ -24,7 +24,7 @@ export default class KComponent extends Component {
   }
 
   componentWillUnmount() {
-    const o = this.observables();
+    const o = this.observables ? this.observables() : {};
     const keys = Object.keys(o);
     for (const k of keys) {
       o[k].offValue(this.subscribers[k]);

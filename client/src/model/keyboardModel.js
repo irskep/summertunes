@@ -30,6 +30,8 @@ const kUps = createKeyStream('up');
 const kDowns = createKeyStream('down');
 const kLefts = createKeyStream('left');
 const kRights = createKeyStream('right');
+const kEnters = createKeyStream(['enter', 'return']);
+const kSpaces = createKeyStream('space');
 
 
 mousetrap.bind('a', setKeyboardFocus.bind(this, keyboardFocusOptions.artist));
@@ -73,4 +75,6 @@ export {
 
     kUps,
     kDowns,
+    kEnters,
+    kSpaces,
 }

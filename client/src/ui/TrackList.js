@@ -9,6 +9,7 @@ import { ContextMenuTrigger } from "react-contextmenu";
 import {
   kKeyboardFocus,
   keyboardFocusOptions,
+  kEnters,
 }                           from "../model/keyboardModel";
 
 import {
@@ -74,6 +75,15 @@ class TrackList extends KComponent {
     uiConfigSetter: kUIConfigSetter,
     isKeyboardFocused: kKeyboardFocus.map((id) => id === keyboardFocusOptions.trackList),
   }; }
+
+  componentDidMount() {
+    this.subscribeWhileMounted(kEnters, () => {
+      if (this.state.isKeyboardFocused && this.selectedTrack()) {
+        console.log(this.state.playerQueueGetter());
+        playTracks(this.state.playerQueueGetter());
+      }
+    });
+  }
 
   selectedTrack() {
     if (this.state.trackIndex === null) return null;
