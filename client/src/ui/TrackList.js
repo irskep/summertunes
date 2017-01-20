@@ -11,9 +11,6 @@ import {
   keyboardFocusOptions,
 }                           from "../model/keyboardModel";
 
-import rcm from "react-contextmenu"
-console.log(rcm);
-
 import {
   kIsSmallUI,
   kUIConfigSetter,
