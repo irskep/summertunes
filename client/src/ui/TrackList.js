@@ -6,6 +6,10 @@ import KComponent           from "../util/KComponent"
 import secondsToString      from "../util/secondsToString";
 import { play }             from "../util/svgShapes";
 import { ContextMenuTrigger } from "react-contextmenu";
+import {
+  kKeyboardFocus,
+  keyboardFocusOptions,
+}                           from "../model/keyboardModel";
 
 import rcm from "react-contextmenu"
 console.log(rcm);
@@ -71,6 +75,7 @@ class TrackList extends KComponent {
     playerQueueGetter: kPlayerQueueGetter,
     isSmallUI: kIsSmallUI,
     uiConfigSetter: kUIConfigSetter,
+    isKeyboardFocused: kKeyboardFocus.map((id) => id === keyboardFocusOptions.trackList),
   }; }
 
   selectedTrack() {
@@ -96,7 +101,11 @@ class TrackList extends KComponent {
 
   render() {
     if (!this.state.tracks || !this.state.tracks.length) return this.renderEmpty();
-    return <Table className="st-track-list st-app-overflowing-section"
+
+    const className = "st-track-list st-app-overflowing-section " + (
+      this.state.isKeyboardFocused ? "st-keyboard-focus" : "");
+
+    return <Table className={className}
 
       onClick={(item, i) => {
         const track = this.state.tracks[this.state.trackIndex]
@@ -162,6 +171,7 @@ class TrackList extends KComponent {
         </ContextMenuTrigger>
       )}
 
+      isKeyboardFocused={this.state.isKeyboardFocused}
       selectedItem={this.state.trackIndex === null ? null : this.selectedTrack()}
       items={this.state.tracks} />;
   }

@@ -1,21 +1,27 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { mouseTrap } from '../util/react-mousetrap';
+import { kUps, kDowns } from "../model/keyboardModel";
+import KComponent from "../util/KComponent";
 
-class List extends Component {
-  componentWillMount() {
+class List extends KComponent {
+  componentDidMount() {
     const self = this;
-    this.props.bindShortcut('up', (e) => {
+
+    this.subscribeWhileMounted(kUps, (e) => {
+      if (!self.props.isKeyboardFocused) return;
       e.preventDefault();
       e.stopPropagation();
       if (typeof self._previousItem === "undefined") return;
       self.props.onClick(self._previousItem);
-    });
-    this.props.bindShortcut('down', (e) => {
+    })
+
+    this.subscribeWhileMounted(kDowns, (e) => {
+      if (!self.props.isKeyboardFocused) return;
       e.preventDefault();
       e.stopPropagation();
       if (typeof self._nextItem === "undefined") return;
       self.props.onClick(self._nextItem);
-    });
+    })
   }
 
   render() {
@@ -27,13 +33,8 @@ class List extends Component {
     let i = 0;
     for (const item of items) {
       if (item.isSelected) {
-        console.log(i);
-        if (i > 0) {
-          this._previousItem = items[i - 1];
-        }
-        if (i < items.length - 1) {
-          this._nextItem = items[i + 1];
-        }
+        if (i > 0) {this._previousItem = items[i - 1]; }
+        if (i < items.length - 1) {this._nextItem = items[i + 1]; }
       }
       i += 1;
     }
@@ -63,6 +64,7 @@ List.propTypes = {
 List.defaultProps = {
   style: {},
   className: "",
+  isKeyboardFocused: false,
   onClick: function() { },
   onNext: function() { },
   onPrevious: function() { },

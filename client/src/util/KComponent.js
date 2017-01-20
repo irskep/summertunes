@@ -2,8 +2,15 @@ import { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 
 export default class KComponent extends Component {
+  subscribeWhileMounted(observable, subscriber) {
+    observable.onValue(subscriber);
+    this.miscSubscribers.push([observable, subscriber]);
+  }
+
   componentWillMount() {
-    const o = this.observables();
+    this.miscSubscribers = [];
+
+    const o = this.observables ? this.observables() : {};
     const keys = Object.keys(o);
     this.subscribers = {};
     for (const k of keys) {
@@ -22,6 +29,9 @@ export default class KComponent extends Component {
     for (const k of keys) {
       o[k].offValue(this.subscribers[k]);
     }
+    this.miscSubscribers.forEach(([obs, sub]) => {
+      obs.offValue(sub);
+    });
   }
 
   shouldComponentUpdate(nextProps, nextState) {

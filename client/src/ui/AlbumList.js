@@ -8,11 +8,16 @@ import {
     setAlbumFilter,
     kAlbumFilter,
 } from "../model/browsingModel";
+import {
+  kKeyboardFocus,
+  keyboardFocusOptions,
+}                       from "../model/keyboardModel";
 // import { setOpenModal } from "../model/uiModel";
 
 class AlbumList extends KComponent {
   observables() { return {
     albums: kFilteredAlbums, selectedAlbum: kAlbum, albumFilter: kAlbumFilter,
+    isKeyboardFocused: kKeyboardFocus.map((id) => id === keyboardFocusOptions.album),
   }; }
 
   componentDidMount() {
@@ -62,14 +67,18 @@ class AlbumList extends KComponent {
         };
       }));
 
+    const className = "st-album-list st-app-overflowing-section " + (
+      this.state.isKeyboardFocused ? "st-keyboard-focus" : "");
+
     return (
-      <div className="st-album-list st-app-overflowing-section">
+      <div className={className}>
         <input
           className="st-filter-control"
           value={this.state.albumFilter}
           onChange={this.onChangeAlbumFilter}
           placeholder="Filter" />
         <List className="st-list st-list-under-filter-control"
+          isKeyboardFocused={this.state.isKeyboardFocused}
           ref2={(el) => this.listEl = el}
           onClick={({value}) => {
             setAlbum(value);

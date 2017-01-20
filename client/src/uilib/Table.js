@@ -1,11 +1,33 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
+import KComponent from "../util/KComponent";
 import "../css/Table.css";
+import { kUps, kDowns } from "../model/keyboardModel";
 
 const defaultRowFactory = (item, i, props, children) => {
   return <tr {...props}>{children}</tr>;
 }
 
-class Table extends Component {
+class Table extends KComponent {
+  componentDidMount() {
+    const self = this;
+
+    this.subscribeWhileMounted(kUps, (e) => {
+      if (!self.props.isKeyboardFocused) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (!self._previousItem) return;
+      self.props.onClick(...self._previousItem);
+    })
+
+    this.subscribeWhileMounted(kDowns, (e) => {
+      if (!self.props.isKeyboardFocused) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (!self._nextItem) return;
+      self.props.onClick(...self._nextItem);
+    })
+  }
+
   inlineColumns() {
     return this.props.columns.filter(({groupSplitter}) => !groupSplitter);
   }
@@ -43,6 +65,20 @@ class Table extends Component {
     let i = 0;
     let headerKey = 0;
 
+    this._previousItem = null;
+    this._nextItem = null;
+
+    let lastItemSeen = null;
+    let lastItemIndex = null;
+    let lastItemWasSelected = false;
+
+
+    if (!this.props.selectedItem && this.props.items.length) {
+      this._nextItem = [this.props.items[0], 0];
+      const lastItemIndex = this.props.items.length - 1;
+      this._previousItem = [this.props.items[lastItemIndex], lastItemIndex];
+    }
+
     const commitGroup = () => {
       if (!itemsInGroup.length) return;
       if (itemsInGroup.length) {
@@ -52,16 +88,30 @@ class Table extends Component {
 
         for (const item of itemsInGroup) {
           const j = i;
+          const isSelected = item && this.props.selectedItem === item;
+
+          if (isSelected) { this._previousItem = [lastItemSeen, lastItemIndex]; }
+          if (lastItemWasSelected) { this._nextItem = [item, i]; }
+
+          if (isSelected && !lastItemSeen) {
+            this._previousItem = [item, i];  // stick at top
+          }
+
           const trProps = {
             key: i,
-            className: (item && this.props.selectedItem === item) ? "st-table-item-selected" : "",
+            className: isSelected ? "st-table-item-selected" : "",
             onClick: () => this.props.onClick(item, j),
           };
+
           const tdComponents = this.getColumnValues(inlineColumns, item).map(([column, value], i) => {
             const itemKey = column ? `${column.itemKey}-${column.name}` : i;
             return <td key={`${itemKey}`}>{value}</td>;
           });
+
           rows.push(this.props.rowFactory(item, i, trProps, tdComponents));
+          lastItemSeen = item;
+          lastItemWasSelected = isSelected;
+          lastItemIndex = i;
           i++;
         }
       }
@@ -78,6 +128,10 @@ class Table extends Component {
       itemsInGroup.push(item);
     }
     commitGroup();
+
+    if (!this._nextItem) {
+      this._nextItem = [lastItemSeen, lastItemIndex];
+    }
 
     return <tbody>{rows}</tbody>;
   }
@@ -106,6 +160,7 @@ Table.defaultProps = {
   className: "",
   onClick: () => { },
   renderGroupHeader: () => null,
+  isKeyboardFocuse: false,
   rowFactory: defaultRowFactory,
 };
 

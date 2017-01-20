@@ -14,6 +14,10 @@ import {
   setSmallUIConfig,
   kIsSmallUI,
 }                       from "../model/uiModel";
+import {
+  kKeyboardFocus,
+  keyboardFocusOptions,
+}                       from "../model/keyboardModel";
 import KComponent       from "../util/KComponent";
 // import { setOpenModal } from "../model/uiModel";
 
@@ -24,6 +28,7 @@ class ArtistList extends KComponent {
     artist: kArtist,
     artistFilter: kArtistFilter,
     isSmallUI: kIsSmallUI,
+    isKeyboardFocused: kKeyboardFocus.map((id) => id === keyboardFocusOptions.artist),
   }; }
 
   componentDidMount() {
@@ -81,14 +86,18 @@ class ArtistList extends KComponent {
       // setOpenModal(null);
     };
 
+    const className = "st-artist-list st-app-overflowing-section " + (
+      this.state.isKeyboardFocused ? "st-keyboard-focus" : "");
+
     return (
-      <div className="st-artist-list st-app-overflowing-section">
+      <div className={className}>
         <input
           className="st-filter-control"
           value={this.state.artistFilter}
           onChange={this.onChangeArtistFilter}
           placeholder="Filter" />
         <List className="st-list st-list-under-filter-control"
+          isKeyboardFocused={this.state.isKeyboardFocused}
           ref2={(el) => this.listEl = el}
           onClick={onSelectItem}
           items={listItems} />
