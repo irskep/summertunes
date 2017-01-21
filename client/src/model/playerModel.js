@@ -68,6 +68,7 @@ const kIsPlaying = forwardPlayerProperty('kIsPlaying');
 const kPlaybackSeconds = forwardPlayerProperty('kPlaybackSeconds');
 const kPath = forwardPlayerProperty('kPath');
 const kPlaylistCount = forwardPlayerProperty('kPlaylistCount');
+const kPlaylistIndex = forwardPlayerProperty('kPlaylistIndex');
 const kPlaylistPaths = forwardPlayerProperty('kPlaylistPaths');
 
 const kPlayingTrack = createKPathToTrack(kPath);
@@ -118,6 +119,7 @@ const enqueueTracks = forwardPlayerMethod('enqueueTracks');
 const goToNextTrack = forwardPlayerMethod('goToNextTrack');
 const goToPreviousTrack = forwardPlayerMethod('goToPreviousTrack');
 const refreshPlaylist = forwardPlayerMethod('refreshPlaylist');
+const setPlaylistIndex = forwardPlayerMethod('setPlaylistIndex');
 
 
 kIsPlaying.sampledBy(kSpaces).onValue((wasPlaying) => setIsPlaying(!wasPlaying));
@@ -136,6 +138,7 @@ export {
   kAlbumArtURL,
 
   kPlaylistCount,
+  kPlaylistIndex,
   kPlaylistTracks,
 
   setIsPlaying,
@@ -149,4 +152,5 @@ export {
   goToNextTrack,
   goToPreviousTrack,
   refreshPlaylist,
+  setPlaylistIndex,
 }

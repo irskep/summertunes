@@ -36,12 +36,12 @@ class Table extends KComponent {
     return this.props.columns.filter(({groupSplitter}) => groupSplitter);
   }
 
-  getColumnValues(columns, item) {
+  getColumnValues(columns, item, itemIndex) {
     return columns
-      .map((column, i) => {
+      .map((column, columnIndex) => {
         if (!item) return "";
         return [column, column.itemKey === 'func'
-          ? column.func(item, i)
+          ? column.func(item, columnIndex, itemIndex)
           : item[column.itemKey]];
       });
   }
@@ -103,7 +103,7 @@ class Table extends KComponent {
             onClick: () => this.props.onClick(item, j),
           };
 
-          const tdComponents = this.getColumnValues(inlineColumns, item).map(([column, value], i) => {
+          const tdComponents = this.getColumnValues(inlineColumns, item, i).map(([column, value], i) => {
             const itemKey = column ? `${column.itemKey}-${column.name}` : i;
             return <td key={`${itemKey}`}>{value}</td>;
           });

@@ -92,22 +92,19 @@ def _listen_to_mpv(mpv_socket):
     spillover = ""
     while True:
         data = mpv_socket.recv(4096)
-        if len(data) == 4096:
-            log.error("Too much data: %r", data)
-        else:
-            lines = (spillover + data.decode('UTF-8', 'strict')).split('\n')
-            spillover = ""
-            for line in lines:
-                if not line:
-                    continue
-                if 'time-pos' not in line:
-                    log.info("< %s", line)
-                # just forward everything raw to the websocket
-                try:
-                    json_data = json.loads(line)
-                    socketio.send(json_data)
-                except json.decoder.JSONDecodeError:
-                    spillover += line
+        lines = (spillover + data.decode('UTF-8', 'strict')).split('\n')
+        spillover = ""
+        for line in lines:
+            if not line:
+                continue
+            if 'time-pos' not in line:
+                log.info("< %s", line)
+            # just forward everything raw to the websocket
+            try:
+                json_data = json.loads(line)
+                socketio.send(json_data)
+            except json.decoder.JSONDecodeError:
+                spillover += line
 
 
 def _test():

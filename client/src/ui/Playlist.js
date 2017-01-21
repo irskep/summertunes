@@ -4,7 +4,8 @@ import Table from "../uilib/Table";
 import {
   refreshPlaylist,
   kPlaylistTracks,
-  kPlayingTrack,
+  kPlaylistIndex,
+  setPlaylistIndex,
 } from "../model/playerModel";
 import { setIsInfoModalOpen } from "../model/uiModel";
 import { setInfoModalTrack } from "../model/browsingModel";
@@ -20,7 +21,7 @@ export default class Playlist extends KComponent {
   observables() {
     return {
       tracks: kPlaylistTracks,
-      playingTrack: kPlayingTrack,
+      playlistIndex: kPlaylistIndex,
     };
   }
 
@@ -47,14 +48,18 @@ export default class Playlist extends KComponent {
     return <Table className="st-track-list st-app-overflowing-section"
 
       onClick={(item, i) => {
-        this.setState({trackIndex: i});
+        if (this.state.trackIndex === i) {
+          setPlaylistIndex(i);
+        } else {
+          this.setState({trackIndex: i});
+        }
       }}
 
       columns={[
-        {name: '#', itemKey: 'func', func: (item) => {
+        {name: '#', itemKey: 'func', func: (item, columnIndex, rowIndex) => {
           return <span>
-            {item.disc}-{item.track}
-            {this.state.playingTrack && item.id === this.state.playingTrack.id && (
+            {rowIndex + 1}
+            {rowIndex === this.state.playlistIndex && (
               <span className="st-playing-track-indicator">
                 {play(false, false, 20, this.selectedTrack() === item ? "#fff" : "#666")}
               </span>

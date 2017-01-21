@@ -75,19 +75,37 @@ class MPVPlayer {
     this.kPlaylistCount = keepAlive(this.kPropertyChanges
       .filter(({name}) => name === "playlist/count")
       .map(({data}) => data)
+      .toProperty(() => 0)).log("playlistCount");
+
+    this.kPlaylistIndex = keepAlive(this.kPropertyChanges
+      .filter(({name}) => name === "playlist-pos")
+      .map(({data}) => data)
       .toProperty(() => 0));
 
     this.kPlaylistPaths = keepAlive(this.kPlaylistCount
       .flatMapLatest((count) => {
+        const missing = {};
         const numbers = [];
         for (let i = 0; i < count; i++) {
           numbers.push(i);
-          this.getProperty(`playlist/${i}/filename`)
+          missing[i] = true;
+          this.getProperty(`playlist/${i}/filename`);
+          const j = i;
+          setTimeout(() => {
+            if (missing[j]) {
+              console.warn("Re-fetching missing playlist filename", j);
+              this.getProperty(`playlist/${j}/filename`);
+            }
+          }, 500);
         }
         return K.combine(numbers.map((i) => {
           return this.kPropertyChanges
             .filter(({name}) => name === `playlist/${i}/filename`)
-            .map(({data}) => data)
+            .take(1)
+            .map(({data}) => {
+              delete missing[i];
+              return data;
+            })
         }));
       }).toProperty(() => []));
 
@@ -109,6 +127,7 @@ class MPVPlayer {
       this.sendAndObserve("pause");
       this.sendAndObserve("time-pos");
       this.sendAndObserve("volume");
+      this.sendAndObserve("playlist-pos");
     });
     this.socket.on('disconnect', () => {
       console.warn("socket.io disconnected");  // eslint-disable-line no-console
@@ -119,28 +138,35 @@ class MPVPlayer {
     this.ready = true;
   }
 
+  send(args) {
+    if (this.socket) {
+      console.debug(">", JSON.stringify(args));
+      this.socket.send(args);
+    }
+  }
+
   getProperty(propertyName) {
     this.i += 1;
     this.requestIdToPropertyName[this.i] = propertyName;
-    this.socket.send({"command": ["get_property", propertyName], "request_id": this.i});
+    this.send({"command": ["get_property", propertyName], "request_id": this.i});
   }
 
   sendAndObserve(propertyName) {
-    this.socket.send({"command": ["observe_property", 0, propertyName]})
+    this.send({"command": ["observe_property", 0, propertyName]})
     this.getProperty(propertyName);
   }
 
   setIsPlaying(isPlaying) {
-    this.socket.send({"command": ["set_property", "pause", !isPlaying]});
+    this.send({"command": ["set_property", "pause", !isPlaying]});
     this.getProperty("pause");  // sometimes this can get unsynced; make sure we don't get stuck!
   }
 
   setVolume(volume) {
-    this.socket.send({"command": ["set_property", "volume", volume * 100]});
+    this.send({"command": ["set_property", "volume", volume * 100]});
   }
 
   seek(seconds) {
-    this.socket.send({"command": ["seek", seconds, "absolute"]});
+    this.send({"command": ["seek", seconds, "absolute"]});
   }
 
   goToBeginningOfTrack() {
@@ -148,38 +174,42 @@ class MPVPlayer {
   }
 
   playTrack(track) {
-    this.socket.send({"command": ["playlist-clear"]});
-    this.socket.send({"command": ["playlist-remove", "current"]});
-    this.socket.send({"command": ["loadfile", track.path, "append-play"]});
+    this.send({"command": ["playlist-clear"]});
+    this.send({"command": ["playlist-remove", "current"]});
+    this.send({"command": ["loadfile", track.path, "append-play"]});
     this.setIsPlaying(true);
   }
 
   enqueueTrack(track) {
-    this.socket.send({"command": ["loadfile", track.path, "append"]});
+    this.send({"command": ["loadfile", track.path, "append"]});
   }
 
   playTracks(tracks) {
-    this.socket.send({"command": ["playlist-clear"]});
-    this.socket.send({"command": ["playlist-remove", "current"]});
-    this.socket.send({"command": ["loadfile", tracks[0].path, "append-play"]});
-    this.setIsPlaying(true);
+    this.send({"command": ["playlist-clear"]});
+    this.send({"command": ["playlist-remove", "current"]});
+    //this.send({"command": ["stop"]});
+    this.send({"command": ["loadfile", tracks[0].path, "append-play"]});
     tracks.slice(1).forEach((track) => {
-      this.socket.send({"command": ["loadfile", track.path, "append"]});
+      this.send({"command": ["loadfile", track.path, "append"]});
     });
   }
 
   enqueueTracks(tracks) {
     tracks.forEach((track) => {
-      this.socket.send({"command": ["loadfile", track.path, "append"]});
+      this.send({"command": ["loadfile", track.path, "append"]});
     });
   }
 
   goToPreviousTrack() {
-    this.socket.send({"command": ["playlist-prev", "force"]});
+    this.send({"command": ["playlist-prev", "force"]});
   }
 
   goToNextTrack() {
-    this.socket.send({"command": ["playlist-next", "force"]});
+    this.send({"command": ["playlist-next", "force"]});
+  }
+
+  setPlaylistIndex(i) {
+    this.send({"command": ["set_property", "playlist-pos", i]});
   }
 
   refreshPlaylist() {
