@@ -49,4 +49,4 @@ def run_serve(summertunes_port, beets_web_port, last_fm_api_key, dev, enable_mpv
         proc.wait()
     else:
         app.run(host='0.0.0.0', port=summertunes_port,
-                debug=True, threaded=True)
+                debug=False, threaded=True)
