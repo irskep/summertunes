@@ -3,8 +3,8 @@
 	[
 		{
 			"path": ".",
-            "folder_exclude_patterns": ["node_modules", "build"],
-            "file_exclude_patterns": ["*.css"],
+            "folder_exclude_patterns": ["node_modules", "build", "__pycache__", "*.egg-info"],
+            "file_exclude_patterns": ["*.css", "tags"],
 		}
 	]
 }

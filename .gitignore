@@ -5,3 +5,4 @@ __pycache__/
 .vscode/
 summertunes.conf
 client/build/server_config.js
+*.egg-info/
