@@ -1,5 +1,6 @@
 import io
 import os
+import sys
 from configparser import ConfigParser
 
 import click
@@ -90,7 +91,10 @@ def cli(ctx, no_config_prompt):
     your music will keep playing while you restart it.
     """
 
-    may_prompt_config = not no_config_prompt
+    isatty = os.isatty(sys.stdout.fileno())
+    # a little hacky but eh:
+    will_display_help = '-h' in sys.argv or '--help' in sys.argv
+    may_prompt_config = not (no_config_prompt or isatty or will_display_help)
 
     if may_prompt_config and not os.path.exists(PATH_CONFIG):
         if click.confirm(S_CONFIG_FILE_CREATION_PROMPT.format(path=PATH_CONFIG)):
@@ -143,3 +147,8 @@ def config(default):
         f_config = io.StringIO()
         CONFIG.write(f_config)
         click.echo(f_config.getvalue())
+
+
+@cli.command(help="Prints the config path")
+def config_path():
+    click.echo(PATH_CONFIG)
