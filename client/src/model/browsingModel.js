@@ -33,19 +33,10 @@ const getURLData = () => {
   return latestURLData;
 }
 const [sendStatePushed, statePushes] = createBus();
-const urlDataChanges = K.fromEvents(window, 'popstate')
+const kURLDataChanges = K.fromEvents(window, 'popstate')
   .merge(statePushes)
   .merge(K.constant(null))
   .map(getURLData);
-
-const updateTitle = (newURLData) => {
-  let newTitle = "Summertunes";
-  if (newURLData.artist) newTitle += ` - ${newURLData.artist}`;
-  if (newURLData.album) newTitle += ` - ${newURLData.album}`;
-  document.title = newTitle;
-};
-
-updateTitle(getURLData());
 
 const urlUpdater = (k) => (arg) => {
   const newURLData = {
@@ -54,7 +45,6 @@ const urlUpdater = (k) => (arg) => {
   }
   latestURLData = newURLData;
   history.pushState(null, "", makeURLQuery(newURLData));
-  updateTitle(newURLData);
   sendStatePushed();
 }
 
@@ -67,8 +57,19 @@ const kAllAlbums = kBeetsWebURL
           .then((response) => response.json())
           .then(({albums}) => albums.sort((a, b) => a.album < b.album ? -1 : 1)))
   })
-  .toProperty(() => [])
+  .toProperty(() => []);
 keepAlive(kAllAlbums);
+
+const kAlbumsById = kAllAlbums
+  .map((allAlbums) => {
+    const val = {};
+    for (const a of allAlbums) {
+      val[a.id] = a;
+    }
+    return val;
+  })
+  .toProperty(() => {});
+keepAlive(kAlbumsById);
 
 const kAlbumsByArtist = kAllAlbums
   .map((albums) => {
@@ -101,7 +102,7 @@ keepAlive(kArtists);
 
 
 const setArtist = urlUpdater('artist');
-const kArtist = urlDataChanges.map(keyMapper('artist'))
+const kArtist = kURLDataChanges.map(keyMapper('artist'))
   .skipDuplicates()
   .toProperty(() => getURLData()['artist'])
 keepAlive(kArtist);
@@ -119,7 +120,7 @@ keepAlive(kAlbums);
 
 const setAlbum = urlUpdater('album');
 const kAlbum = kArtist.map(() => null).skip(1)  // don't zap initial load
-  .merge(urlDataChanges.map(keyMapper('album')))
+  .merge(kURLDataChanges.map(keyMapper('album')))
   .skipDuplicates()
   .toProperty(() => getURLData()['album'])
 keepAlive(kAlbum);
@@ -181,6 +182,24 @@ const kFilteredAlbums = K.combine([kAlbums, kAlbumFilter.debounce(300)], (albums
   if (!albums) return [];
   return albums.filter((a) => a.album.toLocaleLowerCase().indexOf(filter) > -1);
 }).toProperty(() => []);;
+
+/* page title update */
+
+K.combine([kURLDataChanges.merge(K.constant(null)), kArtist, kAlbum, kAlbumsById])
+  .log('t')
+  .toProperty(() => [null, null, null, {}])
+  .map(([_, artist, albumId, albumsById]) => {
+    if (albumId) {
+      const album = albumsById[albumId];
+      console.log(album);
+      return `Summertunes – ${album.album} – ${album.albumartist}`;
+    } else if (artist) {
+      return `Summertunes – ${artist}`;
+    } else {
+      return "Summertunes";
+    }
+  })
+  .onValue((title) => document.title = title);
 
 
 export {
