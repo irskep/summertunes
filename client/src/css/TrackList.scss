@@ -5,6 +5,37 @@
     overflow: auto;
 
     position: relative;
+
+    .st-track-list-header-album {
+        margin-right: 120px;
+    }
+
+    .st-track-list-header-buttons {
+        position: absolute;
+        top: 1em;
+        right: 1em;
+
+        & > div {
+            cursor: pointer;
+            line-height: 18px;
+            padding: 2px 0;
+            color: $colorTextLink;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        svg {
+            display: block;
+            float: left;
+            width: 18px;
+            height: 18px;
+            border: 1px solid $colorBorder;
+            border-radius: 9px;
+            margin-right: 2px;
+        }
+    }
 }
 
 .st-track-list-empty {

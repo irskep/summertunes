@@ -18,22 +18,25 @@
   cursor: pointer;
 
   table {
+    position: absolute;
     border-collapse: collapse;
-    min-width: 100%;
+    width: 100%;
     border-bottom: 1px solid $colorBorder;
   }
 
   td, th {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
     position: relative;
-
     border-right: 1px solid $colorBorder;
     padding-left: 2px;
     padding-right: 2px;
     min-width: 40px;
     height: $heightListItemNormal;
+
+    &, & > div {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
   }
 
   td:last-child, th:last-child {
