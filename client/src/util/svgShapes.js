@@ -1,6 +1,6 @@
 import React from 'react';
 
-function play(post, flip, size=22, color="#666") {
+function play(post, flip, size=22, color="#666", offsetX=0, offsetY=0, renderPlusSign=false) {
   const twoPi = Math.PI  * 2;
   const angles = [0, twoPi / 3, twoPi / 3 * 2];
   const numbers = [];
@@ -17,9 +17,15 @@ function play(post, flip, size=22, color="#666") {
   const [x1, y1, x2, y2, x3, y3] = numbers;  // eslint-disable-line no-unused-vars
   return (
     <svg width={size} height={size} version="1.1" xmlns="http://www.w3.org/2000/svg">
-      <g transform={`translate(${size/2}, ${size/2}) ${transform}`}>
+      <g transform={`translate(${size/2 + offsetX}, ${size/2 + offsetY}) ${transform}`}>
         <polygon points={numbers.join(' ')} fill={color} strokeWidth="0"/>
         {post && <line x1={x1 + 1} y1={y2} x2={x1 + 1} y2={y3} strokeWidth="1" stroke={color} />}
+        {renderPlusSign && (
+          <g transform={`translate(${size/8 + offsetX}, ${size/3 + offsetY})`}>
+            <line x1={-size/8} y1={0} x2={size/8} y2={0} strokeWidth="1" stroke={color} />
+            <line y1={-size/8} x1={0} y2={size/8} x2={0} strokeWidth="1" stroke={color} />
+          </g>
+        )}
       </g>
     </svg>
   );

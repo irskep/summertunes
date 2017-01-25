@@ -5,6 +5,7 @@ import Table                from "../uilib/Table";
 import KComponent           from "../util/KComponent"
 import secondsToString      from "../util/secondsToString";
 import { play }             from "../util/svgShapes";
+import { kBeetsWebURL }     from "../config";
 import { ContextMenuTrigger } from "react-contextmenu";
 import {
   kKeyboardFocus,
@@ -25,6 +26,7 @@ import {
   kTrackIndex,
   kPlayerQueueGetter,
   setTrackIndex,
+  getTrackList,
 }                           from "../model/browsingModel";
 
 function areTracksEqual(a, b) {
@@ -74,6 +76,7 @@ class TrackList extends KComponent {
     isSmallUI: kIsSmallUI,
     uiConfigSetter: kUIConfigSetter,
     isKeyboardFocused: kKeyboardFocus.map((id) => id === keyboardFocusOptions.trackList),
+    beetsWebURL: kBeetsWebURL,
   }; }
 
   componentDidMount() {
@@ -154,11 +157,19 @@ class TrackList extends KComponent {
 
       renderGroupHeader={(itemsInGroup, key) => {
         const firstItem = itemsInGroup[0];
+        console.log(itemsInGroup);
+        const getAlbumTracks = () => {
+
+        }
         return <tr className="st-track-list-header" key={key}>
           <td colSpan="4">
             <div className="st-track-list-header-album">{firstItem.album}</div>
             <div className="st-track-list-header-artist">{firstItem.albumartist}</div>
             <div className="st-track-list-header-year">{firstItem.year}</div>
+            <div className="st-track-list-header-buttons">
+              <div>{play(false, false, 18, "#666", 1, -1)} Play album</div>
+              <div>{play(false, false, 16, "#666", 1, -1, true)} Enqueue album</div>
+            </div>
           </td>
         </tr>;
       }}

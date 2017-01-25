@@ -125,15 +125,17 @@ const kAlbum = kArtist.map(() => null).skip(1)  // don't zap initial load
   .toProperty(() => getURLData()['album'])
 keepAlive(kAlbum);
 
+function getTrackList(beetsWebURL, album_id, albumartist) {
+  if (!album_id && !albumartist) return K.constant([])
+  const url = `${beetsWebURL}/item/query/${albumQueryString({albumartist, album_id})}`;
+  return window.fetch(url)
+    .then((response) => response.json())
+    .then(({results}) => results)
+}
+
 const kTrackList = K.combine([kBeetsWebURL, kArtist, kAlbum])
-  .flatMapLatest(([serverURL, artist, album]) => {
-    if (!artist && !album) return K.constant([])
-    const url = `${serverURL}/item/query/${albumQueryString({albumartist: artist, album_id: album})}`;
-    return K.fromPromise(
-      window.fetch(url)
-        .then((response) => response.json())
-        .then(({results}) => results)
-    );
+  .flatMapLatest(([beetsWebURL, artist, album]) => {
+    return K.fromPromise(getTrackList(beetsWebURL, album, artist));
   })
   .toProperty(() => []);
 
@@ -215,6 +217,7 @@ export {
   setArtist,
   setAlbum,
   setTrackIndex,
+  getTrackList,
 
   setArtistFilter,
   kArtistFilter,

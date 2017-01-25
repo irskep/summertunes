@@ -62,6 +62,7 @@ class ArtistList extends KComponent {
   }
 
   render() {
+    console.log('r');
     this.selectedItemIndex = this.state.artist === null ? 0 : null;
     const listItems = [
       {
