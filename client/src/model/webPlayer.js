@@ -64,7 +64,7 @@ class WebPlayer {
     const kMuted = createCallbackStream(this.player, "onMuted");
     const kUnmuted = createCallbackStream(this.player, "onUnmuted");
 
-    this.kIsPlaying = keepAlive(kPlayerStopped.map(false)
+    this.kIsPlaying = keepAlive(kPlayerStopped.map(() => false)
       .merge(kPlayerPaused.map(() => false))
        .merge(kPlayerUnpaused.map(() => true))
        .merge(kPlayerPaused.map(() => false))

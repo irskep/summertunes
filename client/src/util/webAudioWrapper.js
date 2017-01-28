@@ -89,6 +89,7 @@ class MusicTrack {
   };
 
   setPosition(position) {
+    if (!this.buffer) return;
     if (position < this.buffer.duration) {
       if (this.paused) {
         return this.pauseOffset = position;
@@ -192,11 +193,13 @@ class MusicPlayer {
 
   playNext() {
     if (this.playlist.length !== 0) {
-      this.playlist[0].stop();
+      const oldTrack = this.playlist[0];
+      oldTrack.stop();
       this.playlist.shift();
       if (this.playlist.length === 0) {
         return this.onPlaylistEnded();
       } else {
+        this.onTrackRemoved(oldTrack.path)
         return this.playlist[0].play();
       }
     }

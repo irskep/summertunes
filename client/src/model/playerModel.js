@@ -75,11 +75,12 @@ const kPlaylistPaths = forwardPlayerProperty('kPlaylistPaths');
 
 const kPlayingTrack = createKPathToTrack(kPath);
 
-const kPlaylistTracks = keepAlive(kPlaylistPaths
+const kPlaylistTracks = keepAlive(
+  kPlaylistPaths
     .flatMapLatest((paths) => {
       return K.combine(paths.map((path) => createKPathToTrack(K.constant(path))));
     })
-  ).toProperty(() => []);
+  .toProperty(() => []));
 
 
 const kLastFM = K.combine([kPlayingTrack, kLastFMAPIKey])
