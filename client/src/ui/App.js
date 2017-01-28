@@ -38,6 +38,7 @@ class Modal extends React.Component {
 import {
   enqueueTrack,
   playTracks,
+  removeTrackAtIndex,
 } from "../model/playerModel";
 
 const TrackInfoModal = () => {
@@ -56,7 +57,7 @@ const TrackInfoModal = () => {
   );
 }
 
-const TrackContextMenu = () => {
+const TrackListContextMenu = () => {
   return (
     <ContextMenu id="trackList">
       <MenuItem onClick={(e, data) => openInfoModal(data.item)}>
@@ -67,6 +68,19 @@ const TrackContextMenu = () => {
       </MenuItem>
       <MenuItem onClick={(e, data) => playTracks(data.playerQueueGetter(data.i))}>
         play from here
+      </MenuItem>
+    </ContextMenu>
+  );
+}
+
+const PlaylistContextMenu = () => {
+  return (
+    <ContextMenu id="playlist">
+      <MenuItem onClick={(e, data) => openInfoModal(data.item)}>
+        info
+      </MenuItem>
+      <MenuItem onClick={(e, data) => removeTrackAtIndex(data.i)}>
+        remove
       </MenuItem>
     </ContextMenu>
   );
@@ -113,7 +127,8 @@ class App extends KComponent {
         <BottomBar />
         {this.state.isInfoModalOpen && <TrackInfoModal />}
 
-        <TrackContextMenu />
+        <TrackListContextMenu />
+        <PlaylistContextMenu />
       </div>
     );
   }

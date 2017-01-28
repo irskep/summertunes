@@ -114,6 +114,7 @@ const seek = forwardPlayerMethod('seek');
 const goToBeginningOfTrack = forwardPlayerMethod('goToBeginningOfTrack');
 const playTrack = forwardPlayerMethod('playTrack');
 const enqueueTrack = forwardPlayerMethod('enqueueTrack');
+const removeTrackAtIndex = forwardPlayerMethod('removeTrackAtIndex');
 const playTracks = forwardPlayerMethod('playTracks');
 const enqueueTracks = forwardPlayerMethod('enqueueTracks');
 const goToNextTrack = forwardPlayerMethod('goToNextTrack');
@@ -153,4 +154,5 @@ export {
   goToPreviousTrack,
   refreshPlaylist,
   setPlaylistIndex,
+  removeTrackAtIndex,
 }

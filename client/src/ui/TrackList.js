@@ -43,11 +43,6 @@ function collectTrack(props) {
 }
 
 class TrackListOverflowButton extends Component {
-  constructor() {
-    super();
-    this.state = { isOpen: false };
-  }
-
   render() {
     return (
       <ContextMenuTrigger
@@ -55,12 +50,7 @@ class TrackListOverflowButton extends Component {
           holdToDisplay={0}
           {...this.props}
           collect={collectTrack}>
-        <span
-            className="st-track-overflow-button"
-            onClick={() => this.setState({isOpen: !this.state.isOpen})}
-            onMouseLeave={() => null}>
-          v
-        </span>
+        <span className="st-track-overflow-button">v</span>
       </ContextMenuTrigger>
     );
 
@@ -141,7 +131,7 @@ class TrackList extends KComponent {
             )}
           </span>;
         }},
-        {name: 'Title', itemKey: 'func', func: (item, i) => {
+        {name: 'Title', itemKey: 'func', func: (item, columnIndex, i) => {
           return <div>
             {item.title}
             <TrackListOverflowButton

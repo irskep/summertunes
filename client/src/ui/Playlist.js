@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
+import { ContextMenuTrigger } from "react-contextmenu";
 import KComponent from "../util/KComponent";
 import Table from "../uilib/Table";
 import {
@@ -11,6 +12,30 @@ import { setIsInfoModalOpen } from "../model/uiModel";
 import { setInfoModalTrack } from "../model/browsingModel";
 import { play } from "../util/svgShapes";
 import secondsToString from "../util/secondsToString";
+
+function collectItem ({i, item}) {
+  console.log(arguments);
+  return {i, item};
+}
+
+class PlaylistOverflowButton extends Component {
+  render() {
+    return (
+      <ContextMenuTrigger
+          id="playlist"
+          holdToDisplay={0}
+          {...this.props}
+          collect={collectItem}>
+        <span className="st-track-overflow-button">v</span>
+      </ContextMenuTrigger>
+    );
+
+  }
+}
+PlaylistOverflowButton.propTypes = {
+  i: PropTypes.number.isRequired,
+  item: PropTypes.object.isRequired,
+}
 
 export default class Playlist extends KComponent {
   constructor() {
@@ -35,6 +60,19 @@ export default class Playlist extends KComponent {
     return this.state.tracks[this.state.trackIndex];
   }
 
+  onClickTrack(item, i) {
+    if (this.state.trackIndex === i) {
+      setPlaylistIndex(i);
+    } else {
+      this.setState({trackIndex: i});
+    }
+  }
+
+  onTrackOverflow(item, i) {
+    setInfoModalTrack(item);
+    setIsInfoModalOpen(true);
+  }
+
   renderEmpty() {
     return (
       <div className="st-track-list-empty st-app-overflowing-section">
@@ -46,15 +84,7 @@ export default class Playlist extends KComponent {
   render() {
     if (!this.state.tracks || !this.state.tracks.length) return this.renderEmpty();
     return <Table className="st-track-list st-app-overflowing-section"
-
-      onClick={(item, i) => {
-        if (this.state.trackIndex === i) {
-          setPlaylistIndex(i);
-        } else {
-          this.setState({trackIndex: i});
-        }
-      }}
-
+      onClick={this.onClickTrack.bind(this)}
       columns={[
         {name: '#', itemKey: 'func', func: (item, columnIndex, rowIndex) => {
           return <span>
@@ -66,13 +96,10 @@ export default class Playlist extends KComponent {
             )}
           </span>;
         }},
-        {name: 'Title', itemKey: 'func', func: (item, i) => {
+        {name: 'Title', itemKey: 'func', func: (item, columnIndex, i) => {
           return <div>
             {item.title}
-            <span className="st-track-overflow-button" onClick={() => {
-              setInfoModalTrack(item);
-              setIsInfoModalOpen(true);
-            }}>v</span>
+            <PlaylistOverflowButton i={i} item={item} />
           </div>
         }},
         {name: 'Album Artist', itemKey: 'albumartist'},
@@ -82,6 +109,20 @@ export default class Playlist extends KComponent {
       ]}
 
       renderGroupHeader={(itemsInGroup, key) => null}
+
+      rowFactory={(item, i, trProps, children) => (
+        <ContextMenuTrigger
+            key={i}
+            id="playlist"
+            holdToDisplay={1000}
+            attributes={trProps}
+            renderTag="tr"
+            i={i}
+            item={item}
+            collect={collectItem}>
+          {children}
+        </ContextMenuTrigger>
+      )}
 
       selectedItem={this.state.trackIndex === null ? null : this.selectedTrack()}
       items={this.state.tracks} />;

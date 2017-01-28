@@ -215,6 +215,11 @@ class MPVPlayer {
   refreshPlaylist() {
     this.getProperty('playlist/count');
   }
+
+  removeTrackAtIndex(i) {
+    this.send({"command": ["playlist-remove", i]});
+    this.refreshPlaylist();
+  }
 }
 
 export default new MPVPlayer(kMPVURL);
