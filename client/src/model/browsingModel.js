@@ -126,7 +126,9 @@ const kAlbum = kArtist.map(() => null).skip(1)  // don't zap initial load
 keepAlive(kAlbum);
 
 function getTrackList(beetsWebURL, album_id, albumartist) {
-  if (!album_id && !albumartist) return K.constant([])
+  if (!album_id && !albumartist) return new Promise((resolve, reject) => {
+    resolve([]);
+  });
   const url = `${beetsWebURL}/item/query/${albumQueryString({albumartist, album_id})}`;
   return window.fetch(url)
     .then((response) => response.json())

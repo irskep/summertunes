@@ -26,10 +26,10 @@ const [setKeyboardFocus, kKeyboardFocus] = createBusProperty("artist");
 kKeyboardFocus.log('kb').onValue(() => { });
 
 
-const kUps = createKeyStream('up');
-const kDowns = createKeyStream('down');
-const kLefts = createKeyStream('left');
-const kRights = createKeyStream('right');
+const kUps = createKeyStream(['up', 'k']);
+const kDowns = createKeyStream(['down', 'j']);
+const kLefts = createKeyStream(['left', 'h']).merge(createKeyStream('h'));
+const kRights = createKeyStream(['right', 'l']);
 const kEnters = createKeyStream(['enter', 'return']);
 const kSpaces = createKeyStream('space');
 

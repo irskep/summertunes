@@ -19,6 +19,7 @@ import {
 }                           from "../model/uiModel";
 import {
   playTracks,
+  enqueueTracks,
   kPlayingTrack,
 }                           from "../model/playerModel";
 import {
@@ -26,7 +27,6 @@ import {
   kTrackIndex,
   kPlayerQueueGetter,
   setTrackIndex,
-  getTrackList,
 }                           from "../model/browsingModel";
 
 function areTracksEqual(a, b) {
@@ -109,6 +109,19 @@ class TrackList extends KComponent {
     );
   }
 
+  onClickItem(item, i) {
+    const track = this.state.tracks[this.state.trackIndex]
+    if (i === this.state.trackIndex && !areTracksEqual(track, this.state.playingTrack)) {
+      playTracks(this.state.playerQueueGetter());
+    } else {
+      setTrackIndex(i);
+    }
+  }
+
+  enqueueAlbum(playNow, itemsInGroup) {
+    (playNow ? playTracks : enqueueTracks)(itemsInGroup);
+  }
+
   render() {
     if (!this.state.tracks || !this.state.tracks.length) return this.renderEmpty();
 
@@ -116,16 +129,7 @@ class TrackList extends KComponent {
       this.state.isKeyboardFocused ? "st-keyboard-focus" : "");
 
     return <Table className={className}
-
-      onClick={(item, i) => {
-        const track = this.state.tracks[this.state.trackIndex]
-        if (i === this.state.trackIndex && !areTracksEqual(track, this.state.playingTrack)) {
-          playTracks(this.state.playerQueueGetter());
-        } else {
-          setTrackIndex(i);
-        }
-      }}
-
+      onClick={this.onClickItem.bind(this)}
       columns={[
         {name: '#', itemKey: 'func', func: (item) => {
           return <span>
@@ -157,18 +161,18 @@ class TrackList extends KComponent {
 
       renderGroupHeader={(itemsInGroup, key) => {
         const firstItem = itemsInGroup[0];
-        console.log(itemsInGroup);
-        const getAlbumTracks = () => {
-
-        }
         return <tr className="st-track-list-header" key={key}>
           <td colSpan="4">
             <div className="st-track-list-header-album">{firstItem.album}</div>
             <div className="st-track-list-header-artist">{firstItem.albumartist}</div>
             <div className="st-track-list-header-year">{firstItem.year}</div>
             <div className="st-track-list-header-buttons">
-              <div>{play(false, false, 18, "#666", 1, -1)} Play album</div>
-              <div>{play(false, false, 16, "#666", 1, -1, true)} Enqueue album</div>
+              <div onClick={this.enqueueAlbum.bind(this, true, itemsInGroup)}>
+                {play(false, false, 18, "#666", 1, -1)} Play album
+               </div>
+              <div onClick={this.enqueueAlbum.bind(this, false, itemsInGroup)}>
+                {play(false, false, 16, "#666", 1, -1, true)} Enqueue album
+               </div>
             </div>
           </td>
         </tr>;
