@@ -9,6 +9,12 @@ let URL_PREFIX = '';
 kStaticFilesURL.onValue((url) => URL_PREFIX = url);
 
 
+const keepAlive = (observable) => {
+  observable.onValue(() => { });
+  return observable;
+}
+
+
 const createBusProperty = (initialValue, skipDuplicates = true) => {
   const [setter, bus] = createBus();
   const property = (skipDuplicates ? bus.skipDuplicates() : bus).toProperty(() => initialValue);
@@ -58,25 +64,25 @@ class WebPlayer {
     const kMuted = createCallbackStream(this.player, "onMuted");
     const kUnmuted = createCallbackStream(this.player, "onUnmuted");
 
-    this.kIsPlaying = kPlayerStopped.map(false)
-      .merge(kPlayerPaused.map(false))
-      .merge(kPlayerUnpaused.map(true))
-      .merge(kPlaylistEnded.map(false))
-      .toProperty(() => false);
+    this.kIsPlaying = keepAlive(kPlayerStopped.map(false)
+      .merge(kPlayerPaused.map(() => false))
+       .merge(kPlayerUnpaused.map(() => true))
+       .merge(kPlayerPaused.map(() => false))
+       .toProperty(() => false));
 
-    this.kVolume = kVolumeChanged.toProperty(() => 1);
+    this.kVolume = keepAlive(kVolumeChanged.toProperty(() => 1));
 
-    this.kPlaylistCount = K.constant(0)
+    this.kPlaylistCount = keepAlive(K.constant(0)
       .merge(kTrackAdded)
       .merge(kTrackRemoved)
+      .merge(kPlayerUnpaused)
       .merge(kPlayerStopped)
       .merge(kSongFinished)
       .map(() => this.player.playlist.length)
-      .toProperty(() => 0);
+    .toProperty(() => 0));
 
-    this.kPlaylistPaths = this.kPlaylistCount
-      .map(() => this.player.playlist.map(({path}) => path))
-      .log('playlist paths');
+    this.kPlaylistPaths = keepAlive(this.kPlaylistCount
+      .map(() => this.player.playlist.map(({path}) => _urlToPath(path))));
 
     this.kPlaylistIndex = K.constant(0);  // web player keeps mutating its playlist
 
@@ -84,7 +90,9 @@ class WebPlayer {
     this._observePath = observePath;
     this.kPath = kPath.skipDuplicates();
 
-    this.player.onSongFinished = () => this._updateTrack();
+    kSongFinished.onValue(() => {
+      this._updateTrack();
+    })
 
     const [observePlaybackSeconds, kPlaybackSeconds] = createBusProperty(0);
     this.kPlaybackSeconds = kPlaybackSeconds;
