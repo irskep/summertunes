@@ -1,3 +1,4 @@
+import K from "kefir";
 import createBus from "./createBus";
 import { kStaticFilesURL } from "../config";
 import MusicPlayer from "../util/webAudioWrapper";
@@ -12,6 +13,13 @@ const createBusProperty = (initialValue, skipDuplicates = true) => {
   const [setter, bus] = createBus();
   const property = (skipDuplicates ? bus.skipDuplicates() : bus).toProperty(() => initialValue);
   return [setter, property];
+}
+
+
+const createCallbackStream = (obj, key) => {
+  const [setter, bus] = createBus();
+  obj[key] = setter;
+  return bus;
 }
 
 
@@ -38,23 +46,39 @@ class WebPlayer {
     this.player = new MusicPlayer();
     window.player = this.player;
 
-    this.secretPlaylist = [];
+    const kSongFinished = createCallbackStream(this.player, "onSongFinished");
+    const kPlaylistEnded = createCallbackStream(this.player, "onPlaylistEnded");
+    const kPlayerStopped = createCallbackStream(this.player, "onPlayerStopped");
+    const kPlayerPaused = createCallbackStream(this.player, "onPlayerPaused");
+    const kPlayerUnpaused = createCallbackStream(this.player, "onPlayerUnpaused");
+    const kTrackLoaded = createCallbackStream(this.player, "onTrackLoaded");
+    const kTrackAdded = createCallbackStream(this.player, "onTrackAdded");
+    const kTrackRemoved = createCallbackStream(this.player, "onTrackRemoved");
+    const kVolumeChanged = createCallbackStream(this.player, "onVolumeChanged");
+    const kMuted = createCallbackStream(this.player, "onMuted");
+    const kUnmuted = createCallbackStream(this.player, "onUnmuted");
 
-    const [observeIsPlaying, kIsPlaying] = createBusProperty(false);
+    this.kIsPlaying = kPlayerStopped.map(false)
+      .merge(kPlayerPaused.map(false))
+      .merge(kPlayerUnpaused.map(true))
+      .merge(kPlaylistEnded.map(false))
+      .toProperty(() => false);
 
-    this.kIsPlaying = kIsPlaying;
-    this.player.onPlayerUnpaused = () => {
-      observeIsPlaying(true);
-      this._updateTrack();
-    }
-    this.player.onPlayerPaused = () => {
-      observeIsPlaying(false);
-      this._updateTrack();
-    }
+    this.kVolume = kVolumeChanged.toProperty(() => 1);
 
-    const [observeVolume, kVolume] = createBusProperty(1);
-    this.player.onVolumeChanged = observeVolume;
-    this.kVolume = kVolume;
+    this.kPlaylistCount = K.constant(0)
+      .merge(kTrackAdded)
+      .merge(kTrackRemoved)
+      .merge(kPlayerStopped)
+      .merge(kSongFinished)
+      .map(() => this.player.playlist.length)
+      .toProperty(() => 0);
+
+    this.kPlaylistPaths = this.kPlaylistCount
+      .map(() => this.player.playlist.map(({path}) => path))
+      .log('playlist paths');
+
+    this.kPlaylistIndex = K.constant(0);  // web player keeps mutating its playlist
 
     const [observePath, kPath] = createBusProperty(null);
     this._observePath = observePath;
@@ -67,9 +91,6 @@ class WebPlayer {
 
     const updatePlaybackSeconds = () => {
       observePlaybackSeconds(this.player.getSongPosition());
-      observeIsPlaying(
-        this.player.playlist.length > 0 &&
-        !this.player.playlist[0].paused)
       this._updateTrack();
 
       window.requestAnimationFrame(updatePlaybackSeconds);
@@ -83,7 +104,6 @@ class WebPlayer {
     } else {
       this._observePath(null);
     }
-    this.fillWebAudioQueue();
   }
 
   setIsPlaying(isPlaying) {
@@ -114,25 +134,43 @@ class WebPlayer {
     });
   }
 
+  enqueueTrack(track) {
+    this.player.addTrack(_pathToURL(track));
+  }
+
   playTracks(tracks) {
     this.playTrack(tracks[0]);
-    this.secretPlaylist = tracks.slice(1);
-    this.fillWebAudioQueue();
+    for (const track of tracks.slice(1)) {
+      this.player.addTrack(_pathToURL(track));
+    }
+  }
+
+  enqueueTracks(tracks) {
+    for (const track of tracks) {
+      this.player.addTrack(_pathToURL(track));
+    }
+  }
+
+  removeTrackAtIndex(i) {
+    this.player.removeTrack(i);
   }
 
   goToNextTrack() {
     this.player.playNext();
   }
 
-  refreshPlaylist() {
-    // playlist is always refreshed
+  goToPreviousTrack() {
+    console.error("Not implemented; web player doesn't store history");
+  }
+  
+  setPlaylistIndex(i) {
+    for (let j = 0; j < i; j++) {
+      this.player.removeTrack(0);
+    }
   }
 
-  fillWebAudioQueue() {
-    while (this.player.playlist.length < 2 && this.secretPlaylist.length) {
-      this.player.addTrack(_pathToURL(this.secretPlaylist[0]));
-      this.secretPlaylist.shift();
-    }
+  refreshPlaylist() {
+    // playlist is always refreshed
   }
 }
 

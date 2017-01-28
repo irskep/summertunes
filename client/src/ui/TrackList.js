@@ -72,7 +72,6 @@ class TrackList extends KComponent {
   componentDidMount() {
     this.subscribeWhileMounted(kEnters, () => {
       if (this.state.isKeyboardFocused && this.selectedTrack()) {
-        console.log(this.state.playerQueueGetter());
         playTracks(this.state.playerQueueGetter());
       }
     });

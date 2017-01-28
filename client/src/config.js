@@ -23,7 +23,7 @@ const kMPVURL = kServerConfig
     }
   });
 const kStaticFilesURL = kServerConfig
-  .map(({HTTBEETS_PORT}) => `${protocol}//${hostname}:${HTTBEETS_PORT}/files`);
+  .map(({SUMMERTUNES_PORT}) => `${protocol}//${hostname}:${SUMMERTUNES_PORT}/files`);
 const kLastFMAPIKey = kServerConfig
   .map(({LAST_FM_API_KEY}) => LAST_FM_API_KEY);
 

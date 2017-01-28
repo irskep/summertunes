@@ -190,12 +190,10 @@ const kFilteredAlbums = K.combine([kAlbums, kAlbumFilter.debounce(300)], (albums
 /* page title update */
 
 K.combine([kURLDataChanges.merge(K.constant(null)), kArtist, kAlbum, kAlbumsById])
-  .log('t')
   .toProperty(() => [null, null, null, {}])
   .map(([_, artist, albumId, albumsById]) => {
-    if (albumId) {
+    if (albumId && albumsById[albumId]) {
       const album = albumsById[albumId];
-      console.log(album);
       return `Summertunes – ${album.album} – ${album.albumartist}`;
     } else if (artist) {
       return `Summertunes – ${artist}`;

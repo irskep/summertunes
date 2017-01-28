@@ -14,7 +14,6 @@ import { play } from "../util/svgShapes";
 import secondsToString from "../util/secondsToString";
 
 function collectItem ({i, item}) {
-  console.log(arguments);
   return {i, item};
 }
 

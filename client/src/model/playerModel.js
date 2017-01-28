@@ -31,6 +31,7 @@ kPlayer.onValue((p) => _PLAYER = p);
 
 
 const forwardPlayerProperty = (key) => {
+  if (!_PLAYER[key]) console.error("Player is missing property", key);
   return keepAlive(kPlayer
     .flatMapLatest((player) => {
       return player[key];
@@ -40,6 +41,7 @@ const forwardPlayerProperty = (key) => {
 
 
 const forwardPlayerMethod = (key) => {
+  if (!_PLAYER[key]) console.error("Player is missing method", key);
   return (...args) => _PLAYER[key](...args);
 };
 

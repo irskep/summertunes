@@ -54,7 +54,6 @@ const kIsSmallUI = K.combine([kIsLargeUI, kIsMediumUI], (isLarge, isMedium) => {
 
 const [setIsInfoModalOpen, kIsInfoModalOpen] = createBusProperty(false);
 const [setInfoModalTrack, kInfoModalTrack] = createBusProperty(null);
-kInfoModalTrack.log('imt');
 
 
 const openInfoModal = (track) => {
