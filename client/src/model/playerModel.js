@@ -133,6 +133,7 @@ const setPlaylistIndex = forwardPlayerMethod('setPlaylistIndex');
 
 
 kIsPlaying.sampledBy(kSpaces).onValue((wasPlaying) => setIsPlaying(!wasPlaying));
+kPlayingTrack.onValue(refreshPlaylist);
 
 
 export {
