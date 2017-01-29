@@ -30,10 +30,13 @@ const kLastFMAPIKey = kServerConfig
 
 const kIsConfigReady = kServerConfig.map(() => true).toProperty(() => false);
 
+const kPlayerServices = kServerConfig.map(({player_services}) => player_services);
+
 export {
   kBeetsWebURL,
   kMPVURL,
   kStaticFilesURL,
   kLastFMAPIKey,
   kIsConfigReady,
+  kPlayerServices,
 };

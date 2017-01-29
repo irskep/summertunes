@@ -2,7 +2,7 @@ import K from "kefir";
 import createBus from "./createBus";
 import mpvPlayer from "./mpvPlayer";
 import webPlayer from "./webPlayer";
-import { kBeetsWebURL, kLastFMAPIKey } from "../config";
+import { kBeetsWebURL, kLastFMAPIKey, kPlayerServices } from "../config";
 import localStorageJSON from "../util/localStorageJSON";
 import { kSpaces } from "../model/keyboardModel";
 
@@ -17,23 +17,28 @@ const playersByName = {
   web: webPlayer,
   mpv: mpvPlayer,
 }
-const playerNames = Object.keys(playersByName);
+
 
 
 let _PLAYER = null;
 const [setPlayerName, bPlayerName] = createBus();
-const kPlayerName = bPlayerName
-  .skipDuplicates()
-  .toProperty(() => localStorageJSON("playerName", "mpv"));
+const kPlayerName = K.combine([bPlayerName, kPlayerServices], (name, services) => {
+  if (services.indexOf(name) > -1) return name;
+  return 'web';
+}).skipDuplicates().toProperty(() => localStorageJSON("playerName", "mpv"))
 kPlayerName.onValue((playerName) => localStorage.playerName = JSON.stringify(playerName));
 const kPlayer = kPlayerName.map((name) => playersByName[name])
 kPlayer.onValue((p) => _PLAYER = p);
 
 
 const forwardPlayerProperty = (key) => {
-  if (!_PLAYER[key]) console.error("Player is missing property", key);
   return keepAlive(kPlayer
     .flatMapLatest((player) => {
+      if (!_PLAYER) return K.constant(null); // player not yet initialized
+      if (!_PLAYER[key]) {
+        console.error("Player is missing property", key);
+        return K.constant(null);
+      }
       return player[key];
     })
     .toProperty(() => null));
@@ -41,6 +46,7 @@ const forwardPlayerProperty = (key) => {
 
 
 const forwardPlayerMethod = (key) => {
+  if (!_PLAYER) return; // player not yet initialized
   if (!_PLAYER[key]) console.error("Player is missing method", key);
   return (...args) => _PLAYER[key](...args);
 };
@@ -78,7 +84,7 @@ const kPlayingTrack = createKPathToTrack(kPath);
 const kPlaylistTracks = keepAlive(
   kPlaylistPaths
     .flatMapLatest((paths) => {
-      return K.combine(paths.map((path) => createKPathToTrack(K.constant(path))));
+      return K.combine((paths || []).map((path) => createKPathToTrack(K.constant(path))));
     })
   .toProperty(() => []));
 
@@ -133,7 +139,6 @@ export {
   kPlayer,
   kPlayerName,
   setPlayerName,
-  playerNames,
 
   kVolume,
   kIsPlaying,
