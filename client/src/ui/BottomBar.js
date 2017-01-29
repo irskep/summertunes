@@ -6,7 +6,7 @@ import {
   kUIConfig,
 } from "../model/uiModel";
 import { kPlayerName, setPlayerName } from "../model/playerModel";
-import { kPlayerServices } from "../config";
+import { kPlayerServices, kServerConfig } from "../config";
 import "../css/BottomBar.css";
 import {
   uiConfigIconMedium,
@@ -18,6 +18,8 @@ const configKeyToSVG = {
   B: uiConfigIconLarge,
 }
 
+console.log(kServerConfig);
+
 class BottomBar extends KComponent {
 
   observables() { return {
@@ -26,13 +28,14 @@ class BottomBar extends KComponent {
     uiConfig: kUIConfig,
     playerNames: kPlayerServices,
     playerName: kPlayerName,
+    config: kServerConfig,
   }; }
 
   render() {
     return <div className="st-bottom-bar noselect">
       <div className="st-bottom-bar-left-buttons">
         <div className="st-toolbar-button-group">
-          {this.state.playerNames.map((name) => {
+          {(this.state.playerNames || []).map((name) => {
             return (<div onClick={() => setPlayerName(name)}
                 key={name}
                 className={this.state.playerName === name ? "st-toolbar-button-selected" : ""}>

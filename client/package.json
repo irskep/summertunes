@@ -2,6 +2,7 @@
   "name": "summertunes",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/summertunes",
   "devDependencies": {
     "create-react-app-sass": "^1.1.0",
     "react-scripts": "0.8.4"

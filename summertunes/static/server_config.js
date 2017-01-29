@@ -1,1 +1,1 @@
-{"BEETSWEB_PORT": 8337, "SUMMERTUNES_PORT": 3000, "player_services": ["web", "mpv"], "LAST_FM_API_KEY": "", "MPV_PORT": 3001}
+{"player_services": ["web", "mpv"], "SUMMERTUNES_PORT": 3000, "MPV_PORT": 3001, "LAST_FM_API_KEY": "", "BEETSWEB_PORT": 8337}

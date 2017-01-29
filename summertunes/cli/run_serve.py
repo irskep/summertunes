@@ -4,7 +4,9 @@ import os
 from pathlib import Path
 from subprocess import Popen
 
-from flask import Flask, send_from_directory, abort, send_file
+from flask import Flask, redirect
+
+from summertunes.routes import summertunes_routes
 
 my_dir = Path(os.path.abspath(__file__)).parent
 STATIC_FOLDER = os.path.abspath(str(my_dir / '..' / 'static'))
@@ -12,43 +14,12 @@ INNER_STATIC_FOLDER = os.path.abspath(str(Path(STATIC_FOLDER) / 'static'))
 
 log = logging.getLogger(__name__)
 logging.basicConfig()
-app = Flask(__name__, static_folder=INNER_STATIC_FOLDER, static_url_path='/static')
+app = Flask(__name__)
+app.register_blueprint(summertunes_routes, url_prefix='/summertunes')
 
-
-@app.route('/server_config.js')
-def r_server_config():
-    return json.dumps(app.config['SERVER_CONFIG'])
-
-
-@app.route('/')
-def r_index():
-    return send_from_directory(STATIC_FOLDER, 'index.html')
-
-@app.route('/files/<path:path>')
-def r_send_file(path):
-    print(path)
-    log.info(path)
-    path = '/' + path
-
-    is_ok = False
-    for ext in {'mp3', 'mp4a', 'aac', 'flac', 'ogg', 'wav', 'alac'}:
-        if path.lower().endswith("." + ext):
-            is_ok = True
-            break
-    if not is_ok:
-        abort(404)  # "security"
-
-    response = send_file(
-        path,
-        as_attachment=True,
-        attachment_filename=os.path.basename(path),
-    )
-    response.headers['Content-Length'] = os.path.getsize(path)
-    return response
-
-@app.route('/<path:path>')
-def r_files(path):
-    return send_from_directory(STATIC_FOLDER, path)
+@app.route("/")
+def r_redirect():
+    return redirect("/", code=301)
 
 
 def run_serve(summertunes_port, beets_web_port, last_fm_api_key, dev, enable_mpv, mpv_websocket_port):
@@ -71,4 +42,4 @@ def run_serve(summertunes_port, beets_web_port, last_fm_api_key, dev, enable_mpv
         proc.wait()
     else:
         app.run(host='0.0.0.0', port=summertunes_port,
-                debug=False, threaded=True)
+                debug=True, threaded=True)
