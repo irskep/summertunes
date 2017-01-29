@@ -1,3 +1,4 @@
+
 /* global console */
 /* global window */
 import io from 'socket.io-client';
@@ -15,6 +16,7 @@ const keepAlive = (observable) => {
 class MPVPlayer {
   constructor(kSocketURL) {
     this.ready = false;
+    this.requestIdToPropertyName = {};
 
     /* events */
     [this.sendEvent, this.events] = createBus();
@@ -118,7 +120,6 @@ class MPVPlayer {
     // get_property doesn't include the property name in the return value, so
     // we need to do this silly request_id thing
     this.i = 0;
-    this.requestIdToPropertyName = {};
 
     /* setup */
     this.socket.on('connect', () => {

@@ -32,7 +32,7 @@ const kMPVURL = bServerConfig
   });
 const kStaticFilesURL = bServerConfig
   //.map(({SUMMERTUNES_PORT}) => `${protocol}//${hostname}:${3003}`);
-  .map(({SUMMERTUNES_PORT}) => `${protocol}//${hostname}:${SUMMERTUNES_PORT}/files`);
+  .map(({SUMMERTUNES_PORT}) => `${protocol}//${hostname}:${SUMMERTUNES_PORT}/summertunes/files`);
 const kLastFMAPIKey = bServerConfig
   .map(({LAST_FM_API_KEY}) => LAST_FM_API_KEY);
 

@@ -5,13 +5,33 @@ from pathlib import Path
 
 import flask
 from flask import send_from_directory, abort, send_file, Blueprint
+from beets.library import PathQuery
 
 my_dir = Path(os.path.abspath(__file__)).parent
 STATIC_FOLDER = os.path.abspath(str(my_dir / 'static'))
 INNER_STATIC_FOLDER = os.path.abspath(str(Path(STATIC_FOLDER) / 'static'))
 
 log = logging.getLogger(__name__)
-summertunes_routes = Blueprint('summertunes', 'summertunes', static_folder=INNER_STATIC_FOLDER, static_url_path='/static')
+summertunes_routes = Blueprint(
+    'summertunes',
+    'summertunes',
+    static_folder=INNER_STATIC_FOLDER,
+    static_url_path='/static')
+
+
+def get_is_path_safe(flask_app, path):
+    if 'BEETS_LIBRARY' in flask_app.config:
+        # if running as a beets plugin, only return files that are in beets's library
+        query = PathQuery('path', path.encode('utf-8'))
+        item = flask_app.config['BEETS_LIBRARY'].items(query).get()
+        return bool(item)
+    else:
+        # if not running as a beets plugin, we don't determine whether files are in the
+        # library or not, so stick to just returning files that are "probably audio."
+        for ext in {'mp3', 'mp4a', 'aac', 'flac', 'ogg', 'wav', 'alac'}:
+            if path.lower().endswith("." + ext):
+                return True
+        return False
 
 
 @summertunes_routes.route('/server_config.js')
@@ -27,13 +47,8 @@ def r_index():
 def r_send_file(path):
     path = '/' + path
 
-    is_ok = False
-    for ext in {'mp3', 'mp4a', 'aac', 'flac', 'ogg', 'wav', 'alac'}:
-        if path.lower().endswith("." + ext):
-            is_ok = True
-            break
-    if not is_ok:
-        abort(404)  # "security"
+    if not get_is_path_safe(flask.current_app, path):
+        return abort(404)
 
     response = send_file(
         path,
