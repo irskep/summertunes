@@ -1,3 +1,4 @@
+import K from "kefir";
 import createBus from "./model/createBus";
 
 const {hostname, protocol} = window.location;
@@ -30,9 +31,8 @@ const kMPVURL = bServerConfig
       return `${protocol}//${hostname}:${MPV_PORT}`;
     }
   });
-const kStaticFilesURL = bServerConfig
+const kStaticFilesURL = K.constant('/summertunes/files')
   //.map(({SUMMERTUNES_PORT}) => `${protocol}//${hostname}:${3003}`);
-  .map(({SUMMERTUNES_PORT}) => `${protocol}//${hostname}:${SUMMERTUNES_PORT}/summertunes/files`);
 const kLastFMAPIKey = bServerConfig
   .map(({LAST_FM_API_KEY}) => LAST_FM_API_KEY);
 
