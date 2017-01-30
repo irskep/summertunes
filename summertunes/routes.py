@@ -4,7 +4,9 @@ import os
 from pathlib import Path
 
 import flask
+from flask import g
 from flask import send_from_directory, abort, send_file, Blueprint
+from beets import config
 from beets.library import PathQuery
 
 my_dir = Path(os.path.abspath(__file__)).parent
@@ -20,10 +22,10 @@ summertunes_routes = Blueprint(
 
 
 def get_is_path_safe(flask_app, path):
-    if 'BEETS_LIBRARY' in flask_app.config:
+    if hasattr(g, 'lib'):
         # if running as a beets plugin, only return files that are in beets's library
         query = PathQuery('path', path.encode('utf-8'))
-        item = flask_app.config['BEETS_LIBRARY'].items(query).get()
+        item = g.lib.items(query).get()
         return bool(item)
     else:
         # if not running as a beets plugin, we don't determine whether files are in the
@@ -36,7 +38,12 @@ def get_is_path_safe(flask_app, path):
 
 @summertunes_routes.route('/server_config.js')
 def r_server_config():
-    return json.dumps(flask.current_app.config['SERVER_CONFIG'])
+    return json.dumps({
+        'MPV_PORT': config['summertunes']['mpv_websocket_port'].get(),
+        'BEETSWEB_PORT': config['web']['port'].get(),
+        'player_services': ['web', 'mpv'] if config['summertunes']['mpv_enabled'].get() else ['web'],
+        'LAST_FM_API_KEY': config['summertunes']['last_fm_api_key'].get(),
+    })
 
 
 @summertunes_routes.route('/')

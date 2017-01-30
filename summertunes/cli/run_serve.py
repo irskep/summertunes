@@ -27,7 +27,6 @@ def run_serve(summertunes_port, beets_web_port, last_fm_api_key, dev, enable_mpv
     app.config['SERVER_CONFIG'] = {
         'MPV_PORT': mpv_websocket_port,
         'BEETSWEB_PORT': beets_web_port,
-        'SUMMERTUNES_PORT': summertunes_port,
         'player_services': ['web', 'mpv'] if enable_mpv else ['web'],
         'LAST_FM_API_KEY': last_fm_api_key,
     }
