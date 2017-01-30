@@ -158,6 +158,15 @@
   }
 }
 
+.st-track-info {
+  position: relative;
+
+  .st-table {
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+}
+
 .react-contextmenu--visible {
   background-color: $colorBackground2;
   border: 1px solid $colorBorder;

@@ -5,7 +5,7 @@ import { kInfoModalTrack } from "../model/uiModel";
 
 export default class TrackInfo extends KComponent {
   observables() { return {
-    track: kInfoModalTrack,
+    track: kInfoModalTrack.log('imt'),
   }; }
 
   render() {
