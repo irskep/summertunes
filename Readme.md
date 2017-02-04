@@ -1,6 +1,9 @@
 # Requirements
 
-Works on Python 3.5 and might work on 2.7.
+Python 3.5; beets >=1.4.4; mpv
+
+![](https://www.dropbox.com/s/i1yf42p5vu7eidt/Screenshot%202017-01-17%2012.59.32.png?dl=1)
+
 
 # Setup
 
@@ -11,7 +14,7 @@ Works on Python 3.5 and might work on 2.7.
 brew install mpv
 ```
 
-### Install dependencies (beets must come from master branch, not last release)
+### Install dependencies (beets must come from master branch, not last release, since 1.4.4 isn't out yet)
 ```sh
 pip install -r requirements.txt
 pip install .
@@ -19,10 +22,9 @@ pip install .
 
 ### Add this to your beets config (on OS X, at `~/.config/beets/config.yaml`):
 ```yaml
+plugins: web summertunes
 web:
-    cors: '*'
-    host: 0.0.0.0
-    include_paths: true
+    include_paths: true  # without this, summertunes can't control mpv
 ```
 
 ### Import your files into beets without rewriting tags or copying
@@ -47,107 +49,25 @@ beet web
 summertunes mpv
 ```
 
-### In terminal C, serve the Summertunes web interface
-
-```sh
-summertunes serve
-```
-
-In your web browser, visit `http://localhost:3000/`.
+In your web browser, visit `http://localhost:8337/`.
 
 # Configuration
 
-Summertunes currently reads a config file in the working directory called
-`summertunes.conf`. For now there isn't much interesting in there except
-port assignments. Here are its default values:
+Summertunes is configured using your beets config file. Here are its defaults:
 
-```conf
-[summertunes]
-last_fm_api_key =
-port = 3000
-
-[player.mpv]
-enabled = true
-port = 3001
-socket_path = /tmp/mpv_socket
-
-[beets.web]
-port = 8337
+```yaml
+summertunes:
+    # port to serve mpv websocket from
+    mpv_websocket_port: 3001
+    # path to use for socket; should be no files with this path
+    mpv_socket_path: /tmp/mpv_socket
+    # show mpv in web interface? otherwise just allow web playback
+    mpv_enabled: yes
+    # last.fm API key, used to fetch album art
+    last_fm_api_key: ''
+    # if using 'summertunes serve' development server, use this port
+    dev_server_port: 3000
 ```
-
-# Command Line
-
-## Main
-
-```sh
-> summertunes -h
-Usage: summertunes [OPTIONS] COMMAND [ARGS]...
-
-  Summertunes is a web interface for the Beets local music database and mpv
-  audio/video player that gives you an iTunes-like experience in your web
-  browser.
-
-  To run Summertunes, you'll need to run three commands in separate
-  terminals:
-
-  1. 'beet web', using the latest version of Beets (at this time, unreleased
-  HEAD)
-
-  2. 'summertunes mpv', which runs mpv and exposes its socket interface over
-  a websocket.
-
-  3. 'summertunes serve', which serves the web interface.
-
-  Numbers 2 and 3 are run separately because if the web server gets wedged,
-  your music will keep playing while you restart it.
-
-Options:
-  --no-config-prompt  If passed, never ask to create a config if none exists
-  -h, --help          Show this message and exit.
-
-Commands:
-  config  Prints the current or default configuration
-  mpv     Run an instance of mpv, configured to be...
-  serve   Serve the Summertunes web interface
-```
-
-## `summertunes mpv`
-
-```sh
-> summertunes mpv -h
-Usage: summertunes mpv [OPTIONS]
-
-  Run an instance of mpv, configured to be reachable by 'summertunes serve'
-
-Options:
-  --mpv-websocket-port INTEGER  Port to expose mpv websocket on
-  --mpv-socket-path TEXT        Path to use for mpv's UNIX socket
-  -h, --help                    Show this message and exit.
-```
-
-## `summertunes serve`
-
-```sh
-> summertunes serve -h
-Usage: summertunes serve [OPTIONS]
-
-  Serve the Summertunes web interface
-
-Options:
-  --summertunes-port INTEGER      Port to expose server on
-  --beets-web-port INTEGER        Port that 'beet web' is running on
-  --last-fm-api-key TEXT          last.fm API key for fetching album art
-  --dev / --no-dev                If true, run using "npm start" instead of
-                                  Python static file server. Default False.
-  --enable-mpv / --no-enable-mpv  If true, tell the client how to find the mpv
-                                  websocket. Default
-                                  True. Use --no-enable-mpv
-                                  if you are not running mpv.
-  --mpv-websocket-port INTEGER    Port to expose mpv websocket on
-  -h, --help                      Show this message and exit.
-  ```
-
-![](https://www.dropbox.com/s/i1yf42p5vu7eidt/Screenshot%202017-01-17%2012.59.32.png?dl=1)
 
 ![](https://www.dropbox.com/s/r5gz3ijisx5h4pr/Screenshot%202017-01-17%2013.00.00.png?dl=1)
 

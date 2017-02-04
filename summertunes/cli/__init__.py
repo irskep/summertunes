@@ -6,14 +6,22 @@ from configparser import ConfigParser
 import click
 
 from beets import config
+from beets.util import confit
 
 from summertunes.cli.run_mpv import run_mpv
 from summertunes.cli.run_serve import run_serve
 from summertunes.config_defaults import CONFIG_DEFAULTS
 
+import beetsplug.web
+
 config.resolve()
 
-CONFIG_DEFAULTS['beets_web_port'] = config['web']['port']
+CONFIG_DEFAULTS['beets_web_port'] = config['web']['port'].get(8337)
+for k in CONFIG_DEFAULTS:
+    try:
+        CONFIG_DEFAULTS[k] = config['summertunes'][k].get()
+    except confit.NotFoundError:
+        pass
 
 PATH_APP_DIR = click.get_app_dir('summertunes')
 PATH_CONFIG = os.path.join(click.get_app_dir('summertunes'), 'summertunes.conf')
@@ -80,6 +88,6 @@ def mpv(mpv_websocket_port, mpv_socket_path):
     help="""If true, tell the client how to find the mpv websocket. Default
     True. Use --no-mpv-enabled if you are not running mpv.""")
 @option_mpv_websocket_port
-def serve(summertunes_port, beets_web_port, last_fm_api_key, dev, mpv_enabled, mpv_websocket_port):
+def serve(dev_server_port, beets_web_port, last_fm_api_key, dev, mpv_enabled, mpv_websocket_port):
     """Serve the Summertunes web interface"""
-    run_serve(summertunes_port, beets_web_port, last_fm_api_key, dev, mpv_enabled, mpv_websocket_port)
+    run_serve(dev_server_port, beets_web_port, last_fm_api_key, dev, mpv_enabled, mpv_websocket_port)
