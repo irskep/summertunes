@@ -1,6 +1,4 @@
 eventlet==0.20.0
 Flask==0.11.1
-Flask-Cors==3.0.2
-Flask-RESTful==0.3.5
 Flask-SocketIO==2.8.2
 -e git://github.com/beetbox/beets.git#egg=beets
