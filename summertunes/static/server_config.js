@@ -1,1 +1,1 @@
-{"LAST_FM_API_KEY": "", "MPV_PORT": 3001, "player_services": ["web", "mpv"], "BEETSWEB_PORT": 8337}
+{"BEETSWEB_PORT": 8337, "MPV_PORT": 3001, "LAST_FM_API_KEY": "", "player_services": ["web", "mpv"]}

@@ -114,7 +114,7 @@ const kLastFM = K.combine([kPlayingTrack, kLastFMAPIKey])
 const kAlbumArtURL = K.combine([kBeetsWebURL, kPlayingTrack])
   .map(([url, track]) => {
     if (!url || !track) return {};
-    return {small: `${url}/summertunes/fetchart/track/${encodeURIComponent(track.path)}`};
+    return {small: `${url}/summertunes/track/art/${encodeURIComponent(track.path)}`};
   });
 keepAlive(kAlbumArtURL);
 

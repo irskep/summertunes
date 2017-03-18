@@ -68,7 +68,7 @@ def r_send_file(path):
     return response
 
 
-@summertunes_routes.route('/fetchart/track/<everything:path>')
+@summertunes_routes.route('/track/art/<everything:path>')
 def r_fetchart_track(path):
     """
     Fetches the album art for the song at the given path.
