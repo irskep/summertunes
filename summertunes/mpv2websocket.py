@@ -124,7 +124,7 @@ def main(port=3001, socket_path="/tmp/mpv_socket"):
     app.config['mpv_process'] = mpv_process
     app.config['mpv_socket'] = mpv_socket
     try:
-        time.sleep(0.3)  # wait for mpv to start
+        time.sleep(2.0)  # wait for mpv to start
         mpv_socket.connect(socket_path)
         t = eventlet.spawn(_listen_to_mpv, mpv_socket)
         #eventlet.spawn(_test)
