@@ -1,3 +1,4 @@
+import imghdr
 import json
 import logging
 import mimetypes
@@ -69,25 +70,33 @@ def r_send_file(path):
 
 @summertunes_routes.route('/fetchart/track/<everything:path>')
 def r_fetchart_track(path):
-    """Fetches the album art for the song at the given path"""
+    """
+    Fetches the album art for the song at the given path.
+
+    At one point was supposed to use the 'fetchart' plugin's settings,
+    but turns out it's just easier to look for pngs and jpgs in the
+    file's directory.
+    """
     try:
-        if hasattr(g, 'lib'):
-            print(beets.config)
-            art_filename = beets.config['fetchart']['art_filename'].get()
-        else:
-            art_filename = "cover.jpg"
         if not get_is_path_safe(flask.current_app, path):
             return abort(404)
 
-        art_path = str(Path(path).parent / art_filename)
-        if not os.path.exists(art_path):
+        dirpath = Path(path).parent
+        image_path = None
+        image_filename = None
+        for subpath in dirpath.iterdir():
+            if imghdr.what(str(dirpath / subpath)):
+                image_path = str(dirpath / subpath)
+                image_filename = str(subpath)
+
+        if not os.path.exists(image_path):
             return abort(404)
 
         response = send_file(
-            art_path,
-            attachment_filename=os.path.basename(art_path),
-            mimetype=mimetypes.guess_type(art_path)[0])
-        response.headers['Content-Length'] = os.path.getsize(art_path)
+            image_path,
+            attachment_filename=os.path.basename(image_filename),
+            mimetype=mimetypes.guess_type(image_path)[0])
+        response.headers['Content-Length'] = os.path.getsize(image_path)
         return response
     except KeyError:
         return abort(404)
