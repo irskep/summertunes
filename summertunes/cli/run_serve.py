@@ -5,8 +5,7 @@ from pathlib import Path
 from subprocess import Popen
 
 from flask import Flask, redirect
-
-from summertunes.routes import summertunes_routes
+from werkzeug.routing import PathConverter
 
 my_dir = Path(os.path.abspath(__file__)).parent
 STATIC_FOLDER = os.path.abspath(str(my_dir / '..' / 'static'))
@@ -15,6 +14,14 @@ INNER_STATIC_FOLDER = os.path.abspath(str(Path(STATIC_FOLDER) / 'static'))
 log = logging.getLogger(__name__)
 logging.basicConfig()
 app = Flask(__name__)
+
+# need to register the 'everything' type before we try to define routes
+# that use it
+class EverythingConverter(PathConverter):
+    regex = '.*?'
+app.url_map.converters['everything'] = EverythingConverter
+
+from summertunes.routes import summertunes_routes
 app.register_blueprint(summertunes_routes, url_prefix='/summertunes')
 
 @app.route("/")

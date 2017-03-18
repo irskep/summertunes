@@ -2,7 +2,7 @@ import K from "kefir";
 import createBus from "./createBus";
 import mpvPlayer from "./mpvPlayer";
 import webPlayer from "./webPlayer";
-import { kBeetsWebURL, kLastFMAPIKey, kPlayerServices } from "../config";
+import { kBeetsWebURL, kLastFMAPIKey, kPlayerServices, kStaticFilesURL } from "../config";
 import localStorageJSON from "../util/localStorageJSON";
 import { kSpaces } from "../model/keyboardModel";
 
@@ -86,11 +86,9 @@ const kPlaylistPaths = forwardPlayerProperty('kPlaylistPaths');
 
 const kPlayingTrack = createKPathToTrack(kPath);
 
-kBeetsWebURL.log('baseURL');
 const kPlaylistTracks = keepAlive(
   K.combine([kBeetsWebURL, kPlaylistPaths])
     .flatMapLatest(([url, paths]) => {
-      console.log(url, paths);
       if (!paths) return K.once([]);
       return K.combine(paths.map(createURLToKTrack.bind(this, url)));
     })
@@ -113,7 +111,16 @@ const kLastFM = K.combine([kPlayingTrack, kLastFMAPIKey])
   })
   .toProperty(() => null);
 
-const kAlbumArtURL = kLastFM
+const kAlbumArtURL = K.combine([kBeetsWebURL, kPlayingTrack])
+  .map(([url, track]) => {
+    if (!url || !track) return {};
+    return {small: `${url}/summertunes/fetchart/track/${encodeURIComponent(track.path)}`};
+  });
+keepAlive(kAlbumArtURL);
+
+
+/*
+const kLastFMAlbumArtURL = kLastFM
   .map((lastFMData) => {
     if (!lastFMData || !lastFMData.album) return {};
     const urlBySize = {};
@@ -121,8 +128,8 @@ const kAlbumArtURL = kLastFM
       urlBySize[imgData.size] = imgData["#text"];
     }
     return urlBySize;
-  });
 keepAlive(kAlbumArtURL);
+*/
 
 
 const setIsPlaying = forwardPlayerMethod('setIsPlaying');

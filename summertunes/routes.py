@@ -1,12 +1,13 @@
 import json
 import logging
+import mimetypes
 import os
 from pathlib import Path
 
 import flask
 from flask import g
 from flask import send_from_directory, abort, send_file, Blueprint
-from beets import config
+import beets
 from beets.library import PathQuery
 
 my_dir = Path(os.path.abspath(__file__)).parent
@@ -39,10 +40,10 @@ def get_is_path_safe(flask_app, path):
 @summertunes_routes.route('/server_config.js')
 def r_server_config():
     return json.dumps({
-        'MPV_PORT': config['summertunes']['mpv_websocket_port'].get(),
-        'BEETSWEB_PORT': config['web']['port'].get(),
-        'player_services': ['web', 'mpv'] if config['summertunes']['mpv_enabled'].get() else ['web'],
-        'LAST_FM_API_KEY': config['summertunes']['last_fm_api_key'].get(),
+        'MPV_PORT': beets.config['summertunes']['mpv_websocket_port'].get(),
+        'BEETSWEB_PORT': beets.config['web']['port'].get(),
+        'player_services': ['web', 'mpv'] if beets.config['summertunes']['mpv_enabled'].get() else ['web'],
+        'LAST_FM_API_KEY': beets.config['summertunes']['last_fm_api_key'].get(),
     })
 
 
@@ -64,6 +65,32 @@ def r_send_file(path):
     )
     response.headers['Content-Length'] = os.path.getsize(path)
     return response
+
+
+@summertunes_routes.route('/fetchart/track/<everything:path>')
+def r_fetchart_track(path):
+    """Fetches the album art for the song at the given path"""
+    try:
+        if hasattr(g, 'lib'):
+            print(beets.config)
+            art_filename = beets.config['fetchart']['art_filename'].get()
+        else:
+            art_filename = "cover.jpg"
+        if not get_is_path_safe(flask.current_app, path):
+            return abort(404)
+
+        art_path = str(Path(path).parent / art_filename)
+        if not os.path.exists(art_path):
+            return abort(404)
+
+        response = send_file(
+            art_path,
+            attachment_filename=os.path.basename(art_path),
+            mimetype=mimetypes.guess_type(art_path)[0])
+        response.headers['Content-Length'] = os.path.getsize(art_path)
+        return response
+    except KeyError:
+        return abort(404)
 
 @summertunes_routes.route('/<path:path>')
 def r_files(path):

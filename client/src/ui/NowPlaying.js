@@ -28,6 +28,9 @@ class NowPlaying extends KComponent {
         ? this.state.playbackSeconds / this.state.track.length
         : 0;
     const albumArtURL = (this.state.albumArtURL || {}).small;
+    const albumArtStyle = albumArtURL
+      ? {backgroundImage: `url(${albumArtURL})`}
+      : {};
 
     /*
     const track = this.state.track || {
@@ -47,7 +50,7 @@ class NowPlaying extends KComponent {
 
     return <div className={`st-now-playing ${this.props.className}`}>
       <div className={`st-album-art ${albumArtURL ? "" : "st-album-art-empty"}`}
-          style={{backgroundImage: `url(${this.state.albumArtURL.small})`}} />
+          style={albumArtStyle} />
       {track && <div className="st-now-playing-title" onClick={navigateToPlayingTrack}>
           <strong>{track.title}</strong>
           {" by "}
@@ -58,15 +61,15 @@ class NowPlaying extends KComponent {
       {track && <div className="st-playback-time-bar">
           <div className="st-playback-time-bar-now">
               {secondsToString(this.state.playbackSeconds)}
-          </div>    
+          </div>
           <div className="st-playback-time-bar-graphic"
               ref={(el) => this.playbackSecondsBar = el}
               onClick={(e) => {this.seek(e)}} >
               <div style={{width: percentage(playbackFraction)}} />
-          </div>    
+          </div>
           <div className="st-playback-time-bar-duration">
               {secondsToString(track.length)}
-          </div>    
+          </div>
       </div>}
     </div>;
   }
