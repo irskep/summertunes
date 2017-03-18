@@ -52,23 +52,28 @@ const forwardPlayerMethod = (key) => {
 };
 
 
-const trackInfoCache = {};
+const trackInfoKCache = {};
 
 
-const createKPathToTrack = (kPathProperty) => K.combine([kBeetsWebURL, kPathProperty])
-  .flatMapLatest(([url, path]) => {
-    if (!path) return K.constant(null);
-    if (trackInfoCache[path]) return K.constant(trackInfoCache[path]);
-    return K.fromPromise(
-      window.fetch(`${url}/item/path/${encodeURIComponent(path)}`)
-        .then((response) => response.json())
-        .then((json) => {
-          trackInfoCache[path] = json;
-          return trackInfoCache[path];
-        })
-    );
-  })
-  .toProperty(() => null);
+const createURLToKTrack = (url, path) => {
+  if (trackInfoKCache[path]) return trackInfoKCache[path];
+  if (!path) return K.constant(null);
+
+  const property = K.fromPromise(
+    window.fetch(`${url}/item/path/${encodeURIComponent(path)}`)
+      .then((response) => response.json())
+  ).toProperty(() => null);
+  trackInfoKCache[path] = property;
+  return property;
+}
+
+
+const createKPathToTrack = (kPathProperty) => {
+  return K.combine([kBeetsWebURL, kPathProperty])
+    .flatMapLatest(([url, path]) => {
+      return createURLToKTrack(url, path);
+    }).toProperty(() => null);
+};
 
 
 const kVolume = forwardPlayerProperty('kVolume');
@@ -81,12 +86,15 @@ const kPlaylistPaths = forwardPlayerProperty('kPlaylistPaths');
 
 const kPlayingTrack = createKPathToTrack(kPath);
 
+kBeetsWebURL.log('baseURL');
 const kPlaylistTracks = keepAlive(
-  kPlaylistPaths
-    .flatMapLatest((paths) => {
-      return K.combine((paths || []).map((path) => createKPathToTrack(K.constant(path))));
+  K.combine([kBeetsWebURL, kPlaylistPaths])
+    .flatMapLatest(([url, paths]) => {
+      console.log(url, paths);
+      if (!paths) return K.once([]);
+      return K.combine(paths.map(createURLToKTrack.bind(this, url)));
     })
-  .toProperty(() => []));
+    .toProperty(() => []));
 
 
 const kLastFM = K.combine([kPlayingTrack, kLastFMAPIKey])

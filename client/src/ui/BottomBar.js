@@ -18,8 +18,6 @@ const configKeyToSVG = {
   B: uiConfigIconLarge,
 }
 
-console.log(kServerConfig);
-
 class BottomBar extends KComponent {
 
   observables() { return {
