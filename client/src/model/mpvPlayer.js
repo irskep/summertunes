@@ -7,6 +7,9 @@ import { kMPVURL } from "../config";
 import createBus from "./createBus";
 
 
+const LOG = false;
+
+
 const keepAlive = (observable) => {
   observable.onValue(() => { });
   return observable;
@@ -21,9 +24,14 @@ class MPVPlayer {
     /* events */
     [this.sendEvent, this.events] = createBus();
 
-    this.events.filter((e) => {
-      return e.event !== "property-change" || e.name !== "time-pos";
-    }).log("mpv");
+    if (LOG) {
+      this.events.filter((e) => {
+        return e.event !== "property-change" || e.name !== "time-pos";
+      }).log("mpv");
+    } else {
+      keepAlive(this.events);
+
+    }
 
     this.kPropertyChanges = this.events
       .map((event) => {
@@ -77,7 +85,7 @@ class MPVPlayer {
     this.kPlaylistCount = keepAlive(this.kPropertyChanges
       .filter(({name}) => name === "playlist/count")
       .map(({data}) => data)
-      .toProperty(() => 0)).log("playlistCount");
+      .toProperty(() => 0));
 
     this.kPlaylistIndex = keepAlive(this.kPropertyChanges
       .filter(({name}) => name === "playlist-pos")
@@ -141,7 +149,7 @@ class MPVPlayer {
 
   send(args) {
     if (this.socket) {
-      console.debug(">", JSON.stringify(args));
+      if (LOG) console.debug(">", JSON.stringify(args));
       this.socket.send(args);
     }
   }
