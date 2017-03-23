@@ -82,6 +82,8 @@ summertunes:
 
 ## Developing
 
+### Client
+
 You'll need npm installed to develop the client. To get the auto-reloading dev server
 running, install some stuff:
 
@@ -108,3 +110,14 @@ summertunes serve --dev  # serves JS
 
 And keep `beet web` running in another terminal, with the config changes above,
 so the JS has something to talk to.
+
+### Server
+
+```sh
+pip install --editable .
+beet web --debug # auto-reloads when you change files
+```
+
+### Both
+
+Run `summertunes serve --dev` in one terminal and `beet web --debug` in another.

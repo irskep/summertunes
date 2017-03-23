@@ -73,6 +73,9 @@ def r_fetchart_track(path):
     """
     Fetches the album art for the song at the given path.
 
+    The web plugin's /album/<id>/art endpoint is broken, not sure why.
+    Possibly a Python 3 thing.
+
     At one point was supposed to use the 'fetchart' plugin's settings,
     but turns out it's just easier to look for pngs and jpgs in the
     file's directory.
