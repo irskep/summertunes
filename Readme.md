@@ -11,17 +11,12 @@ Python 3.5; beets >=1.4.4; mpv
 
 ## Installation
 
-Install mpv on your platform:
 
 ```sh
+# Install mpv on your platform
 brew install mpv
-```
-
-Install dependencies. Beets must come from master branch, not last release, since 1.4.4 isn't out yet:
-
-```sh
-pip install -r requirements.txt
-pip install .  # if developing, use pip install --editable .
+# Install summertunes from PyPI
+pip install summertunes
 ```
 
 Add this to your beets config (on OS X, at `~/.config/beets/config.yaml`):
@@ -46,7 +41,7 @@ In terminal A, run `beet web`:
 beet web
 ```
 
-In terminal B, run mpv via summertunes so it uses the right config and gets a websocket:
+In terminal B, use summertunes to run mpv:
 
 ```sh
 summertunes mpv
@@ -90,7 +85,8 @@ running, install some stuff:
 ```sh
 cd client
 npm install
-pip install Flask-CORS  # don't forget this!
+pip install -r requirements.txt
+pip install --editable .
 ```
 
 Update your beets config to allow CORS headers in `beet web`:
