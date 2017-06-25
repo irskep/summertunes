@@ -1,0 +1,218 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Summertunes &#8212; Summertunes v0.1.0 docs - music player for beets and mpv</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="http://steveasleep.com/summertunes/index.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="summertunes">
+<h1>Summertunes<a class="headerlink" href="#summertunes" title="Permalink to this headline">¶</a></h1>
+<p>Summertunes is a web-based music player that can control mpv on a
+server, or play back audio in your browser.</p>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>Python 3.5; beets &gt;=1.4.4; mpv</p>
+<div class="figure">
+<img alt="Screenshot" src="https://www.dropbox.com/s/i1yf42p5vu7eidt/Screenshot%202017-01-17%2012.59.32.png?dl=1" />
+</div>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="code sh highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Install mpv on your platform</span>
+<span class="n">brew</span> <span class="n">install</span> <span class="n">mpv</span>
+<span class="c1"># Install summertunes from PyPI</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">summertunes</span>
+</pre></div>
+</div>
+<p>Add this to your beets config (on OS X, at <code class="docutils literal"><span class="pre">~/.config/beets/config.yaml</span></code>):</p>
+<div class="code yaml highlight-default"><div class="highlight"><pre><span></span><span class="n">plugins</span><span class="p">:</span> <span class="n">web</span> <span class="n">summertunes</span>
+<span class="n">web</span><span class="p">:</span>
+    <span class="n">include_paths</span><span class="p">:</span> <span class="n">true</span>  <span class="c1"># without this, summertunes can&#39;t control mpv</span>
+</pre></div>
+</div>
+<p>If you haven’t used beets before, import your files into beets without
+rewriting tags or copying:</p>
+<div class="code sh highlight-default"><div class="highlight"><pre><span></span><span class="n">beet</span> <span class="kn">import</span> <span class="o">-</span><span class="n">A</span> <span class="o">-</span><span class="n">C</span> <span class="o">/</span><span class="n">folder</span><span class="o">/</span><span class="n">of</span><span class="o">/</span><span class="n">files</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="running">
+<h2>Running<a class="headerlink" href="#running" title="Permalink to this headline">¶</a></h2>
+<p>In terminal A, run <code class="docutils literal"><span class="pre">beet</span> <span class="pre">web</span></code>:</p>
+<div class="code sh highlight-default"><div class="highlight"><pre><span></span><span class="n">beet</span> <span class="n">web</span>
+</pre></div>
+</div>
+<p>In terminal B, use summertunes to run mpv:</p>
+<div class="code sh highlight-default"><div class="highlight"><pre><span></span><span class="n">summertunes</span> <span class="n">mpv</span>
+</pre></div>
+</div>
+<p>In your web browser, visit <code class="docutils literal"><span class="pre">http://localhost:8337/summertunes/</span></code>.</p>
+<p><strong>The normal “beet web“ interface is still at
+“http://localhost:8337/“. Summertunes is served at
+“/summertunes/“.</strong></p>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>Summertunes is configured using your beets config file. Here are its
+defaults:</p>
+<div class="code yaml highlight-default"><div class="highlight"><pre><span></span><span class="n">summertunes</span><span class="p">:</span>
+    <span class="c1"># port to serve mpv websocket from</span>
+    <span class="n">mpv_websocket_port</span><span class="p">:</span> <span class="mi">3001</span>
+    <span class="c1"># path to use for socket; should be no files with this path</span>
+    <span class="n">mpv_socket_path</span><span class="p">:</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">mpv_socket</span>
+    <span class="c1"># show mpv in web interface? otherwise just allow web playback</span>
+    <span class="n">mpv_enabled</span><span class="p">:</span> <span class="n">yes</span>
+    <span class="c1"># last.fm API key, used to fetch album art</span>
+    <span class="n">last_fm_api_key</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
+    <span class="c1"># if using &#39;summertunes serve&#39; development server, use this port</span>
+    <span class="n">dev_server_port</span><span class="p">:</span> <span class="mi">3000</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="developing">
+<h2>Developing<a class="headerlink" href="#developing" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="client">
+<h3>Client<a class="headerlink" href="#client" title="Permalink to this headline">¶</a></h3>
+<p>You’ll need npm installed to develop the client. To get the
+auto-reloading dev server running, install some stuff:</p>
+<div class="code sh highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">client</span>
+<span class="n">npm</span> <span class="n">install</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">editable</span> <span class="o">.</span>
+</pre></div>
+</div>
+<p>Update your beets config to allow CORS headers in <code class="docutils literal"><span class="pre">beet</span> <span class="pre">web</span></code>:</p>
+<div class="code yaml highlight-default"><div class="highlight"><pre><span></span><span class="n">web</span><span class="p">:</span>
+    <span class="n">cors</span><span class="p">:</span> <span class="s1">&#39;*&#39;</span>
+    <span class="n">host</span><span class="p">:</span> <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span>
+    <span class="n">include_paths</span><span class="p">:</span> <span class="n">true</span>
+</pre></div>
+</div>
+<p>Now you can run this in one terminal to serve the JS (but not the API):</p>
+<div class="code sh highlight-default"><div class="highlight"><pre><span></span><span class="n">summertunes</span> <span class="n">serve</span> <span class="o">--</span><span class="n">dev</span>  <span class="c1"># serves JS</span>
+</pre></div>
+</div>
+<p>And keep <code class="docutils literal"><span class="pre">beet</span> <span class="pre">web</span></code> running in another terminal, with the config
+changes above, so the JS has something to talk to.</p>
+</div>
+<div class="section" id="server">
+<h3>Server<a class="headerlink" href="#server" title="Permalink to this headline">¶</a></h3>
+<div class="code sh highlight-default"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">editable</span> <span class="o">.</span>
+<span class="n">beet</span> <span class="n">web</span> <span class="o">--</span><span class="n">debug</span> <span class="c1"># auto-reloads when you change files</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="both">
+<h3>Both<a class="headerlink" href="#both" title="Permalink to this headline">¶</a></h3>
+<p>Run <code class="docutils literal"><span class="pre">summertunes</span> <span class="pre">serve</span> <span class="pre">--dev</span></code> in one terminal and <code class="docutils literal"><span class="pre">beet</span> <span class="pre">web</span> <span class="pre">--debug</span></code>
+in another.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">Summertunes</a></h1>
+
+
+
+<p class="blurb">A music player for beets and mpv</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=irskep&repo=summertunes&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017 Steve Johnson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/irskep/summertunes" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
