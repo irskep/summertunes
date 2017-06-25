@@ -1,4 +1,4 @@
-eventlet==0.20.0
-Flask==0.11.1
-Flask-SocketIO==2.8.2
--e git://github.com/beetbox/beets.git#egg=beets
+eventlet>=0.20.0
+Flask>=0.11.1
+Flask-SocketIO>=2.8.2
+beets>=1.4.4

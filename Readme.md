@@ -70,10 +70,6 @@ summertunes:
     dev_server_port: 3000
 ```
 
-![](https://www.dropbox.com/s/r5gz3ijisx5h4pr/Screenshot%202017-01-17%2013.00.00.png?dl=1)
-
-![](https://www.dropbox.com/s/idcmdhrwre56cov/Screenshot%202016-12-23%2018.24.54.png?dl=1)
-
 
 ## Developing
 
